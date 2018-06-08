@@ -213,7 +213,7 @@ $(function () {
 <!--弹出层 结束-->
 
 <div class="footerBar">
-    <p>教师资格考试微信：<span class="c-yellow wxCode"></span>（点击复制）</p>
+    <p>老师微信：<span class="c-yellow wxCode"></span>（点击复制）</p>
 </div>
 <div class="footH" style="height: 1.2rem"></div>
 ```
