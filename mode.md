@@ -1,19 +1,20 @@
 ##  导航
-- [demo1](#demo1)百度统计
-- [demo2](#demo2)单页换公司及资质
-- [demo3](#demo3)html5shiv
-- [demo4](#demo4)m端手指滑动事件
-- [demo5](#demo5)复制微信
-- [demo6](#demo6)轮播图
-- [demo7](#demo7)nav滚动
-- [demo8](#demo8)单页微信修改
-- [demo9](#demo9)m端fastClick
-- [demo10](#demo10)小能代码
-- [demo11](#demo11)视频播放模块
-- [demo12](#demo12)手机验证码模块
-- [demo13](#demo13)倒计时模块
+- [demo1](#demo1)---百度统计
+- [demo2](#demo2)---单页换公司及资质
+- [demo3](#demo3)---html5shiv
+- [demo4](#demo4)---m端手指滑动事件
+- [demo5](#demo5)---复制微信
+- [demo6](#demo6)---轮播图
+- [demo7](#demo7)---nav滚动
+- [demo8](#demo8)---单页微信修改
+- [demo9](#demo9)---m端fastClick
+- [demo10](#demo10)---小能代码
+- [demo11](#demo11)---视频播放模块
+- [demo12](#demo12)---手机验证码模块
+- [demo13](#demo13)---倒计时模块
 
 ###  demo1
+####  百度统计
 ```
 <script>
 var _hmt = _hmt || [];
@@ -26,6 +27,7 @@ var _hmt = _hmt || [];
 </script>
 ```
 ###  demo2
+####  单页换公司及资质
 ```
 <script>
 $(function () {
@@ -33,7 +35,7 @@ $(function () {
     var corporationList = [
         {
             "id":0,
-            "name":"广州向荣教育科技有限公司",
+            "name":"湖北云天下教育科技有限公司",
             "num":"鄂ICP备12016896号-8"
         },{
             "id":1,
@@ -127,12 +129,14 @@ $(function () {
 </script>
 ```
 ### demo3
+####  html5shiv
 ```
 <!--if lt IE 9]>　　
     <script src="https://cdn.bootcss.com/html5shiv/r29/html5.js"></script>　　
 <![endif]-->
 ```
 ### demo4
+####  m端手指滑动事件
 ```
 <script>
     //返回角度
@@ -199,8 +203,8 @@ $(function () {
 </script>
 ```
 ### demo5
-
-#### 【html】
+####  复制微信
+##### 【html】
 ```
 <!--弹出层 开始-->
 <div class="weChatB w_2">
@@ -217,7 +221,7 @@ $(function () {
 </div>
 <div class="footH" style="height: 1.2rem"></div>
 ```
-#### 【css】
+##### 【css】
 ```
 // 底部浮动条
 .footerBar {
@@ -282,7 +286,7 @@ $(function () {
 	margin-top: 0.3466666666666667rem;
 }
 ```
-#### 【js】
+##### 【js】
 ```
 <script src="js/clipboard.min.js"></script>
 
@@ -341,7 +345,8 @@ $(function () {
     });
 ```
 ### demo6
-#### 【html】
+####  轮播图
+##### 【html】
 ```
 <div class="w" id="slide2">
     <div class="content" >
@@ -365,7 +370,7 @@ $(function () {
     </div>
 </div>
 ```
-#### 【js】
+##### 【js】
 ```
 // 轮播
 function mySlide(id) {
@@ -430,7 +435,7 @@ function mySlide(id) {
 mySlide('#slide1');
 mySlide('#slide2');
 ```
-#### 【js M端带滑屏事件】
+##### 【js M端带滑屏事件】
 ```
 function mySlide(id) {
     var $slide = $(id);
@@ -568,13 +573,15 @@ function GetSlideDirection(startX, startY, endX, endY) {
     return result;
 }
 ```
-#### demo7
+### demo7
+####  nav滚动
 ```
 <script src="js/scrollPage.js"></script>
 // 滚屏
     $(".common-module").scrollPage();
 ```
 ### demo8
+####  单页微信修改
 ```
 <script>
     $(function () {
@@ -605,12 +612,14 @@ function GetSlideDirection(startX, startY, endX, endY) {
 </script>
 ```
 ### demo9
+####  m端fastClick
 ```
 <script src="http://js.ykclass.com/frame/fastClick/v1.0.0/fastClick.js"></script>
 // 快速点击
 FastClick.attach(document.body);
 ```
 ### demo10
+####  小能代码
 ```
 var kf = 'kf_9540_1520933792603';
 var NTKF_PARAM = {
@@ -625,7 +634,8 @@ $(document).on("click", ".ntkf", function() {
 });
 ```
 ### demo11
-#### 【js】
+####  视频播放模块
+##### 【js】
 ```
 <script src="http://static.ykclass.com/frame/polyv/polyvplayer.min.js"></script>
 
@@ -666,8 +676,8 @@ $(document).on("click", ".ntkf", function() {
 	};
 ```
 ### demo12
-
-#### 【html】
+####  手机验证码模块
+##### 【html】
 ```
 <!--弹出层 开始-->
 			<div class="layer-warp">
@@ -681,7 +691,7 @@ $(document).on("click", ".ntkf", function() {
             </div>
 <!--弹出层 结束-->
 ```
-#### 【css  M】
+##### 【css  M】
 ```
 .layer-warp {
 	position: fixed;
@@ -735,7 +745,7 @@ $(document).on("click", ".ntkf", function() {
 	}
 }
 ```
-#### 【css  PC】
+##### 【css  PC】
 ```
 /*弹窗部分开始*/
 .layer-warp {
@@ -784,7 +794,7 @@ $(document).on("click", ".ntkf", function() {
 }
 /*弹窗部分结束*/
 ```
-#### 【html】
+##### 【html】
 ```
 <article class="part-phone">
     <img src="images/phone.jpg" alt="免费预约">
@@ -802,7 +812,7 @@ $(document).on("click", ".ntkf", function() {
     </div>
 </article>
 ```
-#### 【js】
+##### 【js】
 ```
 $('.layer-close').on('click',function () {
     $('.layer-warp').hide();
@@ -927,7 +937,7 @@ $(function() {
         })
     })
 ```
-#### 【js--无短信验证】
+##### 【js--无短信验证】
 ```
 $("#phone").keyup(function() {
     var regPhone = /^0?1[3|4|5|7|8][0-9]\d{8}$/;
@@ -1009,6 +1019,7 @@ $(function() {
 });
 ```
 ### demo13
+####  倒计时模块
 ```
 var today = new Date().getTime();
 var  examDay = [2018,4,24];
