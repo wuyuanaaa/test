@@ -518,8 +518,7 @@ function GetSlideDirection(startX, startY, endX, endY) {
         $(function() {
             var randomNum = Math.floor(Math.random() * weixinArray.length);
             var wxObject = weixinArray[randomNum]; //随机取一个公众号对应关系
-            if(
-                $(".code").length > 0) {
+            if($(".code").length > 0) {
                 $(".code").attr("data-clipboard-text", wxObject);
                 $(".code").html(wxObject) //设置公众号值
             }
