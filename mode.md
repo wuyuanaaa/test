@@ -30,7 +30,10 @@ var _hmt = _hmt || [];
 ####  自动更换公司及资质
 #####  引用方法库
 ```
+//pc
 <script src="//www.ykclass.com/zt/zyjs/y-registered.js"></script>
+//m 
+<script src="//m.ykclass.com/zt/zyjs/y-registered.js"></script>
 ```
 #####  百度单页
 在js部分引用方法
