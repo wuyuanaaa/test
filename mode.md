@@ -514,20 +514,7 @@ function GetSlideDirection(startX, startY, endX, endY) {
 ```
 <script>
     $(function () {
-        var weixinArray = [];
-        var wxList = [{
-            "wxCode": "gp21209",
-            "channelName": "zonghe",
-            "id": 15,
-            "channelId": 13,
-            "qrImg": "#",
-            "channelCode": "xueke"
-        }];
-        if(wxList != null) {
-            for(var i = 0; i < wxList.length; i++) {
-                weixinArray.push(wxList[i].wxCode);
-            }
-        }
+        var weixinArray = ['gp21209'];
         $(function() {
             var randomNum = Math.floor(Math.random() * weixinArray.length);
             var wxObject = weixinArray[randomNum]; //随机取一个公众号对应关系
