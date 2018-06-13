@@ -1,6 +1,6 @@
 ##  导航
 - [demo1](#demo1)---百度统计
-- [demo2](#demo2)---单页换公司及资质
+- [demo2](#demo2)---自动更换公司及资质
 - [demo3](#demo3)---html5shiv
 - [demo4](#demo4)---m端手指滑动事件
 - [demo5](#demo5)---复制微信
@@ -27,106 +27,33 @@ var _hmt = _hmt || [];
 </script>
 ```
 ###  demo2
-####  单页换公司及资质
+####  自动更换公司及资质
+#####  引用方法库
 ```
-<script>
-$(function () {
-    // 备案号列表
-    var corporationList = [
-        {
-            "id":0,
-            "name":"湖北云天下教育科技有限公司",
-            "num":"鄂ICP备12016896号-8"
-        },{
-            "id":1,
-            "name":"湖北云天下教育科技有限公司",
-            "num":"鄂ICP备12016896号-7"
-        },{
-            "id":2,
-            "name":"武汉智慧环球科技有限公司",
-            "num":"鄂ICP备16004339号-3"
-        },{
-            "id":3,
-            "name":"武汉乐教科技有限公司",
-            "num":"鄂ICP备13016533号"
-        },{
-            "id":4,
-            "name":"北京文博华茂科技有限公司",
-            "num":"京ICP备16065121号-1"
-        },{
-            "id":5,
-            "name":"深圳市佩思维科技有限公司",
-            "num":"粤ICP备15038492号-1"
-        },{
-            "id":6,
-            "name":"惠州市宏茂网络科技有限公司",
-            "num":"粤ICP备17014673号-1"
-        },{
-            "id":7,
-            "name":"惠州优车宝网络科技有限公司",
-            "num":"粤ICP备15101985号-1"
-        },{
-            "id":8,
-            "name":"武汉智慧环球教育科技有限公司",
-            "num":"鄂ICP备16004339号"
-        },{
-            "id":9,
-            "name":"北京千才汇教科技有限公司",
-            "num":"京ICP备16020172号-2"
-        },{
-            "id":10,
-            "name":"北京文博华茂科技有限公司",
-            "num":"京ICP备16065121号"
-        },{
-            "id":11,
-            "name":"武汉书香门第教育科技有限公司",
-            "num":"鄂ICP备18009206号-1"
-        },{
-            "id":12,
-            "name":"合肥盘手金融教育培训有限公司",
-            "num":" "
-        },{
-            "id":13,
-            "name":"长沙市亿泰科技有限公司",
-            "num":"湘ICP备17018323号-3"
-         }
-    ];
-    // 主域名
-    var test = window.location.host;
-    // 显示域名位置
-    var $footer = $('.footer');
-    // 更换域名
-    if(test.indexOf('ytxedu') > 0){
-        $footer.html('<p>Copyright © 2018 '+corporationList[0].name+' All Rights Reserved <br>'+corporationList[0].num+'</p>')
-    }else if(test.indexOf('ykclass') > 0){
-        $footer.html('<p>Copyright © 2018 '+corporationList[1].name+' All Rights Reserved <br>'+corporationList[1].num+'</p>')
-    }else if(test.indexOf('guopass') > 0){
-        $footer.html('<p>Copyright © 2018 '+corporationList[2].name+' All Rights Reserved <br>'+corporationList[2].num+'</p>')
-    }else if(test.indexOf('topksw') > 0){
-        $footer.html('<p>Copyright © 2018 '+corporationList[3].name+' All Rights Reserved <br>'+corporationList[3].num+'</p>')
-    }else if(test.indexOf('yythb') > 0){
-        $footer.html('<p>Copyright © 2018 '+corporationList[4].name+' All Rights Reserved <br>'+corporationList[4].num+'</p>')
-    }else if(test.indexOf('peisway') > 0){
-        $footer.html('<p>Copyright © 2018 '+corporationList[5].name+' All Rights Reserved <br>'+corporationList[5].num+'</p>')
-    }else if(test.indexOf('hzhmcy') > 0){
-        $footer.html('<p>Copyright © 2018 '+corporationList[6].name+' All Rights Reserved <br>'+corporationList[6].num+'</p>')
-    }else if(test.indexOf('cub100') > 0){
-        $footer.html('<p>Copyright © 2018 '+corporationList[7].name+' All Rights Reserved <br>'+corporationList[7].num+'</p>')
-    }else if(test.indexOf('ztkao') > 0){
-        $footer.html('<p>Copyright © 2018 '+corporationList[8].name+' All Rights Reserved <br>'+corporationList[8].num+'</p>')
-    }else if(test.indexOf('qcwedu') > 0){
-        $footer.html('<p>Copyright © 2018 '+corporationList[9].name+' All Rights Reserved <br>'+corporationList[9].num+'</p>')
-    }else if(test.indexOf('yytvb') > 0){
-        $footer.html('<p>Copyright © 2018 '+corporationList[10].name+' All Rights Reserved <br>'+corporationList[10].num+'</p>')
-    }else if(test.indexOf('591book') > 0){
-        $footer.html('<p>Copyright © 2018 '+corporationList[11].name+' All Rights Reserved <br>'+corporationList[11].num+'</p>')
-    }else if(test.indexOf('kangerwang') > 0){
-        $footer.html('<p>Copyright © 2018 '+corporationList[12].name+' All Rights Reserved <br>'+corporationList[12].num+'</p>')
-    }else if(test.indexOf('ytkj') > 0){
-        $footer.html('<p>Copyright © 2018 '+corporationList[13].name+' All Rights Reserved <br>'+corporationList[13].num+'</p>')
-     }
-})
-</script>
+<script src="//www.ykclass.com/zt/zyjs/y-registered.js"></script>
+```
+#####  百度单页
+在js部分引用方法
+```
+    $_y.registeredBd();
+```
+#####  其他页面
+公司名称替换成如下：
+```
+<span id="registeredName"></span>
+```
+备案号替换成如下：
+```
+<span id="registeredNum"></span>
+```
+例：M端替换后如下：
+```
+<p>版权所有@<span id="registeredName"></span> </p>
+<p> 2018 保留一切权利 <span id="registeredNum"></span> </p>
+```
+在js部分引用方法
+```
+   $_y.registered();
 ```
 ### demo3
 ####  html5shiv
