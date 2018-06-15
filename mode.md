@@ -30,7 +30,7 @@ var _hmt = _hmt || [];
 ####  自动更换公司及资质
 #####  引用方法库
 ```
-<script src="//m.ykclass.com/zt/zyjs/y-registered.js"></script>
+<script src="//m.ykclass.com/zt/zyjs/yuanaaa.js"></script>
 ```
 #####  百度单页
 在js部分引用方法
@@ -730,7 +730,7 @@ $(document).on("click", ".ntkf", function() {
 ##### 【js】
 引用方法库
 ```
-<script src="//m.ykclass.com/zt/zyjs/y-registered.js"></script>
+<script src="//m.ykclass.com/zt/zyjs/yuanaaa.js"></script>
 ```
 无附带信息
 ```
