@@ -614,7 +614,7 @@ $(document).on("click", ".ntkf", function() {
 	top: 0px;
 	right: 0px;
 	bottom: 0px;
-	display: block;
+	display: none;
 	text-align: center;
 	background: rgba(0, 0, 0, 0.4);
 	z-index: 9999999;
@@ -681,7 +681,7 @@ $(document).on("click", ".ntkf", function() {
   transform: translate(-50%, -50%);
   width: 493px;
   height: 501px;
-  background: url(../images/layer.png) no-repeat;
+  background: url(//m.ykclass.com/zt/zyImages/ykclass/layer.png) no-repeat;
   background-size: cover;
   z-index: 99999999;
 }
@@ -711,227 +711,65 @@ $(document).on("click", ".ntkf", function() {
 ```
 ##### 【html】
 ```
-<article class="part-phone">
+<article class="part-phone" id="get-phone">
     <img src="images/phone.jpg" alt="免费预约">
     <div class="getPhone">
         <div class="phone">
-            <input id="phone" class="phone-num" type="text" placeholder="请输入您的手机号码">
-            <input type="button" class="send-phone" id="sendCode" value="获取动态码">
+            <input class="phone-num" type="text" placeholder="请输入您的手机号码">
+            <input type="button" class="send-code" value="获取动态码">
         </div>
         <div class="dt-num">
-            <input type="text" id="codeValue"  placeholder="请输入动态码">
+            <input type="text" class="code-value" placeholder="请输入动态码">
         </div>
-        <button id="vailCode">
+        <button class="vail-code">
             查询结果  →
         </button>
     </div>
 </article>
 ```
 ##### 【js】
+引用方法库
 ```
-$('.layer-close').on('click',function () {
-    $('.layer-warp').hide();
+<script src="//m.ykclass.com/zt/zyjs/y-registered.js"></script>
+```
+无附带信息
+```
+$_y.saveActivitySmsInfo('#get-phone','YK_M_TONGJI',true);
+// 场景代码及ID自行更换
+```
+附带信息
+```
+var info = {
+    msg: ''
+};
+$('#vailCode')[0].addEventListener('click',function () {
+    var province = $('#province').val();
+    var education = $('#education').val();
+    info.msg = province + '-' + education;
+    // 信息自行更换
 });
-
-$("#phone").keyup(function() {
-    var phone = $("#phone").val();
-    if(phone.length > 11) {
-        layer.msg('手机号超出字符限制！')
-    }
-});
-
-$(function() {
-    var countdown = 90;
-    var nowHost = '';
-    var nowProtocol = window.location.protocol;
-    // 场景代码
-    var cjCode = 'YK_M_GAOKUAI';
-    if(nowProtocol == 'http:'){
-        nowHost = "http://tf.topksw.com"
-    }else {
-        nowHost = "https://m.ykclass.com"
-    }
-
-    var settime = function(obj) {
-        if(countdown == 0) {
-            obj.removeAttr("disabled");
-            obj.val("获取动态码");
-            countdown = 60;
-            return;
-        } else {
-            obj.attr("disabled", true);
-            obj.val("重新发送(" + countdown + ")");
-            countdown--;
-        }
-        setTimeout(function() {
-            settime(obj);
-        }, 1000)
-    }
-
-    var activity = {
-        domainHost: nowHost,
-        sendSms: function(phone, platform, callback) {
-            var _this = this;
-            var regPhone = /^0?1[3|4|5|7|8][0-9]\d{8}$/;
-            if(!regPhone.test(phone)) {
-                layer.msg('手机号码输入有误！')
-            } else {
-                settime($("#sendCode"));
-                $.ajax({
-                    type: "get",
-                    url: _this.domainHost + "/common/sendSmsMessage.html",
-                    dataType: "jsonp",
-                    jsonp: "callback", //传递给请求处理程序或页面的，用以获得jsonp回调函数名的参数名(一般默认为:callback)
-                    jsonpCallback: "callback", //自定义的jsonp回调函数名称，默认为jQuery自动生成的随机函数名，也可以写"?"，jQuery会自动为你处理数据
-                    data: {
-                        phone: phone,
-                        platform: platform
-                    },
-                    success: function(data) {
-                        if(callback && typeof callback == 'function') {
-                            callback(data);
-                        }
-                    }
-                })
-            }
-        }
-        ,
-        saveActivitySmsInfo: function(object, code, callback) {
-            var _this = this;
-            object.accessUrl = window.location.href;
-            if(!code) {
-
-            }
-            object.code = code;
-            console.log(object)
-            $.ajax({
-                type: "get",
-                url: _this.domainHost + "/common/saveActivitySmsInfo.html",
-                dataType: "jsonp",
-                jsonp: "callback", //传递给请求处理程序或页面的，用以获得jsonp回调函数名的参数名(一般默认为:callback)
-                jsonpCallback: "callback", //自定义的jsonp回调函数名称，默认为jQuery自动生成的随机函数名，也可以写"?"，jQuery会自动为你处理数据
-                data: object,
-                success: function(msg) {
-                    if(callback && typeof callback == 'function') {
-                        callback(msg);
-                    }
-                },
-                error: function(data) {}
-            })
-        }
-    };
-    $("#sendCode").click(function() {
-        activity.sendSms($("#phone").val(), "yk", function(msg) {
-            if(msg.c == 100) {
-                console.log(msg)
-            }
-        })
-    });
-    $("#vailCode").click(function() {
-
-        var object = {
-            sceneCode: cjCode,
-            phone: $("#phone").val(),
-            content: ''
-        }
-        var code = $("#codeValue").val();
-        activity.saveActivitySmsInfo(object, code, function(msg) {
-            if(msg.c == 100) {
-                $(".layer-warp").show();
-                $("input").not("#sendCode").val("");
-            } else if(msg.m == '用户手机号不能为空') {
-                layer.msg('手机号码不能为空');
-            } else if(msg.m == '短信验证码不能为空!') {
-                layer.msg('短信验证码不能为空!');
-            } else if(msg.code == 202) {
-                layer.msg('短信验证码错误!');
-            } else {
-                layer.msg('您的信息输入有误');
-            }
-
-        })
-    })
+$_y.saveActivitySmsInfo('#get-phone','YK_M_TONGJI',true,info);
+// 场景代码及ID自行更换
 ```
 ##### 【js--无短信验证】
+无附带信息
 ```
-$("#phone").keyup(function() {
-    var regPhone = /^0?1[3|4|5|7|8][0-9]\d{8}$/;
-    var phone = $("#phone").val();
-    if(phone.length > 11) {
-        layer.msg('手机号超出字符限制！')
-    }
+$_y.saveActivitySmsInfo('#get-phone','YK_M_TONGJI',false);
+// 场景代码及ID自行更换
+```
+附带信息
+```
+var info = {
+    msg: ''
+};
+$('#vailCode')[0].addEventListener('click',function () {
+    var province = $('#province').val();
+    var education = $('#education').val();
+    info.msg = province + '-' + education;
+    // 信息自行更换
 });
-$(function() {
-    var nowHost = '';
-    var nowProtocol = window.location.protocol;
-    // 场景代码
-    var cjCode = 'YK_M_GAOKUAI';
-    if(nowProtocol == 'http:'){
-        nowHost = "http://tf.topksw.com"
-    }else {
-        nowHost = "https://m.ykclass.com"
-    }
-    var activity = {
-        domainHost: nowHost,
-
-        saveActivitySmsInfo: function(object, code, callback) {
-            var _this = this;
-            object.accessUrl = window.location.href;
-            var regPhone = /^0?1[3|4|5|7|8][0-9]\d{8}$/;
-            if(!regPhone.test(object.phone)) {
-                layer.msg('手机号码输入有误！')
-            } else {
-                object.code = code;
-                console.log(object);
-                $.ajax({
-                    type: "get",
-                    url: _this.domainHost + "/common/saveActivityInfo.html",
-                    dataType: "jsonp",
-                    jsonp: "callback", //传递给请求处理程序或页面的，用以获得jsonp回调函数名的参数名(一般默认为:callback)
-                    jsonpCallback: "callback", //自定义的jsonp回调函数名称，默认为jQuery自动生成的随机函数名，也可以写"?"，jQuery会自动为你处理数据
-                    data: object,
-                    success: function (msg) {
-                        if (callback && typeof callback == 'function') {
-                            /**
-                             **    msg.c : 100 保存成功
-                             msg.c : 200:保存失败
-                             msg.c : 202 短信验证码错误
-                             msg.m   错误消息
-                             **
-                             **/
-                            callback(msg);
-                        }
-                    },
-                    error: function (data) {
-                    }
-                })
-            }
-        }
-    };
-
-    $("#vailCode").click(function() {
-        var Province = $('.province').text();
-        var object = {
-            sceneCode: cjCode,
-            phone: $("#phone").val(),
-            content: Province
-        };
-        var code = $("#codeValue").val();
-        activity.saveActivitySmsInfo(object, code, function(msg) {
-            if(msg.c == 100) {
-                layer.msg('查询成功！系统将以电话形式通知您结果。');
-            } else if(msg.m == '用户手机号不能为空') {
-                layer.msg('手机号码不能为空');
-            } else if(msg.m == '短信验证码不能为空!') {
-                layer.msg('短信验证码不能为空!');
-            } else if(msg.code == 202) {
-                layer.msg('短信验证码错误!');
-            } else {
-                layer.msg('您的信息输入有误');
-            }
-        })
-    })
-});
+$_y.saveActivitySmsInfo('#get-phone','YK_M_TONGJI',false,info);
+// 场景代码及ID自行更换
 ```
 ### demo13
 ####  倒计时模块
