@@ -595,15 +595,15 @@ $(document).on("click", ".ntkf", function() {
 ##### 【html】
 ```
 <!--弹出层 开始-->
-			<div class="layer-warp">
-                <div class="layer">
-                    <div class="title">恭喜您，提交成功！</div>
-                    <div class="text">
-                        您好，您的信息已提交成功，<span class="c-b">查询结果将于15分钟内以短信或电话的方式通知您，</span>请注意查收！
-                    </div>
-                    <div class="layer-close"></div>
-                </div>
-            </div>
+<div class="layer-warp">
+    <div class="layer">
+        <div class="title">恭喜您，提交成功！</div>
+        <div class="text">
+            您好，您的信息已提交成功，<span class="c-b">查询结果将于15分钟内以短信或电话的方式通知您，</span>请注意查收！
+        </div>
+        <div class="layer-close"></div>
+    </div>
+</div>
 <!--弹出层 结束-->
 ```
 ##### 【css  M】
