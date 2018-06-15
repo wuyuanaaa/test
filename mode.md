@@ -114,7 +114,7 @@
 		transform: translate(-35%, -50%);
 		.w(700);
 		.h(700);
-		background: url(../images/layer.png) no-repeat;
+		background: url(//m.ykclass.com/zt/zyImages/ykclass/layer.png) no-repeat;
 		background-size: cover;
 		z-index: 99999999;
 	}
@@ -151,20 +151,17 @@
 ```
 ##### 【html】
 ```
-<article class="part-phone" id="get-phone">
-    <img src="images/phone.jpg" alt="免费预约">
-    <div class="getPhone">
-        <div class="phone">
-            <input class="phone-num" type="text" placeholder="请输入您的手机号码">
-            <input type="button" class="send-code" value="获取动态码">
-        </div>
-        <div class="dt-num">
-            <input type="text" class="code-value" placeholder="请输入动态码">
-        </div>
-        <button class="vail-code">
-            查询结果  →
-        </button>
+<article class="page-7" id="get-phone">
+    <h5>映课《VIP密训情报班》拼手气 赢福利</h5>
+    <h5>现在加入可享  直减<span class="c-yellow">&yen;6000元！</span>试试手气</h5>
+    <div class="row">
+        <input class="phone-num" type="text" placeholder="请输入电话号码">
+        <input type="text" class="send-code" value="获取验证码">
     </div>
+    <div class="row">
+        <input class="code-value" type="text" placeholder="请输入验证码">
+    </div>
+    <button class="vail-code">提交</button>
 </article>
 ```
 ##### 【js】
