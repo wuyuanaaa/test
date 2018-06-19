@@ -155,11 +155,11 @@
     <h5>映课《VIP密训情报班》拼手气 赢福利</h5>
     <h5>现在加入可享  直减<span class="c-yellow">&yen;6000元！</span>试试手气</h5>
     <div class="row">
-        <input class="phone-num" type="text" placeholder="请输入电话号码">
+        <input class="phone-num" type="number" placeholder="请输入电话号码">
         <input type="text" class="send-code" value="获取验证码">
     </div>
     <div class="row">
-        <input class="code-value" type="text" placeholder="请输入验证码">
+        <input class="code-value" type="number" placeholder="请输入验证码">
     </div>
     <button class="vail-code">提交</button>
 </article>
@@ -238,15 +238,15 @@ $_y.saveActivitySmsInfo('#get-phone','YK_M_TONGJI',false,info);
 	left: 50%;
 	margin-left: -5rem;
 	background-color: #E9360F;
-}
-.footerBar p {
-	line-height: 1.2rem;
-	font-size: 0.4rem;
-	color: #fff;
-	text-align: center;
-}
-.footerBar .c-yellow {
-	color: #FFF83A;
+	p {
+    	line-height: 1.2rem;
+    	font-size: 0.4rem;
+    	color: #fff;
+    	text-align: center;
+    }
+    .c-yellow {
+    	color: #FFF83A;
+    }
 }
 // 微信弹窗
 .weChatB {
@@ -255,41 +255,41 @@ $_y.saveActivitySmsInfo('#get-phone','YK_M_TONGJI',false,info);
 	height: 6.066666666666666rem;
 	background: rgba(0,0,0,.1) url(//m.ykclass.com/zt/zyImages/ykclass/layer-wx.png) no-repeat center;
 	background-size: cover;
-}
-.weChatB .title {
-	height: 1.2533333333333334rem;
-	font-size: 0.56rem;
-	line-height: 1.2533333333333334rem;
-	color: #FFFFFF;
-	text-align: center;
-}
-.weChatTitle {
-	text-align: center;
-	margin: 0.7066666666666667rem auto 0.16rem ;
-	font-size: 0.4rem;
-	line-height: 0.6666666666666666rem;
-	color: #ff452d;
-}
-.weChatCenter {
-	width: 5.04rem;
-	height: 1.24rem;
-	display: block;
-	font-weight: bold;
-	background: #ff1a1f;
-	border-radius: 0.49333333333333335rem;
-	margin: 0 auto;
-	font-size: 0.56rem;
-	color: #FFFFFF;
-	text-align: center;
-	line-height: 1.2933333333333332rem;
-}
-.weChatBottom {
-	text-align: center;
-	font-weight: bold;
-	font-size: 0.5rem;
-	line-height: 0.5333333333333333rem;
-	color: #ff1a1f;
-	margin-top: 0.3466666666666667rem;
+	.title {
+    	height: 1.2533333333333334rem;
+    	font-size: 0.56rem;
+    	line-height: 1.2533333333333334rem;
+    	color: #FFFFFF;
+    	text-align: center;
+    }
+    .weChatTitle {
+    	text-align: center;
+    	margin: 0.7066666666666667rem auto 0.16rem ;
+    	font-size: 0.4rem;
+    	line-height: 0.6666666666666666rem;
+    	color: #ff452d;
+    }
+    .weChatCenter {
+    	width: 5.04rem;
+    	height: 1.24rem;
+    	display: block;
+    	font-weight: bold;
+    	background: #ff1a1f;
+    	border-radius: 0.49333333333333335rem;
+    	margin: 0 auto;
+    	font-size: 0.56rem;
+    	color: #FFFFFF;
+    	text-align: center;
+    	line-height: 1.2933333333333332rem;
+    }
+    .weChatBottom {
+    	text-align: center;
+    	font-weight: bold;
+    	font-size: 0.5rem;
+    	line-height: 0.5333333333333333rem;
+    	color: #ff1a1f;
+    	margin-top: 0.3466666666666667rem;
+    }
 }
 ```
 ##### 【js】
