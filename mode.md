@@ -216,8 +216,7 @@ $_y.saveActivitySmsInfo('#get-phone','YK_M_TONGJI',false,info);
 <div class="weChatB w_2">
     <div class="title">加微信领取</div>
     <p class="weChatTitle">长按复制下方微信添加为好友<br>↓↓↓</p>
-    <p class="weChatCenter wxnumber">
-    </p>
+    <p class="weChatCenter wxnumber"></p>
     <p class="weChatBottom">微信咨询  免费获取信息</p>
 </div>
 <!--弹出层 结束-->
@@ -293,64 +292,15 @@ $_y.saveActivitySmsInfo('#get-phone','YK_M_TONGJI',false,info);
 }
 ```
 ##### 【js】
+引用方法库
 ```
-<script src="js/clipboard.min.js"></script>
-
-// --------------微信修改处-------------
-
-    var wxNums = ['qbk1303','qbk1253'];
-    var count = Math.floor(Math.random()*wxNums.length);
-    var wxNow = wxNums[count];
-    $('.wxnumber'). html(wxNow);
-    $('.wxCode'). html(wxNow);
-
-    $(document).on("click", ".xnkf", function () {
-        layer.open({
-            type: 1,
-            title: false,
-            content: $('.w_2'),
-            area: ['8.36rem', '6.09333333rem'],
-            closeBtn: 0,
-            shadeClose: true,
-            shade: [0.7, '#000'],
-            anim: 2
-        })
-    });
-
-// --------------复制微信--------------
-    var clipboard = new Clipboard('.wxCode');
-    $('.wxCode').on('click', function() {
-        $('.wxCode').attr('data-clipboard-text', wxNow);
-    });
-    clipboard.on('success', function(e) {
-        layer.msg('复制成功')
-    });
-    clipboard.on('error', function(e) {
-    $(document).on("click", ".xnkf", function () {
-        layer.open({
-            type: 1,
-            title: false,
-            content: $('.w_2'),
-            area: ['8.36rem', '6.09333333rem'],
-            closeBtn: 0,
-            shadeClose: true,
-            shade: [0.7, '#000'],
-            anim: 2
-        })
-    });
-        layer.msg('当前浏览器不支持点击复制，请长按复制')
-    });
-
-    var clipboard2 = new Clipboard('.wxnumber');
-    $('.wxnumber').on('click', function() {
-        $('.wxnumber').attr('data-clipboard-text', wxNow);
-    });
-    clipboard2.on('success', function(e) {
-        layer.msg('复制成功')
-    });
-    clipboard2.on('error', function(e) {
-        layer.msg('当前浏览器不支持点击复制，请长按复制')
-    });
+<script src="//m.ykclass.com/zt/zyjs/layer/layer.js"></script>
+<script src="//m.ykclass.com/zt/zyjs/clipboard.min.js"></script>
+<script src="//m.ykclass.com/zt/zyjs/yuanaaa.js"></script>
+```
+调用方法
+```
+$_y.copyWeChat(['qbk8730']);
 ```
 ### demo6
 ####  m端手指滑动事件
