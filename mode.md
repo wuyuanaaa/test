@@ -149,6 +149,60 @@
 	}
 }
 ```
+##### 【css  PC】
+```
+.layer-warp {
+    position: fixed;
+    left: 0px;
+    top: 0px;
+    right: 0px;
+    bottom: 0px;
+    display: block;
+    text-align: center;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 99999;
+    .layer {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        height: 400px;
+        width: 400px;
+        background: url(//m.ykclass.com/zt/zyImages/ykclass/layer.png) no-repeat;
+        background-size: cover;
+        z-index: 99999999;
+    }
+    .title {
+        position: absolute;
+        top: 60px;
+        left: 100px;
+        font-size: 26px;
+        color: #fff;
+    }
+    .text {
+        position: absolute;
+        top: 145px;
+        left: 60px;
+        color: #666666;
+        width: 300px;
+        height: 300px;
+        font-size: 20px;
+        line-height: 1.5;
+        text-align: left;
+        .c-b {
+            font-weight: bold;
+            color: #333333;
+        }
+    }
+    .layer-close {
+        position: absolute;
+        top: 286px;
+        left: 76px;
+        height: 54px;
+        width: 268px;
+    }
+}
+```
 ##### 【html】
 ```
 <article class="page-7" id="get-phone">
@@ -156,7 +210,7 @@
     <h5>现在加入可享  直减<span class="c-yellow">&yen;6000元！</span>试试手气</h5>
     <div class="row">
         <input class="phone-num" type="number" placeholder="请输入电话号码">
-        <input type="text" class="send-code" value="获取验证码">
+        <input type="button" class="send-code" value="获取验证码">
     </div>
     <div class="row">
         <input class="code-value" type="number" placeholder="请输入验证码">
