@@ -60,10 +60,23 @@
 ```
 <span id="registeredNum"></span>
 ```
+证书部分替换成：
+```
+<div class="p-warp" id="certificate">
+    <p>网络文化经营许可证 鄂网文许字【2014】1409-032号</p>
+    <p>互联网出版许可证 鄂字第23号 </p>
+</div>
+```
 例：M端替换后如下：
 ```
-<p>版权所有@<span id="registeredName"></span> </p>
-<p> 2018 保留一切权利 <span id="registeredNum"></span> </p>
+<div class="p-warp">
+    <p>版权所有@<span id="registeredName"></span> </p>
+    <p> 2018 保留一切权利 <span id="registeredNum"></span> </p>
+</div>
+<div class="p-warp" id="certificate">
+    <p>网络文化经营许可证 鄂网文许字【2014】1409-032号</p>
+    <p>互联网出版许可证 鄂字第23号 </p>
+</div>
 ```
 在js部分引用方法
 ```
@@ -205,18 +218,16 @@
 ```
 ##### 【html】
 ```
-<article class="page-7" id="get-phone">
-    <h5>映课《VIP密训情报班》拼手气 赢福利</h5>
-    <h5>现在加入可享  直减<span class="c-yellow">&yen;6000元！</span>试试手气</h5>
+<div id="get-phone">
     <div class="row">
         <input class="phone-num" type="number" placeholder="请输入电话号码">
-        <input type="button" class="send-code" value="获取验证码">
+        <input class="send-code" type="button" value="获取验证码">
     </div>
     <div class="row">
         <input class="code-value" type="number" placeholder="请输入验证码">
     </div>
     <button class="vail-code">提交</button>
-</article>
+</div>
 ```
 ##### 【js】
 引用方法库
@@ -720,6 +731,10 @@ var NTKF_PARAM = {
 $(document).on("click", ".ntkf", function() {
     NTKF.im_openInPageChat(kf);
 });
+```
+引用js文件：
+```
+<script type="text/javascript" src="//dl.ntalker.com/js/xn6/ntkfstat.js?siteid=kf_9540" charset="utf-8"></script>
 ```
 ### demo12
 ####  html5shiv
