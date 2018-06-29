@@ -4,14 +4,13 @@
 - [demo3](#demo3)---单页微信修改
 - [demo4](#demo4)---手机验证码模块
 - [demo5](#demo5)---复制微信
-- [demo6](#demo6)---m端手指滑动事件
-- [demo7](#demo7)---轮播图
-- [demo8](#demo8)---nav滚动
-- [demo9](#demo9)---视频播放模块
-- [demo10](#demo10)---m端fastClick
-- [demo11](#demo11)---小能代码
-- [demo12](#demo12)---html5shiv
-- [demo13](#demo13)---倒计时模块
+- [demo6](#demo6)---轮播图
+- [demo7](#demo7)---nav滚动
+- [demo8](#demo8)---视频播放模块
+- [demo9](#demo9)---m端fastClick
+- [demo10](#demo10)---小能代码
+- [demo11](#demo11)---html5shiv
+- [demo12](#demo12)---倒计时模块
 
 ###  demo1
 ####  百度统计
@@ -368,308 +367,55 @@ $_y.saveActivitySmsInfo('#get-phone','YK_M_TONGJI',false,info);
 $_y.copyWeChat(['qbk8730']);
 ```
 ### demo6
-####  m端手指滑动事件
-```
-<script>
-    //返回角度
-    function GetSlideAngle(dx, dy) {
-        return Math.atan2(dy, dx) * 180 / Math.PI;
-    }
-
-    //根据起点和终点返回方向 1：向上，2：向下，3：向左，4：向右,0：未滑动
-    function GetSlideDirection(startX, startY, endX, endY) {
-        var dy = startY - endY;
-        var dx = endX - startX;
-        var result = 0;
-
-    //如果滑动距离太短
-    if(Math.abs(dx) < 2 && Math.abs(dy) < 2) {
-      return result;
-    }
-
-    var angle = GetSlideAngle(dx, dy);
-    if(angle >= -45 && angle < 45) {
-      result = 4;
-    }else if (angle >= 45 && angle < 135) {
-      result = 1;
-    }else if (angle >= -135 && angle < -45) {
-      result = 2;
-    }
-    else if ((angle >= 135 && angle <= 180) || (angle >= -180 && angle < -135)) {
-      result = 3;
-    }
-    return result;
-    }
-
-    //滑动处理
-    var startX, startY;
-    document.addEventListener('touchstart',function (ev) {
-        startX = ev.touches[0].pageX;
-        startY = ev.touches[0].pageY;
-    }, false);
-    document.addEventListener('touchend',function (ev) {
-        var endX, endY;
-        endX = ev.changedTouches[0].pageX;
-        endY = ev.changedTouches[0].pageY;
-        var direction = GetSlideDirection(startX, startY, endX, endY);
-        switch(direction) {
-            case 0:
-                alert("没滑动");
-                break;
-            case 1:
-                alert("向上");
-                break;
-            case 2:
-                alert("向下");
-                break;
-            case 3:
-                alert("向左");
-                alert("!");
-                break;
-            case 4:
-                alert("向右");
-                break;
-            default:
-        }
-    }, false);
-</script>
-```
-### demo7
 ####  轮播图
 ##### 【html】
 ```
-<div class="w" id="slide2">
-    <div class="content" >
-        <ol class="control clearfix">
-            <li data-i="0" class="active">精炼预测班</li>
-            <li data-i="1">速升实战班</li>
-            <li data-i="2">面试通关班</li>
-            <li data-i="3">密训保过班</li>
-        </ol>
-        <ul class="slider">
-            <li><img src="images/427-slide1.jpg" alt="1"><button class="xnkf btn-3"><i class="ico-talk"></i>立即咨询</button></li>
-            <li><img src="images/427-slide2.jpg" alt="2"><button class="xnkf btn-3"><i class="ico-talk"></i>立即咨询</button></li>
-            <li><img src="images/427-slide3.jpg" alt="3"><button class="xnkf btn-3"><i class="ico-talk"></i>立即咨询</button></li>
-            <li><img src="images/427-slide4.jpg" alt="4"><button class="xnkf btn-3"><i class="ico-talk"></i>立即咨询</button></li>
-        </ul>
-
-    </div>
+<div id="slide">
+    <ul class="slider">
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+    </ul>
+    <ol class="control clearfix">
+        <li data-i="0" class="active">1</li>
+        <li data-i="1">2</li>
+        <li data-i="2">3</li>
+        <li data-i="3">4</li>
+    </ol>
     <div class="bar">
-        <div class="l"><img src="images/427-ico-left.png" alt="l"></div>
-        <div class="r"><img src="images/427-ico-right.png" alt="r"></div>
+        <div class="l"><</div>
+        <div class="r">></div>
     </div>
 </div>
 ```
 ##### 【js】
+引用方法库
 ```
-// 轮播
-function mySlide(id) {
-    var $slide = $(id);
-    var slide = document.querySelector(id);
-    var speed = 666;  // 动画时间
-    var easing = 'swing';  // 动画曲线
-    var interval = 4000;  // 轮播切换时间
-    var count = 0;
-    var imgs = $slide.find('.slider>li');
-    var conts = $slide.find(".control>li");
-    var l = $slide.find(".l");
-    var r = $slide.find(".r");
-    var max = imgs.length - 1;
-    var width = imgs[0].offsetWidth;
+<script src="//m.ykclass.com/zt/zyjs/yuanaaa.js"></script>
+```
+调用方法
+```
+$_y.slider('#slide',1,false,4000,800);
+// 1:左右切换轮播  2:淡出淡入轮播   fales:无滑动事件   4000:自动轮播时间（毫秒）  800:轮播切换动画时间（毫秒）
+// 4000,800为默认值，可省略
+```
 
-    function change(num) {
-        if (num > count) {
-            if (num > max) {
-                num = 0;
-            }
-            $(imgs[num]).css('left', width * 2);
-            $(imgs[count]).stop().animate({left: '0'}, speed, easing);
-            $(imgs[num]).stop().animate({left: width}, speed, easing);
-        } else {
-            if (num < 0) {
-                num = max;
-            }
-            $(imgs[num]).css('left', '0px');
-            $(imgs[count]).stop().animate({left: width * 2}, speed, easing);
-            $(imgs[num]).stop().animate({left: width}, speed, easing);
-        }
-        count = num;
-        $(conts[count]).addClass('active').siblings().removeClass('active');
-    }
-    //  左右控制点击事件
-    l.on('click', function () {
-        change(count - 1);
-    });
-    r.on('click', function () {
-        change(count + 1);
-    });
-    //  序号控制点击事件
-    conts.on('click', function () {
-        change($(this).data('i'));
-    });
-    var times = null;
-    times = setInterval(function () {
-        change(count + 1);
-    }, interval);
-    // 鼠标经过动画暂停
-    $slide.on('mouseover','.bar ,.control,.slider', function () {
-        clearInterval(times);
-    });
-    $slide.on('mouseout','.slider,.control,.bar', function () {
-        clearInterval(times);
-        times = setInterval(function () {
-            change(count + 1);
-        }, interval);
-    });
-}
-mySlide('#slide1');
-mySlide('#slide2');
-```
 ##### 【js M端带滑屏事件】
+调用方法
 ```
-function mySlide(id) {
-    var $slide = $(id);
-    var slide = document.querySelector(id);
-    var speed = 666;  // 动画时间
-    var easing = 'swing';  // 动画曲线
-    var interval = 4000;  // 轮播切换时间
-    var count = 0;
-    var imgs = $slide.find('.slider>li');
-    var conts = $slide.find(".control>li");
-    var l = $slide.find(".l");
-    var r = $slide.find(".r");
-    var max = imgs.length - 1;
-    var width = imgs[0].offsetWidth;
-
-    function change(num) {
-        if (num > count) {
-            if (num > max) {
-                num = 0;
-            }
-            $(imgs[num]).css('left', width * 2);
-            $(imgs[count]).stop().animate({left: '0'}, speed, easing);
-            $(imgs[num]).stop().animate({left: width}, speed, easing);
-        } else {
-            if (num < 0) {
-                num = max;
-            }
-            $(imgs[num]).css('left', '0px');
-            $(imgs[count]).stop().animate({left: width * 2}, speed, easing);
-            $(imgs[num]).stop().animate({left: width}, speed, easing);
-        }
-        count = num;
-        $(conts[count]).addClass('active').siblings().removeClass('active');
-    }
-    //  左右控制点击事件
-    l.on('click', function () {
-        change(count - 1);
-    });
-    r.on('click', function () {
-        change(count + 1);
-    });
-    // 滑动屏幕控制轮播
-
-    var startX, startY;
-    slide.addEventListener('touchstart',function (ev) {
-        clearInterval(times);
-
-        startX = ev.touches[0].pageX;
-        startY = ev.touches[0].pageY;
-    }, false);
-    slide.addEventListener('touchend',function (ev) {
-
-        clearInterval(times);
-        times = setInterval(function () {
-            change(count + 1);
-        }, interval);
-
-        var endX, endY;
-        endX = ev.changedTouches[0].pageX;
-        endY = ev.changedTouches[0].pageY;
-        var direction = GetSlideDirection(startX, startY, endX, endY);
-        switch(direction) {
-            case 0:
-                // alert("没滑动");
-                break;
-            case 1:
-                // alert("向上");
-                break;
-            case 2:
-                // alert("向下");
-                break;
-            case 3:
-                // alert("向左");
-                change(count + 1);
-                break;
-            case 4:
-                // alert("向右");
-                change(count - 1);
-                break;
-            default:
-        }
-    }, false);
-
-    //  序号控制点击事件
-    conts.on('click', function () {
-        change($(this).data('i'));
-    });
-    var times = null;
-    times = setInterval(function () {
-        change(count + 1);
-    }, interval);
-    // 鼠标经过动画暂停
-    $(id).on('mouseover','.bar ,.control,.slider', function () {
-        clearInterval(times);
-    });
-    $(id).on('mouseout','.slider,.control,.bar', function () {
-        clearInterval(times);
-        times = setInterval(function () {
-            change(count + 1);
-        }, interval);
-    });
-}
-mySlide('#slide');
-
-// 手指滑动事件
-
-//返回角度
-function GetSlideAngle(dx, dy) {
-    return Math.atan2(dy, dx) * 180 / Math.PI;
-}
-
-//根据起点和终点返回方向 1：向上，2：向下，3：向左，4：向右,0：未滑动
-function GetSlideDirection(startX, startY, endX, endY) {
-    var dy = startY - endY;
-    var dx = endX - startX;
-    var result = 0;
-
-    //如果滑动距离太短
-    if(Math.abs(dx) < 2 && Math.abs(dy) < 2) {
-        return result;
-    }
-
-    var angle = GetSlideAngle(dx, dy);
-    if(angle >= -45 && angle < 45) {
-        result = 4;
-    }else if (angle >= 45 && angle < 135) {
-        result = 1;
-    }else if (angle >= -135 && angle < -45) {
-        result = 2;
-    }
-    else if ((angle >= 135 && angle <= 180) || (angle >= -180 && angle < -135)) {
-        result = 3;
-    }
-    return result;
-}
+$_y.slider('#slide',1,true,4000,800);
+// 1:左右切换轮播  2:淡出淡入轮播   true:滑动事件   4000:自动轮播时间（毫秒）  800:轮播切换动画时间（毫秒）
+// 4000,800为默认值，可省略
 ```
-### demo8
+### demo7
 ####  nav滚动
 ```
 <script src="js/scrollPage.js"></script>
 // 滚屏
     $(".common-module").scrollPage();
 ```
-### demo9
+### demo8
 ####  视频播放模块
 ##### 【js】
 ```
@@ -710,14 +456,14 @@ function GetSlideDirection(startX, startY, endX, endY) {
 		});
 	};
 ```
-### demo10
+### demo9
 ####  m端fastClick
 ```
 <script src="http://js.ykclass.com/frame/fastClick/v1.0.0/fastClick.js"></script>
 // 快速点击
 FastClick.attach(document.body);
 ```
-### demo11
+### demo10
 ####  小能代码
 ```
 var kf = 'kf_9540_1520933792603';
@@ -736,14 +482,14 @@ $(document).on("click", ".ntkf", function() {
 ```
 <script type="text/javascript" src="//dl.ntalker.com/js/xn6/ntkfstat.js?siteid=kf_9540" charset="utf-8"></script>
 ```
-### demo12
+### demo11
 ####  html5shiv
 ```
 <!--if lt IE 9]>　　
     <script src="https://cdn.bootcss.com/html5shiv/r29/html5.js"></script>　　
 <![endif]-->
 ```
-### demo13
+### demo12
 ####  倒计时模块
 ```
 var today = new Date().getTime();
