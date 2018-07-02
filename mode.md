@@ -153,12 +153,12 @@
 		}
 	}
 	.layer-close {
-		position: absolute;
-		top: 514/@r;
-		left: 125/@r;
-		.w(485);
-		.h(100);
-	}
+        position: absolute;
+        top: 502/@r;
+        left: 134/@r;
+        .w(463);
+        .h(92);
+    }
 }
 ```
 ##### 【css  PC】
