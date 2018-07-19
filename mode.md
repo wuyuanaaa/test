@@ -11,6 +11,7 @@
 - [demo10](#demo10)---小能代码
 - [demo11](#demo11)---html5shiv
 - [demo12](#demo12)---倒计时模块
+- [demo13](#demo13)---页面指定位置展示
 
 ###  demo1
 ####  百度统计
@@ -503,4 +504,20 @@ if(endDay - today > 0) {
     $(".single").html(single);
     $(".decade").html(decade);
 }
+```
+### demo13
+####  页面滚动到指定位置展示
+##### 【js】
+引用方法库
+```
+<script src="//m.ykclass.com/zt/zyjs/yuanaaa.js"></script>
+```
+调用方法
+```
+$_y.fixedTop({
+    target: '#table-title',  // 目标元素
+    relatedTarget: '.table',   // 关联元素
+    time: 50,   // 节流时间（ms）默认50
+    subtractHeight: 150   // 底部预留高度 默认150
+});
 ```
