@@ -32,7 +32,7 @@
 引用方法库
 ```
 <script src="https://js.ykclass.com/frame/jquery/v2.1.4/jquery.min.js"></script>
-<script src="//m.ykclass.com/zt/zyjs/yuanaaa.js"></script>
+<script src="//m.ykclass.com/zt/zyjs/yuanaaa1.1.js"></script>
 ```
 在js部分引用方法
 ```
@@ -41,7 +41,7 @@
 #####  百度单页
 引用方法库
 ```
-<script src="//m.ykclass.com/zt/zyjs/yuanaaa.js"></script>
+<script src="//m.ykclass.com/zt/zyjs/yuanaaa1.1.js"></script>
 ```
 在js部分引用方法
 ```
@@ -50,7 +50,7 @@
 #####  其他页面
 引用方法库
 ```
-<script src="//m.ykclass.com/zt/zyjs/yuanaaa.js"></script>
+<script src="//m.ykclass.com/zt/zyjs/yuanaaa1.1.js"></script>
 ```
 公司名称替换成如下：
 ```
@@ -86,7 +86,7 @@
 ####  单页微信修改
 引用方法库
 ```
-<script src="//m.ykclass.com/zt/zyjs/yuanaaa.js"></script>
+<script src="//m.ykclass.com/zt/zyjs/yuanaaa1.1.js"></script>
 ```
 在js部分引用方法
 ```
@@ -232,46 +232,34 @@
 ##### 【js】
 引用方法库
 ```
-<script src="//m.ykclass.com/zt/zyjs/yuanaaa.js"></script>
+<script src="//m.ykclass.com/zt/zyjs/yuanaaa1.1.js"></script>
 ```
-无附带信息
+在js部分引用方法
 ```
-$_y.saveActivitySmsInfo('#get-phone','YK_M_TONGJI',true);
-// 场景代码及ID自行更换
+$_y.saveActivitySmsInfo({
+    id: '#get-phone2',    // 获客模块id  必需
+    cjCode: 'YK_TT_TONGJI',     // 场景代码  必需
+    needMsg: true,      // 是否短信验证(true表示需要)  非必需
+    countdown: 90,      // 首次倒计时时间（默认90）  非必需
+    info: infoObj,      // 传入的用户填写信息（一个包含msg参数的对象）   非必需
+    toutiaoCallback: function () {      // 获客完成后回执  非必需
+        if(_taq) {
+          _taq.push({convert_id: "1606319178273799", event_type: "form"})
+        }
+    }
+});
 ```
-附带信息
+附带信息如
 ```
-var info = {
+var infoObj = {
     msg: ''
 };
-$('#vailCode')[0].addEventListener('click',function () {
+$('.vail-code').on('click',function () {
     var province = $('#province').val();
     var education = $('#education').val();
-    info.msg = province + '-' + education;
+    infoObj.msg = province + '-' + education;
     // 信息自行更换
 });
-$_y.saveActivitySmsInfo('#get-phone','YK_M_TONGJI',true,info);
-// 场景代码及ID自行更换
-```
-##### 【js--无短信验证】
-无附带信息
-```
-$_y.saveActivitySmsInfo('#get-phone','YK_M_TONGJI',false);
-// 场景代码及ID自行更换
-```
-附带信息
-```
-var info = {
-    msg: ''
-};
-$('#vailCode')[0].addEventListener('click',function () {
-    var province = $('#province').val();
-    var education = $('#education').val();
-    info.msg = province + '-' + education;
-    // 信息自行更换
-});
-$_y.saveActivitySmsInfo('#get-phone','YK_M_TONGJI',false,info);
-// 场景代码及ID自行更换
 ```
 ### demo5
 ####  复制微信
@@ -361,7 +349,7 @@ $_y.saveActivitySmsInfo('#get-phone','YK_M_TONGJI',false,info);
 ```
 <script src="//m.ykclass.com/zt/zyjs/layer/layer.js"></script>
 <script src="//m.ykclass.com/zt/zyjs/clipboard.min.js"></script>
-<script src="//m.ykclass.com/zt/zyjs/yuanaaa.js"></script>
+<script src="//m.ykclass.com/zt/zyjs/yuanaaa1.1.js"></script>
 ```
 调用方法
 ```
@@ -393,21 +381,17 @@ $_y.copyWeChat(['qbk8730']);
 ##### 【js】
 引用方法库
 ```
-<script src="//m.ykclass.com/zt/zyjs/yuanaaa.js"></script>
+<script src="//m.ykclass.com/zt/zyjs/yuanaaa1.1.js"></script>
 ```
 调用方法
 ```
-$_y.slider('#slide',1,false,4000,800);
-// 1:左右切换轮播  2:淡出淡入轮播   fales:无滑动事件   4000:自动轮播时间（毫秒）  800:轮播切换动画时间（毫秒）
-// 4000,800为默认值，可省略
-```
-
-##### 【js M端带滑屏事件】
-调用方法
-```
-$_y.slider('#slide',1,true,4000,800);
-// 1:左右切换轮播  2:淡出淡入轮播   true:滑动事件   4000:自动轮播时间（毫秒）  800:轮播切换动画时间（毫秒）
-// 4000,800为默认值，可省略
+$_y.slider({
+    id: '#slide',   // 轮播模块id   必需
+    mode: 1,        // 轮播方式 1、左右切换 2、淡出淡入切换    必需
+    addTouch: true,     // 是否手指滑动事件 true 有滑动事件     非必需
+    moveTime: 400,      // 轮播切换动画时间（默认800毫秒）    非必需
+    interval: 3000      // 轮播间隙时间（默认4000毫秒）     非必需
+});
 ```
 ### demo7
 ####  nav滚动
@@ -510,7 +494,7 @@ if(endDay - today > 0) {
 ##### 【js】
 引用方法库
 ```
-<script src="//m.ykclass.com/zt/zyjs/yuanaaa.js"></script>
+<script src="//m.ykclass.com/zt/zyjs/yuanaaa1.1.js"></script>
 ```
 调用方法
 ```
