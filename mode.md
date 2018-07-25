@@ -9,7 +9,7 @@
 - [demo8](#demo8)---视频播放模块
 - [demo9](#demo9)---m端fastClick
 - [demo10](#demo10)---小能代码
-- [demo11](#demo11)---html5shiv
+- [demo11](#demo11)---M端页面滚动到指定元素位置
 - [demo12](#demo12)---倒计时模块
 - [demo13](#demo13)---页面指定位置展示
 
@@ -468,11 +468,14 @@ $(document).on("click", ".ntkf", function() {
 <script type="text/javascript" src="//dl.ntalker.com/js/xn6/ntkfstat.js?siteid=kf_9540" charset="utf-8"></script>
 ```
 ### demo11
-####  html5shiv
+####  M端页面滚动到指定元素位置
+引用方法库
 ```
-<!--if lt IE 9]>　　
-    <script src="https://cdn.bootcss.com/html5shiv/r29/html5.js"></script>　　
-<![endif]-->
+<script src="//m.ykclass.com/zt/zyjs/yuanaaa1.1.js"></script>
+```
+调用方法
+```
+$_y.scrollTo('#id');
 ```
 ### demo12
 ####  倒计时模块
