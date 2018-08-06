@@ -308,7 +308,7 @@ div.layui-layer {   //取消layer默认外阴影
 	display: none;
 	width: 8.36rem;
 	height: 6.066666666666666rem;
-	background: rgba(0,0,0,.1) url(//m.ykclass.com/zt/zyImages/ykclass/layer-wx.png) no-repeat center;
+	background: url(//m.ykclass.com/zt/zyImages/ykclass/layer-wx.png) no-repeat center;
 	background-size: cover;
 	.title {
     	height: 1.2533333333333334rem;
