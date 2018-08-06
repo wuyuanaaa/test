@@ -301,6 +301,9 @@ $('.vail-code').on('click',function () {
     }
 }
 // 微信弹窗
+div.layui-layer {   //取消layer默认外阴影
+	box-shadow: none;
+}
 .weChatB {
 	display: none;
 	width: 8.36rem;
@@ -343,6 +346,50 @@ $('.vail-code').on('click',function () {
     	margin-top: 0.3466666666666667rem;
     }
 }
+// 微信弹窗（新版）
+div.layui-layer {   //取消layer默认外阴影
+	box-shadow: none;
+}
+.weChatB {
+	width: 7.6rem;
+	height: 8rem;
+	box-sizing: border-box;
+	background: url(//m.ykclass.com/zt/zyImages/ykclass/1533535073405.png) no-repeat center;
+	background-size: cover;
+	padding-top: 1.5rem;
+	.title {
+		font-size: 0.6rem;
+		line-height: 1.25rem;
+		color: #FFFFFF;
+		text-align: center;
+	}
+	.weChatTitle {
+		text-align: center;
+		margin-top: 0.7rem;
+		font-size: 0.4rem;
+		line-height: 0.8rem;
+		color: #ff452d;
+	}
+	.weChatCenter {
+		width: 5.04rem;
+		line-height: 1.24rem;
+		font-weight: bold;
+		background: #ff1a1f;
+		border-radius: 0.5rem;
+		margin: 0.2rem auto;
+		font-size: 0.7rem;
+		color: #FFFFFF;
+		text-align: center;
+	}
+	.weChatBottom {
+		text-align: center;
+		font-weight: bold;
+		font-size: 0.5rem;
+		line-height: 0.5rem;
+		color: #ff1a1f;
+		margin-top: 0.4rem;
+	}
+}
 ```
 ##### 【js】
 引用方法库
@@ -350,6 +397,8 @@ $('.vail-code').on('click',function () {
 <script src="//m.ykclass.com/zt/zyjs/layer/layer.js"></script>
 <script src="//m.ykclass.com/zt/zyjs/clipboard.min.js"></script>
 <script src="//m.ykclass.com/zt/zyjs/yuanaaa1.1.js"></script>
+// 新版弹窗
+<script src="//m.ykclass.com/zt/zyjs/yuanaaa1.2.js"></script>
 ```
 调用方法
 ```
