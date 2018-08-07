@@ -12,6 +12,7 @@
 - [demo11](#demo11)---M端页面滚动到指定元素位置
 - [demo12](#demo12)---倒计时模块
 - [demo13](#demo13)---页面指定位置展示
+- [demo14](#demo14)---scrollPage
 
 ###  demo1
 ####  百度统计
@@ -556,4 +557,16 @@ $_y.fixedTop({
     time: 50,   // 节流时间（ms）默认50
     subtractHeight: 150   // 底部预留高度 默认150
 });
+```
+### demo14
+####  scrollPage
+##### 【js】
+引用方法库
+```
+<script src="//m.ykclass.com/zt/zyjs/yuanaaa1.1.js"></script>
+```
+调用方法
+```
+$_y.scrollPage('.class');
+// 导航条需为包含类名'md'的ul/ol
 ```
