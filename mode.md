@@ -352,6 +352,7 @@ div.layui-layer {   //取消layer默认外阴影
 	box-shadow: none;
 }
 .weChatB {
+    display: none;
 	width: 7.6rem;
 	height: 8rem;
 	box-sizing: border-box;
@@ -441,7 +442,7 @@ $_y.slider({
     addTouch: true,     // 是否手指滑动事件 true 有滑动事件     非必需
     moveTime: 400,      // 轮播切换动画时间（默认800毫秒）    非必需
     interval: 3000,      // 轮播间隙时间（默认4000毫秒）     非必需
-    mouseenterStop: true      // 鼠标进入时轮播是否停止    
+    mouseenterStop: true      // 鼠标进入时轮播是否停止
 });
 ```
 ### demo7
