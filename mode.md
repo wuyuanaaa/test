@@ -12,7 +12,8 @@
 - [demo11](#demo11)---M端页面滚动到指定元素位置
 - [demo12](#demo12)---倒计时模块
 - [demo13](#demo13)---页面指定位置展示
-- [demo14](#demo14)---scrollPage
+- [demo14](#demo14)---导航滚屏
+- [demo15](#demo15)---元素入屏幕动画
 
 ###  demo1
 ####  百度统计
@@ -33,7 +34,7 @@
 引用方法库
 ```
 <script src="https://js.ykclass.com/frame/jquery/v2.1.4/jquery.min.js"></script>
-<script src="//m.ykclass.com/zt/zyjs/yuanaaa1.1.js"></script>
+<script src="//m.ykclass.com/zt/zyjs/yuanaaa1.2.js"></script>
 ```
 在js部分引用方法
 ```
@@ -42,7 +43,7 @@
 #####  百度单页
 引用方法库
 ```
-<script src="//m.ykclass.com/zt/zyjs/yuanaaa1.1.js"></script>
+<script src="//m.ykclass.com/zt/zyjs/yuanaaa1.2.js"></script>
 ```
 在js部分引用方法
 ```
@@ -51,7 +52,7 @@
 #####  其他页面
 引用方法库
 ```
-<script src="//m.ykclass.com/zt/zyjs/yuanaaa1.1.js"></script>
+<script src="//m.ykclass.com/zt/zyjs/yuanaaa1.2.js"></script>
 ```
 公司名称替换成如下：
 ```
@@ -87,7 +88,7 @@
 ####  单页微信修改
 引用方法库
 ```
-<script src="//m.ykclass.com/zt/zyjs/yuanaaa1.1.js"></script>
+<script src="//m.ykclass.com/zt/zyjs/yuanaaa1.2.js"></script>
 ```
 在js部分引用方法
 ```
@@ -233,7 +234,7 @@
 ##### 【js】
 引用方法库
 ```
-<script src="//m.ykclass.com/zt/zyjs/yuanaaa1.1.js"></script>
+<script src="//m.ykclass.com/zt/zyjs/yuanaaa1.2.js"></script>
 ```
 在js部分引用方法
 ```
@@ -398,7 +399,7 @@ div.layui-layer {   //取消layer默认外阴影
 ```
 <script src="//m.ykclass.com/zt/zyjs/layer/layer.js"></script>
 <script src="//m.ykclass.com/zt/zyjs/clipboard.min.js"></script>
-<script src="//m.ykclass.com/zt/zyjs/yuanaaa1.1.js"></script>
+<script src="//m.ykclass.com/zt/zyjs/yuanaaa1.2.js"></script>
 // 新版弹窗
 <script src="//m.ykclass.com/zt/zyjs/yuanaaa1.2.js"></script>
 ```
@@ -432,7 +433,7 @@ $_y.copyWeChat(['qbk8730']);
 ##### 【js】
 引用方法库
 ```
-<script src="//m.ykclass.com/zt/zyjs/yuanaaa1.1.js"></script>
+<script src="//m.ykclass.com/zt/zyjs/yuanaaa1.2.js"></script>
 ```
 调用方法
 ```
@@ -523,7 +524,7 @@ $(document).on("click", ".ntkf", function() {
 ####  M端页面滚动到指定元素位置
 引用方法库
 ```
-<script src="//m.ykclass.com/zt/zyjs/yuanaaa1.1.js"></script>
+<script src="//m.ykclass.com/zt/zyjs/yuanaaa1.2.js"></script>
 ```
 调用方法
 ```
@@ -549,7 +550,7 @@ if(endDay - today > 0) {
 ##### 【js】
 引用方法库
 ```
-<script src="//m.ykclass.com/zt/zyjs/yuanaaa1.1.js"></script>
+<script src="//m.ykclass.com/zt/zyjs/yuanaaa1.2.js"></script>
 ```
 调用方法
 ```
@@ -565,10 +566,34 @@ $_y.fixedTop({
 ##### 【js】
 引用方法库
 ```
-<script src="//m.ykclass.com/zt/zyjs/yuanaaa1.1.js"></script>
+<script src="//m.ykclass.com/zt/zyjs/yuanaaa1.2.js"></script>
 ```
 调用方法
 ```
 $_y.scrollPage('.class');
 // 导航条需为包含类名'md'的ul/ol
+```
+### demo15
+####  enterScreenAnimate
+##### 【css】
+建议使用animate.css动效库
+```
+<link rel="stylesheet" type="text/css" href="//m.ykclass.com/zt/zyjs/animate.css"/>
+```
+##### 【js】
+引用方法库
+```
+<script src="//m.ykclass.com/zt/zyjs/yuanaaa1.2.js"></script>
+```
+调用方法
+```
+$_y.enterScreenAnimate([
+    {
+        el: part1,  // 传入DOM/dom的类名、ID
+        animateType: 'bounceIn'   // 动效的类名
+    }, {
+        el: '.part-2',
+        animateType: 'bounceInDown'
+    }
+]);
 ```
