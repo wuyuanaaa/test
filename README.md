@@ -1,17 +1,17 @@
 ##  导航
 - [demo1](#demo1)---百度统计
-- [demo2](#demo2)---自动更换公司及资质
+- [demo2](#demo2)---自动更换公司名称及资质
 - [demo3](#demo3)---单页微信修改
 - [demo4](#demo4)---手机验证码模块
 - [demo5](#demo5)---复制微信
-- [demo6](#demo6)---轮播图
+- [demo6](#demo6)---轮播
 - [demo7](#demo7)---nav滚动
 - [demo8](#demo8)---视频播放模块
 - [demo9](#demo9)---m端fastClick
 - [demo10](#demo10)---小能代码
-- [demo11](#demo11)---M端页面滚动到指定元素位置
+- [demo11](#demo11)---动画至锚点
 - [demo12](#demo12)---倒计时模块
-- [demo13](#demo13)---页面指定位置展示
+- [demo13](#demo13)---表格标题显示切换
 - [demo14](#demo14)---导航滚屏
 - [demo15](#demo15)---元素入屏幕动画
 
@@ -29,28 +29,28 @@
 </script>
 ```
 ###  demo2
-####  自动更换公司及资质
+####  自动更换公司名称及资质 registeredSh/registeredBd/registered
 #####  审核页面
-引用方法库
+**引用方法库**
 ```
 <script src="https://js.ykclass.com/frame/jquery/v2.1.4/jquery.min.js"></script>
 <script src="//m.ykclass.com/zt/zyjs/yuanaaa1.2.js"></script>
 ```
-在js部分引用方法
+**调用方法**
 ```
     $_y.registeredSh();
 ```
 #####  百度单页
-引用方法库
+**引用方法库**
 ```
 <script src="//m.ykclass.com/zt/zyjs/yuanaaa1.2.js"></script>
 ```
-在js部分引用方法
+**调用方法**
 ```
     $_y.registeredBd();
 ```
 #####  其他页面
-引用方法库
+**引用方法库**
 ```
 <script src="//m.ykclass.com/zt/zyjs/yuanaaa1.2.js"></script>
 ```
@@ -80,22 +80,22 @@
     <p>互联网出版许可证 鄂字第23号 </p>
 </div>
 ```
-在js部分引用方法
+**调用方法**
 ```
    $_y.registered();
 ```
 ### demo3
-####  单页微信修改
-引用方法库
+####  单页微信修改 changeWeChat
+**引用方法库**
 ```
 <script src="//m.ykclass.com/zt/zyjs/yuanaaa1.2.js"></script>
 ```
-在js部分引用方法
+**调用方法**
 ```
     $_y.changeWeChat(['gpa6597']);
 ```
 ### demo4
-####  手机验证码模块
+####  手机验证码模块 saveActivitySmsInfo
 ##### 【html】
 ```
 <!--弹出层 开始-->
@@ -232,11 +232,11 @@
 </div>
 ```
 ##### 【js】
-引用方法库
+**引用方法库**
 ```
 <script src="//m.ykclass.com/zt/zyjs/yuanaaa1.2.js"></script>
 ```
-在js部分引用方法
+**调用方法**
 ```
 $_y.saveActivitySmsInfo({
     id: '#get-phone2',    // 获客模块id  必需
@@ -264,7 +264,7 @@ $('.vail-code').on('click',function () {
 });
 ```
 ### demo5
-####  复制微信
+####  复制微信 copyWeChat
 ##### 【html】
 ```
 <!--弹出层 开始-->
@@ -395,7 +395,7 @@ div.layui-layer {   //取消layer默认外阴影
 }
 ```
 ##### 【js】
-引用方法库
+**引用方法库**
 ```
 <script src="//m.ykclass.com/zt/zyjs/layer/layer.js"></script>
 <script src="//m.ykclass.com/zt/zyjs/clipboard.min.js"></script>
@@ -403,12 +403,12 @@ div.layui-layer {   //取消layer默认外阴影
 // 新版弹窗
 <script src="//m.ykclass.com/zt/zyjs/yuanaaa1.2.js"></script>
 ```
-调用方法
+**调用方法**
 ```
 $_y.copyWeChat(['qbk8730']);
 ```
 ### demo6
-####  轮播图
+####  轮播 slider
 ##### 【html】
 ```
 <div id="slide">
@@ -431,11 +431,11 @@ $_y.copyWeChat(['qbk8730']);
 </div>
 ```
 ##### 【js】
-引用方法库
+**引用方法库**
 ```
 <script src="//m.ykclass.com/zt/zyjs/yuanaaa1.2.js"></script>
 ```
-调用方法
+**调用方法**
 ```
 $_y.slider({
     id: '#slide',   // 轮播模块id   必需
@@ -447,7 +447,7 @@ $_y.slider({
 });
 ```
 ### demo7
-####  nav滚动
+####  nav滚动(已封装，见demo14)
 ```
 <script src="js/scrollPage.js"></script>
 // 滚屏
@@ -462,17 +462,7 @@ $_y.slider({
 	var uid = "336d8745b4";
 	var vid = "5af4dd0127c62475750485dc988b22d2_5";
 	var videoPlayer = null; //live：直播播放器  video：点播播放器
-	/**
-	 * 绑定页面事件函数
-	 */
-	/**
-	 * 初始化播放器
-	 */
 	initVidoPlayer(vid);
-	/**
-	 * 初始化点播播放器
-	 * @param vid：视频id
-	 */
 	function initVidoPlayer(vid) {
 		videoPlayer = polyvObject('#player').videoPlayer({
 			'width': '100%',
@@ -516,17 +506,17 @@ $(document).on("click", ".ntkf", function() {
     NTKF.im_openInPageChat(kf);
 });
 ```
-引用js文件：
+**引用js文件**
 ```
 <script type="text/javascript" src="//dl.ntalker.com/js/xn6/ntkfstat.js?siteid=kf_9540" charset="utf-8"></script>
 ```
 ### demo11
-####  M端页面滚动到指定元素位置
-引用方法库
+####  动画至锚点 scrollTo
+**引用方法库**
 ```
 <script src="//m.ykclass.com/zt/zyjs/yuanaaa1.2.js"></script>
 ```
-调用方法
+**调用方法**
 ```
 $_y.scrollTo('#id');
 ```
@@ -546,50 +536,50 @@ if(endDay - today > 0) {
 }
 ```
 ### demo13
-####  页面滚动到指定位置展示
+####  表格标题显示切换 fixedTop
 ##### 【js】
-引用方法库
+**引用方法库**
 ```
 <script src="//m.ykclass.com/zt/zyjs/yuanaaa1.2.js"></script>
 ```
-调用方法
+**调用方法**
 ```
 $_y.fixedTop({
     target: '#table-title',  // 目标元素
     relatedTarget: '.table',   // 关联元素
     time: 50,   // 节流时间（ms）默认50
-    subtractHeight: 150   // 底部预留高度 默认150
+    subtractHeight: 0   // 底部预留高度 默认0
 });
 ```
 ### demo14
-####  scrollPage
+####  导航滚屏 scrollPage
 ##### 【js】
-引用方法库
+**引用方法库**
 ```
 <script src="//m.ykclass.com/zt/zyjs/yuanaaa1.2.js"></script>
 ```
-调用方法
+**调用方法**
 ```
 $_y.scrollPage('.class');
 // 导航条需为包含类名'md'的ul/ol
 ```
 ### demo15
-####  enterScreenAnimate
+####  元素入屏幕动画 enterScreenAnimate
 ##### 【css】
-Animate.css 动画库
+[Animate.css 动画库](https://daneden.github.io/animate.css/)
 ```
 <link rel="stylesheet" type="text/css" href="//m.ykclass.com/zt/zyjs/animate.css"/>
 ```
-Magic.css 动画库
+[Magic.css 动画库](https://www.minimamente.com/example/magic_animations/)
 ```
 <link rel="stylesheet" type="text/css" href="//m.ykclass.com/zt/zyjs/magic.min.css"/>
 ```
 ##### 【js】
-引用方法库
+**引用方法库**
 ```
 <script src="//m.ykclass.com/zt/zyjs/yuanaaa1.2.js"></script>
 ```
-调用方法
+**调用方法**
 ```
 $_y.enterScreenAnimate([
     {

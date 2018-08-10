@@ -1,4 +1,489 @@
 $_y = {
+	registered: function () {  // 普通页面自动公司名称备案号
+		var $registeredName = $('#registeredName'),
+			$registeredNum = $('#registeredNum'),
+			$certificate = $('#certificate');
+		for (var i = 0, len = this.corporationList.length; i < len; i++) {
+			if (this.domainName.indexOf(this.corporationList[i].dName) > -1) {
+				$registeredName.text(this.corporationList[i].name);
+				$registeredNum.text(this.corporationList[i].num);
+				if (!this.corporationList[i].hasCertificate) {
+					$certificate.html(' ');
+				}
+			}
+		}
+	},
+	registeredBd: function () {  // 百度单页自动公司名称备案号
+		var $footer = $('.footer');
+		for (var i = 0, len = this.corporationList.length; i < len; i++) {
+			if (this.domainName.indexOf(this.corporationList[i].dName) > -1) {
+				$footer.html('<p>Copyright © 2018 ' + this.corporationList[i].name + ' All Rights Reserved <br>' + this.corporationList[i].num + '</p>')
+			}
+		}
+	},
+	registeredSh: function () {  // 审核页面自动公司名称备案号
+		var $footer = $('.footer');
+		for (var i = 0, len = this.corporationList.length; i < len; i++) {
+			if (this.domainName.indexOf(this.corporationList[i].dName) > -1) {
+				$footer.html(this.corporationList[i].name)
+			}
+		}
+	},
+	saveActivitySmsInfo: function (obj) {  // 带短信验证获客
+		var $module = $(obj.id),
+			$phone = $module.find('.phone-num'),	// 手机号码input
+			$sendCode = $module.find('.send-code'),		// 获取验证码
+			$codeValue = $module.find('.code-value'), 	// 验证码input
+			$vailCode = $module.find('.vail-code'),		// 提交按钮
+			countdown = obj.countdown || 90, 	// 倒计时
+			host = '',		// 主域名
+			protocol = window.location.protocol,	// 协议
+			regPhone = /^1[34578][0-9]{9}$/;
+
+		if (protocol === 'http:') {
+			host = "http://tf.topksw.com"
+		} else {
+			host = "https://m.ykclass.com"
+		}
+		var settime = function (obj) {
+			var startVal = obj.val();
+			obj.attr("disabled", true);
+			function fn() {
+				countdown--;
+				obj.val("重新发送(" + countdown + ")");
+				if (countdown >= 0) {
+					setTimeout(fn, 1000);
+				} else {
+					obj.removeAttr("disabled");
+					obj.val(startVal);
+					countdown = 60;
+				}
+			}
+			setTimeout(fn, 1000);
+		};
+		var activity = {
+			sendSms: function (phone, platform, callback) {
+				if (!regPhone.test(phone)) {
+					layer.msg('手机号码输入有误！');
+				} else {
+					settime($sendCode);
+					$.ajax({
+						type: "get",
+						url: host + "/common/sendSmsMessage.html",
+						dataType: "jsonp",
+						jsonp: "callback", //传递给请求处理程序或页面的，用以获得jsonp回调函数名的参数名(一般默认为:callback)
+						jsonpCallback: "callback", //自定义的jsonp回调函数名称，默认为jQuery自动生成的随机函数名，也可以写"?"，jQuery会自动为你处理数据
+						data: {
+							phone: phone,
+							platform: platform
+						},
+						success: function (data) {
+							if (callback && typeof callback === 'function') {
+								callback(data);
+							}
+						}
+					})
+				}
+			},
+			saveActivitySmsInfo: function (object, code, callback) {
+				object.accessUrl = window.location.href;
+				object.code = code;
+				if (obj.needMsg) {
+					$.ajax({
+						type: "get",
+						url: host + "/common/saveActivitySmsInfo.html",
+						dataType: "jsonp",
+						jsonp: "callback",
+						jsonpCallback: "callback",
+						data: object,
+						success: function (msg) {
+							if (callback && typeof callback === 'function') {
+								callback(msg);
+							}
+						}
+					})
+				} else {
+					if (!regPhone.test(object.phone)) {
+						layer.msg('手机号码输入有误！')
+					} else {
+						$.ajax({
+							type: "get",
+							url: _this.domainHost + "/common/saveActivityInfo.html",
+							dataType: "jsonp",
+							jsonp: "callback", //传递给请求处理程序或页面的，用以获得jsonp回调函数名的参数名(一般默认为:callback)
+							jsonpCallback: "callback", //自定义的jsonp回调函数名称，默认为jQuery自动生成的随机函数名，也可以写"?"，jQuery会自动为你处理数据
+							data: object,
+							success: function (msg) {
+								if (callback && typeof callback === 'function') {
+									callback(msg);
+								}
+							}
+						})
+					}
+				}
+			}
+		};
+		$phone.keyup(function () {
+			var phone = $phone.val();
+			if (phone.length > 11) {
+				layer.msg('手机号超出字符限制！')
+			}
+		});
+		$sendCode.on('click', function () {
+			activity.sendSms($phone.val(), "yk", function (msg) {
+				if (msg.c === 100) {
+					layer.msg('短信发送成功！');
+				}
+			})
+		});
+		$vailCode.on('click', function () {
+			var infoMsg = '';
+			if (obj.info) {
+				infoMsg = obj.info.msg;
+			}
+			var object = {
+				sceneCode: obj.cjCode,
+				phone: $phone.val(),
+				content: infoMsg
+			};
+			var code = $codeValue.val();
+			activity.saveActivitySmsInfo(object, code, function (msg) {
+				if (msg.c === 100) {
+					$(".layer-warp").show();
+					$module.find('input').not(".send-code").val("");
+					if (obj.toutiaoCallback) {
+						obj.toutiaoCallback();
+					}
+				} else if (msg.m == '用户手机号不能为空') {
+					layer.msg('手机号码不能为空');
+				} else if (msg.m == '短信验证码不能为空!') {
+					layer.msg('短信验证码不能为空!');
+				} else if (msg.code === 202) {
+					layer.msg('短信验证码错误!');
+				} else {
+					layer.msg('您的信息输入有误');
+				}
+			})
+		});
+		$('.layer-close').on('click', function () {
+			$('.layer-warp').hide();
+		});
+	},
+	changeWeChat: function (arr) {
+		var $code = $('.code');
+		var wxObject = arr[Math.floor(Math.random() * arr.length)]; // 随机取一个微信号
+		if ($code.length > 0) {
+			$code.attr("data-clipboard-text", wxObject);
+			$code.html(wxObject) //设置公众号值
+		}
+	},
+	// 复制微信
+	copyWeChat: function (arr) {
+		var wxNow = arr[Math.floor(Math.random() * arr.length)],  // 随机微信
+			$wxnumber = $('.wxnumber'),
+			$wxCode = $('.wxCode'),
+			$xnkf = $('.nkkf').length > 0 ? $('.ntkf') : $('.xnkf'); // 确定页面小能类名
+
+		$wxnumber.text(wxNow);
+		$wxCode.text(wxNow);
+		$xnkf.on('click', openLayer);
+		clipboardFn('.wxCode', openLayer);
+		clipboardFn('.wxnumber');
+
+		function clipboardFn(classNameString, callback) {
+			var clipboard = new Clipboard(classNameString);
+			var $obj = $(classNameString);
+			$obj.on('click', function () {
+				$obj.attr('data-clipboard-text', wxNow);
+			});
+			clipboard.on('success', function () {
+				layer.msg('复制成功')
+			});
+			clipboard.on('error', function () {
+				if (callback) {
+					callback();
+				}
+				layer.msg('当前浏览器不支持点击复制，请长按复制')
+			});
+		}
+
+		function openLayer() {
+			layer.open({
+				type: 1,
+				title: false,
+				content: $('.w_2'),
+				area: ['7.6rem', '8rem'],
+				closeBtn: 0,
+				shadeClose: true,
+				shade: [0.7, '#000'],
+				anim: 2
+			})
+		}
+	},
+	// 轮播
+	slider: function (obj) {    // id,mode,addTouch,interval,moveTime
+		var $slide = $(obj.id),
+			speed = obj.moveTime || 800,  // 动画时间
+			interval = obj.interval || 4000,  // 轮播切换时间
+			count = 0,
+			$imgs = $slide.find('.slider>li'),
+			$conts = $slide.find(".control>li"),
+			$bar = $slide.find('.bar'),
+			max = $imgs.length - 1,
+			width = $imgs[0].offsetWidth,
+			times = null;
+
+		function change(num) {
+			if (num > count) {
+				if (num > max) {
+					num = 0;
+				}
+				imgToNext(num);
+			} else {
+				if (num < 0) {
+					num = max;
+				}
+				imgToPrev(num);
+			}
+			count = num;
+			$($conts[count]).addClass('active').siblings().removeClass('active');
+		}
+		var imgToNext = null,
+			imgToPrev = null;
+		if (obj.mode === 1) {
+			$($imgs[count]).css('left', '0px').siblings().css('left', -width + 'px');	// 初始化
+			imgToNext = function (num) {
+				$($imgs[num]).css('left', width + 'px');
+				$($imgs[count]).stop().animate({left: -width + 'px'}, speed, 'swing');
+				$($imgs[num]).stop().animate({left: '0px'}, speed, 'swing');
+			};
+			imgToPrev = function (num) {
+				$($imgs[num]).css('left', -width + 'px');
+				$($imgs[count]).stop().animate({left: width + 'px'}, speed, 'swing');
+				$($imgs[num]).stop().animate({left: '0px'}, speed, 'swing');
+			};
+		} else if (obj.mode === 2) {
+			$($imgs[count]).fadeIn(speed).siblings().fadeOut(speed); 	// 初始化
+			imgToNext = function (num) {
+				$($imgs[num]).fadeIn(speed).siblings().fadeOut(speed);
+			};
+			imgToPrev = function (num) {
+				imgToNext(num);
+			};
+		}
+		//  左右控制点击事件
+		if ($bar.length > 0) {
+			$bar[0].addEventListener('click', function (event) {
+				var e = event || window.event;
+				if ($(e.target).hasClass('l')) {
+					change(count - 1);
+				} else {
+					change(count + 1);
+				}
+			});
+		}
+		//  序号控制点击事件
+		$conts.on('click', function () {
+			change($(this).data('i'));
+		});
+		times = setInterval(function () {
+			change(count + 1);
+		}, interval);
+		// 鼠标经过动画暂停
+		if(obj.mouseenterStop) {
+			$slide.on('mouseover', '.bar ,.control,.slider', function () {
+				clearInterval(times);
+			});
+			$slide.on('mouseout', '.slider,.control,.bar', function () {
+				clearInterval(times);
+				times = setInterval(function () {
+					change(count + 1);
+				}, interval);
+			});
+		}
+		// 移动端滑动支持
+		if (obj.addTouch) {
+			// 滑动处理
+			var startX, startY;
+			$slide[0].addEventListener('touchstart', function (ev) {
+				clearInterval(times);
+				startX = ev.touches[0].pageX;
+				startY = ev.touches[0].pageY;
+			}, false);
+			$slide[0].addEventListener('touchend', function (ev) {
+				var endX, endY, direction;
+				clearInterval(times);
+				times = setInterval(function () {
+					change(count + 1);
+				}, interval);
+				endX = ev.changedTouches[0].pageX;
+				endY = ev.changedTouches[0].pageY;
+				direction = getSlideDirection(startX, startY, endX, endY);
+				touchMove(direction);
+			}, false);
+		}
+		function touchMove(direction) {
+			if (direction === 3) {
+				change(count + 1);
+			} else if (direction === 4) {
+				change(count - 1);
+			}
+		}
+		// 返回角度
+		function getSlideAngle(dx, dy) {
+			return Math.atan2(dy, dx) * 180 / Math.PI;
+		}
+		// 根据起点和终点返回方向 1：向上，2：向下，3：向左，4：向右,0：未滑动
+		function getSlideDirection(startX, startY, endX, endY) {
+			var dy = startY - endY;
+			var dx = endX - startX;
+			var result = 0;
+			// 如果滑动距离太短
+			if (Math.abs(dx) < 40 && Math.abs(dy) < 40) {
+				return result;
+			}
+			var angle = getSlideAngle(dx, dy);
+			if (angle >= -45 && angle < 45) {
+				result = 4;
+			} else if (angle >= 45 && angle < 135) {
+				result = 1;
+			} else if (angle >= -135 && angle < -45) {
+				result = 2;
+			}
+			else if ((angle >= 135 && angle <= 180) || (angle >= -180 && angle < -135)) {
+				result = 3;
+			}
+			return result;
+		}
+	},
+	// 页面滚动隐藏/显示
+	fixedTop: function (obj) {
+		var target = $_y.getDom(obj.target),  // 目标元素
+			relatedTarget = $_y.getDom(obj.relatedTarget),  // 关联元素
+			time = obj.time || 50,   // 节流时间（ms）
+			subtractHeight = obj.subtractHeight || 0,   // 底部预留高度
+			isRun = false,
+			minY = $_y.getOffsetTop(relatedTarget),
+			maxY = relatedTarget.offsetHeight + minY - subtractHeight;
+		// maxY减去target自身的高度
+		target.style.display = 'block';
+		maxY -= target.offsetHeight;
+		target.style.display = 'none';
+		window.addEventListener('scroll', function () {
+			$_y.throttle(isRun, time, changeStatus);
+		});
+		function changeStatus() {
+			var scrollY = document.documentElement.scrollTop;
+			if (scrollY > minY && scrollY < maxY) {
+				target.style.display = 'block';
+			} else {
+				target.style.display = 'none';
+			}
+		}
+	},
+	// 页面动画至指定元素 M端
+	scrollTo: function (el) {
+		el = $_y.getDom(el);
+		var h = getOffsetTop(el) - 200;
+		$(document.documentElement).animate({'scrollTop': h + 'px'});
+	},
+	// scrollPage
+	scrollPage: function (flagClass) {
+		var $flags = $(flagClass),
+			$nav = $('.md'),
+			$lists = $nav.find('li'),
+			hArr = [];
+		for(var i = 0, len = $flags.length; i < len; i++){
+			hArr[i] = $flags.eq(i).offset().top - $nav.height() - $nav[0].offsetTop;
+			(function (arg) {
+				$lists.eq(arg).on('click',function () {
+					scrollTo(arg)
+				})
+			})(i);
+		}
+		// 页面滚动事件节流
+		var isRun = false;
+		window.addEventListener('scroll',function () {
+			$_y.throttle(isRun,100,addActive);
+		});
+		function addActive() {
+			var h = document.documentElement.scrollTop;
+			for(var i = 0, len = hArr.length; i < len; i++){
+				if(h >= hArr[i] - 10){
+					$lists.eq(i).addClass('active').siblings('li').removeClass('active');
+				}
+			}
+		}
+		function scrollTo(n) {
+			$('html,body').animate({
+				scrollTop : hArr[n]
+			}, 666, addActive);
+		}
+	},
+	// 元素进入屏幕范围动效
+	enterScreenAnimate: function (arr) {
+		var isRun = false,
+			scrollWrap = document.documentElement,
+			H = scrollWrap.clientHeight * 0.6;
+		// 滚动事件
+		window.addEventListener('scroll',function () {
+			$_y.throttle(isRun,100,function () {
+				forEachArr(arr);
+			})
+		});
+		// 遍历需要动画的元素
+		function forEachArr(arr) {
+			var scrollTop = scrollWrap.scrollTop;
+			arr.forEach(function (value) {
+				enterToScreen(value.el,scrollTop,value.animateType,value.addLibrary);
+			})
+		}
+		// 如果元素在视口内，则添加动画类名
+		function enterToScreen(dom,scrollTop,animateType,addLibrary) {
+			dom = $_y.getDom(dom);
+			if(!dom.dataset.hasDone){
+				if(dom.getBoundingClientRect().top < H){
+					addLibrary ? dom.classList.add(addLibrary) : '';
+					dom.classList.add(animateType);
+					dom.dataset.hasDone = 'hasDone';
+				}
+			}
+		}
+	},
+// 公共方法
+
+	// 获取类似jQuery的offfset().top
+	getOffsetTop: function (el) {
+		if(typeof el === 'string'){
+			el = document.querySelector(el);
+		}
+		var top = 0;
+		addTop(el);
+		function addTop(el) {
+			top = top + el.offsetTop - el.offsetParent.scrollTop;
+			if(el.offsetParent !== document.body){
+				addTop(el.offsetParent);
+			}
+		}
+		return top;
+	},
+	// 节流函数
+	throttle: function (flag,time,fn) {
+		if(flag) {
+			return;
+		}
+		flag = true;
+		setTimeout(function () {
+			fn();
+			flag = false;
+		},time)
+	},
+	// 获取dom
+	getDom: function (el) {
+		return typeof el === 'string' ? document.querySelector(el) : el;
+	},
+
+// 公共数据
 	corporationList: [
 		{
 			"id": 0,
@@ -135,476 +620,5 @@ $_y = {
 		}
 	],
 	// 主域名
-	domainName: window.location.host,
-	registered: function () {  // 普通页面自动公司名称备案号
-		var $registeredName = $('#registeredName'),
-			$registeredNum = $('#registeredNum'),
-			$certificate = $('#certificate');
-		for (var i = 0, len = this.corporationList.length; i < len; i++) {
-			if (this.domainName.indexOf(this.corporationList[i].dName) > -1) {
-				$registeredName.text(this.corporationList[i].name);
-				$registeredNum.text(this.corporationList[i].num);
-				if (!this.corporationList[i].hasCertificate) {
-					$certificate.html(' ');
-				}
-			}
-		}
-	},
-	registeredBd: function () {  // 百度单页自动公司名称备案号
-		var $footer = $('.footer');
-		for (var i = 0, len = this.corporationList.length; i < len; i++) {
-			if (this.domainName.indexOf(this.corporationList[i].dName) > -1) {
-				$footer.html('<p>Copyright © 2018 ' + this.corporationList[i].name + ' All Rights Reserved <br>' + this.corporationList[i].num + '</p>')
-			}
-		}
-	},
-	registeredSh: function () {  // 审核页面自动公司名称备案号
-		var $footer = $('.footer');
-		for (var i = 0, len = this.corporationList.length; i < len; i++) {
-			if (this.domainName.indexOf(this.corporationList[i].dName) > -1) {
-				$footer.html(this.corporationList[i].name)
-			}
-		}
-	},
-	saveActivitySmsInfo: function (obj) {  // 带短信验证获客
-		var $module = $(obj.id),
-			$phone = $module.find('.phone-num'),	// 手机号码input
-			$sendCode = $module.find('.send-code'),		// 获取验证码
-			$codeValue = $module.find('.code-value'), 	// 验证码input
-			$vailCode = $module.find('.vail-code'),		// 提交按钮
-			countdown = obj.countdown || 90, 	// 倒计时
-			host = '',		// 主域名
-			protocol = window.location.protocol,	// 协议
-			regPhone = /^1[34578][0-9]{9}$/;
-
-		if (protocol == 'http:') {
-			host = "http://tf.topksw.com"
-		} else {
-			host = "https://m.ykclass.com"
-		}
-		var settime = function (obj) {
-			var startVal = obj.val();
-			obj.attr("disabled", true);
-
-			function fn() {
-				countdown--;
-				obj.val("重新发送(" + countdown + ")");
-				if (countdown >= 0) {
-					setTimeout(fn, 1000);
-				} else {
-					obj.removeAttr("disabled");
-					obj.val(startVal);
-					countdown = 60;
-				}
-			}
-
-			setTimeout(fn, 1000);
-		};
-		var activity = {
-			sendSms: function (phone, platform, callback) {
-				if (!regPhone.test(phone)) {
-					layer.msg('手机号码输入有误！');
-				} else {
-					settime($sendCode);
-					$.ajax({
-						type: "get",
-						url: host + "/common/sendSmsMessage.html",
-						dataType: "jsonp",
-						jsonp: "callback", //传递给请求处理程序或页面的，用以获得jsonp回调函数名的参数名(一般默认为:callback)
-						jsonpCallback: "callback", //自定义的jsonp回调函数名称，默认为jQuery自动生成的随机函数名，也可以写"?"，jQuery会自动为你处理数据
-						data: {
-							phone: phone,
-							platform: platform
-						},
-						success: function (data) {
-							if (callback && typeof callback == 'function') {
-								callback(data);
-							}
-						}
-					})
-				}
-			},
-			saveActivitySmsInfo: function (object, code, callback) {
-				object.accessUrl = window.location.href;
-				object.code = code;
-				if (obj.needMsg) {
-					$.ajax({
-						type: "get",
-						url: host + "/common/saveActivitySmsInfo.html",
-						dataType: "jsonp",
-						jsonp: "callback",
-						jsonpCallback: "callback",
-						data: object,
-						success: function (msg) {
-							if (callback && typeof callback == 'function') {
-								callback(msg);
-							}
-						}
-					})
-				} else {
-					if (!regPhone.test(object.phone)) {
-						layer.msg('手机号码输入有误！')
-					} else {
-						$.ajax({
-							type: "get",
-							url: _this.domainHost + "/common/saveActivityInfo.html",
-							dataType: "jsonp",
-							jsonp: "callback", //传递给请求处理程序或页面的，用以获得jsonp回调函数名的参数名(一般默认为:callback)
-							jsonpCallback: "callback", //自定义的jsonp回调函数名称，默认为jQuery自动生成的随机函数名，也可以写"?"，jQuery会自动为你处理数据
-							data: object,
-							success: function (msg) {
-								if (callback && typeof callback == 'function') {
-									callback(msg);
-								}
-							}
-						})
-					}
-				}
-			}
-		};
-		$phone.keyup(function () {
-			var phone = $phone.val();
-			if (phone.length > 11) {
-				layer.msg('手机号超出字符限制！')
-			}
-		});
-		$sendCode.on('click', function () {
-			activity.sendSms($phone.val(), "yk", function (msg) {
-				if (msg.c == 100) {
-					layer.msg('短信发送成功！');
-				}
-			})
-		});
-		$vailCode.on('click', function () {
-			var infoMsg = '';
-			if (obj.info) {
-				infoMsg = obj.info.msg;
-			}
-			var object = {
-				sceneCode: obj.cjCode,
-				phone: $phone.val(),
-				content: infoMsg
-			};
-			var code = $codeValue.val();
-			activity.saveActivitySmsInfo(object, code, function (msg) {
-				if (msg.c == 100) {
-					$(".layer-warp").show();
-					$module.find('input').not(".send-code").val("");
-					if (obj.toutiaoCallback) {
-						obj.toutiaoCallback();
-					}
-				} else if (msg.m == '用户手机号不能为空') {
-					layer.msg('手机号码不能为空');
-				} else if (msg.m == '短信验证码不能为空!') {
-					layer.msg('短信验证码不能为空!');
-				} else if (msg.code == 202) {
-					layer.msg('短信验证码错误!');
-				} else {
-					layer.msg('您的信息输入有误');
-				}
-			})
-		});
-		$('.layer-close').on('click', function () {
-			$('.layer-warp').hide();
-		});
-	},
-	changeWeChat: function (arr) {
-		var $code = $('.code');
-		var wxObject = arr[Math.floor(Math.random() * arr.length)]; // 随机取一个微信号
-		if ($code.length > 0) {
-			$code.attr("data-clipboard-text", wxObject);
-			$code.html(wxObject) //设置公众号值
-		}
-	},
-	// 复制微信
-	copyWeChat: function (arr) {
-		var wxNow = arr[Math.floor(Math.random() * arr.length)],  // 随机微信
-			$wxnumber = $('.wxnumber'),
-			$wxCode = $('.wxCode'),
-			$xnkf = $('.nkkf').length > 0 ? $('.ntkf') : $('.xnkf'); // 确定页面小能类名
-
-		$wxnumber.text(wxNow);
-		$wxCode.text(wxNow);
-		$xnkf.on('click', openLayer);
-		clipboardFn('.wxCode', openLayer);
-		clipboardFn('.wxnumber');
-
-		function clipboardFn(classNameString, callback) {
-			var clipboard = new Clipboard(classNameString);
-			var $obj = $(classNameString);
-			$obj.on('click', function () {
-				$obj.attr('data-clipboard-text', wxNow);
-			});
-			clipboard.on('success', function (e) {
-				layer.msg('复制成功')
-			});
-			clipboard.on('error', function (e) {
-				if (callback) {
-					callback();
-				}
-				layer.msg('当前浏览器不支持点击复制，请长按复制')
-			});
-		}
-
-		function openLayer() {
-			layer.open({
-				type: 1,
-				title: false,
-				content: $('.w_2'),
-				area: ['7.6rem', '8rem'],
-				closeBtn: 0,
-				shadeClose: true,
-				shade: [0.7, '#000'],
-				anim: 2
-			})
-		}
-	},
-	// 轮播
-	slider: function (obj) {    // id,mode,addTouch,interval,moveTime
-		var $slide = $(obj.id),
-			speed = obj.moveTime || 800,  // 动画时间
-			interval = obj.interval || 4000,  // 轮播切换时间
-			count = 0,
-			$imgs = $slide.find('.slider>li'),
-			$conts = $slide.find(".control>li"),
-			$bar = $slide.find('.bar'),
-			max = $imgs.length - 1,
-			width = $imgs[0].offsetWidth,
-			times = null;
-
-		function change(num) {
-			if (num > count) {
-				if (num > max) {
-					num = 0;
-				}
-				imgToNext(num);
-			} else {
-				if (num < 0) {
-					num = max;
-				}
-				imgToPrev(num);
-			}
-			count = num;
-			$($conts[count]).addClass('active').siblings().removeClass('active');
-		}
-
-		if (obj.mode === 1) {
-			// 初始化
-			$($imgs[count]).css('left', '0px').siblings().css('left', -width + 'px');
-
-			function imgToNext(num) {
-				$($imgs[num]).css('left', width + 'px');
-				$($imgs[count]).stop().animate({left: -width + 'px'}, speed, 'swing');
-				$($imgs[num]).stop().animate({left: '0px'}, speed, 'swing');
-			}
-
-			function imgToPrev(num) {
-				$($imgs[num]).css('left', -width + 'px');
-				$($imgs[count]).stop().animate({left: width + 'px'}, speed, 'swing');
-				$($imgs[num]).stop().animate({left: '0px'}, speed, 'swing');
-			}
-		} else if (obj.mode === 2) {
-			// 初始化
-			$($imgs[count]).fadeIn(speed).siblings().fadeOut(speed);
-
-			function imgToNext(num) {
-				$($imgs[num]).fadeIn(speed).siblings().fadeOut(speed);
-			}
-
-			function imgToPrev(num) {
-				imgToNext(num);
-			}
-		}
-		//  左右控制点击事件
-		if ($bar.length > 0) {
-			$bar[0].addEventListener('click', function (event) {
-				var e = event || window.event;
-				if ($(e.target).hasClass('l')) {
-					change(count - 1);
-				} else {
-					change(count + 1);
-				}
-			});
-		}
-		//  序号控制点击事件
-		$conts.on('click', function () {
-			change($(this).data('i'));
-		});
-
-		times = setInterval(function () {
-			change(count + 1);
-		}, interval);
-		// 鼠标经过动画暂停
-		if(obj.mouseenterStop) {
-			$slide.on('mouseover', '.bar ,.control,.slider', function () {
-				clearInterval(times);
-			});
-			$slide.on('mouseout', '.slider,.control,.bar', function () {
-				clearInterval(times);
-				times = setInterval(function () {
-					change(count + 1);
-				}, interval);
-			});
-		}
-		// 移动端滑动支持
-		if (obj.addTouch) {
-			// 滑动处理
-			var startX, startY;
-			$slide[0].addEventListener('touchstart', function (ev) {
-				clearInterval(times);
-				startX = ev.touches[0].pageX;
-				startY = ev.touches[0].pageY;
-			}, false);
-			$slide[0].addEventListener('touchend', function (ev) {
-				var endX, endY, direction;
-				clearInterval(times);
-				times = setInterval(function () {
-					change(count + 1);
-				}, interval);
-				endX = ev.changedTouches[0].pageX;
-				endY = ev.changedTouches[0].pageY;
-				direction = getSlideDirection(startX, startY, endX, endY);
-				touchMove(direction);
-			}, false);
-		}
-
-		function touchMove(direction) {
-			if (direction === 3) {
-				change(count + 1);
-			} else if (direction === 4) {
-				change(count - 1);
-			}
-		}
-
-		// 返回角度
-		function getSlideAngle(dx, dy) {
-			return Math.atan2(dy, dx) * 180 / Math.PI;
-		}
-
-		// 根据起点和终点返回方向 1：向上，2：向下，3：向左，4：向右,0：未滑动
-		function getSlideDirection(startX, startY, endX, endY) {
-			var dy = startY - endY;
-			var dx = endX - startX;
-			var result = 0;
-			// 如果滑动距离太短
-			if (Math.abs(dx) < 40 && Math.abs(dy) < 40) {
-				return result;
-			}
-			var angle = getSlideAngle(dx, dy);
-			if (angle >= -45 && angle < 45) {
-				result = 4;
-			} else if (angle >= 45 && angle < 135) {
-				result = 1;
-			} else if (angle >= -135 && angle < -45) {
-				result = 2;
-			}
-			else if ((angle >= 135 && angle <= 180) || (angle >= -180 && angle < -135)) {
-				result = 3;
-			}
-			return result;
-		}
-	},
-	// 页面滚动隐藏/显示
-	fixedTop: function (obj) {
-		var target = $(obj.target),  // 目标元素
-			relatedTarget = $(obj.relatedTarget),  // 关联元素
-			time = obj.time || 50,   // 节流时间（ms）
-			subtractHeight = obj.subtractHeight || 150,   // 底部预留高度
-			timeStart = new Date(),
-			minY = relatedTarget.offset().top,
-			maxY = relatedTarget.height() + minY - subtractHeight;
-		$(window).on('scroll', function () {
-			var timeNow = new Date();
-			if (timeNow - timeStart > time) {
-				var scrollY = $('html,body').scrollTop();
-				if (scrollY > minY && scrollY < maxY) {
-					target.show();
-				} else {
-					target.hide();
-				}
-				timeStart = new Date();
-			}
-		})
-	},
-	// 页面动画至指定元素 M端
-	scrollTo: function (id) {
-		var h = $(id).offset().top - 200;
-		$('html,body').animate({'scrollTop': h + 'px'});
-	},
-	// scrollPage
-	scrollPage: function (flagClass) {
-		var $flags = $(flagClass),
-			$nav = $('.md'),
-			$lists = $nav.find('li'),
-			hArr = [];
-
-		for(var i = 0, len = $flags.length; i < len; i++){
-			hArr[i] = $flags.eq(i).offset().top - $nav.height() - $nav[0].offsetTop;
-			(function (arg) {
-				$lists.eq(arg).on('click',function () {
-					scrollTo(arg)
-				})
-			})(i);
-		}
-		// 页面滚动事件节流
-		var start = new Date();
-		$(window).on('scroll',function () {
-			var end = new Date();
-			if(end - start > 100){
-				addActive();
-				start = new Date();
-			}
-		});
-
-		function addActive() {
-			var h = $('html,body')[0].scrollTop;
-			for(var i = 0, len = hArr.length; i < len; i++){
-				if(h >= hArr[i] - 10){
-					$lists.eq(i).addClass('active').siblings('li').removeClass('active');
-				}
-			}
-		}
-		function scrollTo(n) {
-			$('html,body').animate({
-				scrollTop : hArr[n]
-			}, 666,function () {
-				addActive();
-			});
-
-		}
-	},
-	// 元素进入屏幕范围动效
-	enterScreenAnimate: function (arr) {
-		var isRun = false;
-		var H = $('html,body')[0].clientHeight * 0.5;
-		window.addEventListener('scroll',function () {
-			if(isRun){
-				return;
-			}
-			isRun = true;
-			setTimeout(function () {
-				forEachArr(arr);
-				isRun = false;
-			},100)
-		});
-		
-		function forEachArr(arr) {
-			var scrollTop = $('html,body')[0].scrollTop;
-			arr.forEach(function (value, index) {
-				enterToScreen(value.el,scrollTop,value.animateType,value.addLibrary);
-			})
-		}
-		function enterToScreen(dom,scrollTop,animateType,addLibrary) {
-			if(typeof dom === 'string'){
-				dom = document.querySelector(dom);
-			}
-			if(!$(dom).data('hasDone')){
-				if($(dom).offset().top - scrollTop < H){
-					addLibrary ? $(dom).addClass(addLibrary) : '';
-					$(dom).addClass(animateType);
-					$(dom).data('hasDone',true);
-				}
-			}
-		}
-	}
+	domainName: window.location.host
 };
