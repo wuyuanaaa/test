@@ -576,9 +576,13 @@ $_y.scrollPage('.class');
 ### demo15
 ####  enterScreenAnimate
 ##### 【css】
-建议使用animate.css动效库
+Animate.css 动画库
 ```
 <link rel="stylesheet" type="text/css" href="//m.ykclass.com/zt/zyjs/animate.css"/>
+```
+Magic.css 动画库
+```
+<link rel="stylesheet" type="text/css" href="//m.ykclass.com/zt/zyjs/magic.min.css"/>
 ```
 ##### 【js】
 引用方法库
@@ -589,11 +593,13 @@ $_y.scrollPage('.class');
 ```
 $_y.enterScreenAnimate([
     {
-        el: part1,  // 传入DOM/dom的类名、ID
-        animateType: 'bounceIn'   // 动效的类名
+        el: part1,   // dom元素
+        animateType: 'bounceIn',   // 动画类型，动画样式的class
+        addLibrary:'animated'     // 依赖animate.css 库
     }, {
-        el: '.part-2',
-        animateType: 'bounceInDown'
+        el: '.part-2',   // 类名或者ID
+        animateType: 'puffIn',      // 动画类型，动画样式的class
+        addLibrary: 'magictime'     // 依赖magic.css 库
     }
 ]);
 ```
