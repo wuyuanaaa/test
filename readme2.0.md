@@ -381,6 +381,7 @@ $_y.copyWeChat(['qbk8730']);
 </div>
 ```
 ##### 【参考初始css】
+```
 .carousel {
 	position: relative;
 	margin: 100px auto;
@@ -452,6 +453,7 @@ $_y.copyWeChat(['qbk8730']);
 		right: 5%;
 	}
 }
+```
 ##### 【js】
 引用方法库
 ```
