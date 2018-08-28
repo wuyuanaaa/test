@@ -48,7 +48,7 @@ $_y = {
 		} else {
 			host = "https://m.ykclass.com"
 		}
-		var settime = function (obj) {
+		var setTime = function (obj) {
 			var startVal = obj.val();
 			obj.attr("disabled", true);
 			function fn() {
@@ -69,7 +69,7 @@ $_y = {
 				if (!regPhone.test(phone)) {
 					layer.msg('手机号码输入有误！');
 				} else {
-					settime($sendCode);
+					setTime($sendCode);
 					$.ajax({
 						type: "get",
 						url: host + "/common/sendSmsMessage.html",
@@ -134,14 +134,14 @@ $_y = {
 		});
 		$sendCode.on('click', function () {
 			activity.sendSms($phone.val(), "yk", function (msg) {
-				if (msg.c === 100) {
+				if (msg.c === '100') {
 					layer.msg('短信发送成功！');
 				}
 			})
 		});
 		$vailCode.on('click', function () {
 			var infoMsg = '';
-			if (obj.info) {
+			if (obj.info && typeof obj.info === 'object') {
 				infoMsg = obj.info.msg;
 			}
 			var object = {
@@ -152,7 +152,9 @@ $_y = {
 			var code = $codeValue.val();
 			activity.saveActivitySmsInfo(object, code, function (msg) {
 				if (msg.c === '100') {
-					$(".layer-warp").show();
+					if(obj.popUp) {
+						$(".layer-warp").show();
+					}
 					$module.find('input').not(".send-code").val("");
 					if (obj.callback && typeof obj.callback === 'function') {
 						obj.callback();
@@ -235,9 +237,9 @@ $_y = {
 			runTime = obj.runTime || 800,  // 动画时间
 			intervalTime = obj.intervalTime || 4000,  // 轮播切换时间
 			count = 0,
-			mainLists = document.querySelector('.carousel-main').children,
-			paginationLists = document.querySelector('.carousel-pagination').children,
-			controller = document.querySelector('.carousel-controller'),
+			mainLists = carousel.querySelector('.carousel-main').children,
+			paginationLists = carousel.querySelector('.carousel-pagination').children,
+			controller = carousel.querySelector('.carousel-controller'),
 			max = mainLists.length - 1,
 			width = mainLists[0].offsetWidth,
 			mainToNext = null,
@@ -413,88 +415,88 @@ $_y = {
 		return this;
 	},
 	/*scrollPage*/
-	scrollPage: function (flagClass,el) {
-		var _this = this,
-			flags = document.querySelectorAll(flagClass),
-			nav = arguments.length > 1 ? this.getDom(el) : document.querySelector('.md'),
-			lists = nav.querySelectorAll('li'),
-			len = lists.length > flags.length ? flags.length : lists.length,
-			hArr = [];
-		for(var i = 0; i < len; i++){
-			hArr[i] = _this.getOffsetTop(flags[i]) - parseInt(_this.getStyle(nav)["height"]) - nav.offsetTop;
-			(function (arg) {
-				_this.EventUtil.addHandler(lists[arg],'click',function () {
-					scrollTo(arg);
-				});
-			})(i);
+	scrollPage: function (flagClass,obj) {
+		var $el = $(flagClass),
+			$body = $('html,body'),
+			$w = $(window),
+			e = {navEl: '.md', count: 100},
+			options = $.extend(e, obj || {}),
+			$navEl = $(options.navEl),
+			$lists = $navEl.find('li'),
+			heightArr = [],
+			count = options.count;
+		bindEvent();
+		function bindEvent() {
+			storeHeight();
+			scrollFn();
+			handleClick();
 		}
-		// 页面滚动事件节流
-		var isRun = false;
-		window.addEventListener('scroll',function () {
-			if(isRun) {
-				return;
+		function storeHeight() {
+			for(var i = 0, len = $el.length; i < len; i++) {
+				heightArr.push($el.eq(i).offset().top);
 			}
-			isRun = true;
-			setTimeout(function () {
-				addActive();
-				isRun = false;
-			},100)
-		});
-		function addActive() {
-			var h = document.documentElement.scrollTop;
-			for(var i = 0, len = hArr.length; i < len; i++){
-				if(h >= hArr[i] - 10){
-					_this.siblings(lists[i],function (el) {
-						el.classList.remove('active');
-					});
-					lists[i].classList.add('active');
+		}
+		function scrollFn() {
+			$w.on('scroll',function () {
+				for(var top = $w.scrollTop(), arr = [], j = heightArr.length - 1; j >= 0; j--){
+					if(top + count + 3 > heightArr[j]) {
+						arr.push(j);
+					}
 				}
-			}
+				var max = arr[0];
+				$lists.removeClass('active').eq(max).addClass('active');
+			})
 		}
-		function scrollTo(n) {
-			var rootElement = _this.getRootElement();
-			_this.animate(rootElement,{"scrollTop": hArr[n]},addActive);
+		function handleClick() {
+			$body.on('click',options.navEl + ' li',function () {
+				var i = $(this).index(),
+					h = heightArr[i];
+				$body.stop().animate({scrollTop: h - count}, 600)
+			})
 		}
 		return this;
 	},
 	/*元素进入屏幕范围动效*/
-	enterScreenAnimate: function (arr) {
-		var _this = this,
-			isRun = false,
-			rootElement = this.getRootElement(),
-			H = rootElement.clientHeight * 0.6;  // 元素执行动画时距离页面顶部的高度
-		// 滚动事件
-		this.EventUtil.addHandler(window,'scroll',function () {
-			if(isRun) {
-				return;
+	enterScreenAnimate: function (arr,scale) {
+		var $w = $(window),
+			count = $w.innerHeight() * scale;
+		bindEvent();
+		function bindEvent() {
+			storeHeight();
+			scrollFn();
+		}
+		function storeHeight() {
+			for(var i = 0, len = arr.length; i < len; i++) {
+				arr[i].top = $(arr[i].el).offset().top;
 			}
-			isRun = true;
-			setTimeout(function () {
-				forEachArr(arr);
-				isRun = false;
-			},100)
-		});
-		// 遍历需要动画的元素
-		function forEachArr(arr) {
-			var scrollTop = rootElement.scrollTop;
-			arr.forEach(function (value) {
-				isEnterToScreen(value.el,scrollTop,value.animateType,value.addLibrary);
+		}
+		function scrollFn() {
+			$w.on('scroll',function () {
+				for(var top = $w.scrollTop(), i = arr.length - 1; i >= 0; i--) {
+					arrForEach(i,top);
+				}
 			})
 		}
-		// 如果元素在视口内，则添加动画类名
-		function isEnterToScreen(el,scrollTop,animateType,addLibrary) {
-			el = _this.getDom(el);
-			if(!el.dataset.hasDone){
-				if(el.getBoundingClientRect().top < H){
-					el.style.opacity = 1;
-					addLibrary ? dom.classList.add(addLibrary) : '';
-					dom.classList.add(animateType);
-					dom.dataset.hasDone = 'hasDone';
-					setTimeout(function () {
-						addLibrary ? el.classList.remove(addLibrary) : '';
-						el.classList.remove(animateType);
-					},1000)
+		function arrForEach(j,top) {
+			var obj = arr[j],
+				$el = $(arr[j].el);
+			if(!obj.hasDone) {
+				if(top + count > arr[j].top) {
+					obj.addLibrary ? $el.addClass(obj.addLibrary) : '';
+					$el.css({
+						'opacity': 1
+					}).addClass(obj.animateType);
+					arr[j].hasDone = true;
+					remove(obj,$el);
 				}
+			}
+		}
+		function remove(obj,$el) {
+			if(obj.remove) {
+				setTimeout(function () {
+					obj.addLibrary ? $el.removeClass(obj.addLibrary) : '';
+					$el.removeClass(obj.animateType);
+				},1000)
 			}
 		}
 		return this;
@@ -685,6 +687,8 @@ $_y = {
 						current = parseInt(obj.scrollTop);
 						if(json[attr] > rootElement.scrollHeight - rootElement.clientHeight) {
 							json[attr] = rootElement.scrollHeight - rootElement.clientHeight; // 滚动值超过页面最大滚动值时
+						}else if(json[attr] < 0){
+							json[attr] = 0; // 滚动值超过页面最小滚动值时
 						}
 					} else {
 						current = parseInt(_this.getStyle(obj)[attr]);

@@ -5,15 +5,14 @@
 - [demo4](#demo4)---手机验证码模块
 - [demo5](#demo5)---复制微信
 - [demo6](#demo6)---轮播图
-- [demo7](#demo7)---nav滚动
+- [demo7](#demo7)---scrollPage
 - [demo8](#demo8)---视频播放模块
 - [demo9](#demo9)---m端fastClick
 - [demo10](#demo10)---小能代码
 - [demo11](#demo11)---M端页面滚动到指定元素位置
 - [demo12](#demo12)---倒计时模块
 - [demo13](#demo13)---页面指定位置展示
-- [demo14](#demo14)---导航滚屏
-- [demo15](#demo15)---元素入屏幕动画
+- [demo14](#demo14)---元素入屏幕动画
 
 ###  demo1
 ####  百度统计
@@ -38,7 +37,7 @@
 ```
 在js部分引用方法
 ```
-    $_y.registeredSh();
+$_y.registeredSh();
 ```
 #####  百度单页
 引用方法库
@@ -47,7 +46,7 @@
 ```
 在js部分引用方法
 ```
-    $_y.registeredBd();
+$_y.registeredBd();
 ```
 #####  其他页面
 引用方法库
@@ -82,7 +81,7 @@
 ```
 在js部分引用方法
 ```
-   $_y.registered();
+$_y.registered();
 ```
 ### demo3
 ####  单页微信修改
@@ -92,7 +91,7 @@
 ```
 在js部分引用方法
 ```
-    $_y.changeWeChat(['gpa6597']);
+$_y.changeWeChat(['gpa6597']);
 ```
 ### demo4
 ####  手机验证码模块
@@ -455,7 +454,7 @@ $_y.copyWeChat(['qbk8730']);
 }
 ```
 ##### 【js】
-引用方法库
+引用方法库（JQ依赖）
 ```
 <script src="//m.ykclass.com/zt/zyjs/yuanaaa2.0.js"></script>
 ```
@@ -472,14 +471,15 @@ $_y.carousel({
 });
 ```
 ### demo7
-####  nav滚动
-引用方法库
+####  scrollPage
+##### 【js】
+引用方法库（JQ依赖）
 ```
-<script src="js/scrollPage.js"></script>
+<script src="//m.ykclass.com/zt/zyjs/yuanaaa2.0.js"></script>
 ```
 调用方法
 ```
-$(".common-module").scrollPage();   // 滚屏
+$_y.scrollPage('.class',{navEl: '.md', count: 100});   // 对象内参数为默认值，可传入同名参数进行替换
 ```
 ### demo8
 ####  视频播放模块
@@ -487,30 +487,30 @@ $(".common-module").scrollPage();   // 滚屏
 ```
 <script src="http://static.ykclass.com/frame/polyv/polyvplayer.min.js"></script>
 //视频
-	var uid = "336d8745b4";
-	var vid = "5af4dd0127c62475750485dc988b22d2_5";
-	var videoPlayer = null; //live：直播播放器  video：点播播放器
-	initVidoPlayer(vid);
-	function initVidoPlayer(vid) {
-		videoPlayer = polyvObject('#player').videoPlayer({
-			'width': '100%',
-			'height': '100%',
-			'vid': vid,
-			flashParams: {
-				'allowScriptAccess': 'always',
-				'allowFullScreen': 'true',
-				'quality': 'high',
-				'bgcolor': '#ffffff',
-				'wmode': 'transparent',
-			},
-			flashvars: {
-				'autoplay': '1',
-				'is_auto_replay': 'on',
-				'ban_history_time': 'on',
-				'setScreen': 'fill',
-			}
-		});
-	};
+var uid = "336d8745b4";
+var vid = "5af4dd0127c62475750485dc988b22d2_5";
+var videoPlayer = null; //live：直播播放器  video：点播播放器
+initVidoPlayer(vid);
+function initVidoPlayer(vid) {
+    videoPlayer = polyvObject('#player').videoPlayer({
+        'width': '100%',
+        'height': '100%',
+        'vid': vid,
+        flashParams: {
+            'allowScriptAccess': 'always',
+            'allowFullScreen': 'true',
+            'quality': 'high',
+            'bgcolor': '#ffffff',
+            'wmode': 'transparent',
+        },
+        flashvars: {
+            'autoplay': '1',
+            'is_auto_replay': 'on',
+            'ban_history_time': 'on',
+            'setScreen': 'fill',
+        }
+    });
+};
 ```
 ### demo9
 ####  m端fastClick
@@ -580,29 +580,18 @@ $_y.fixedTop({
 });
 ```
 ### demo14
-####  scrollPage
-##### 【js】
-引用方法库
-```
-<script src="//m.ykclass.com/zt/zyjs/yuanaaa2.0.js"></script>
-```
-调用方法
-```
-$_y.scrollPage('.class',el);   // el默认为包含类名'md'的ul/ol导航条，也可传入类名
-```
-### demo15
 ####  enterScreenAnimate
 ##### 【css】
-Animate.css 动画库
+[Animate.css 动画库](https://daneden.github.io/animate.css/)
 ```
 <link rel="stylesheet" type="text/css" href="//m.ykclass.com/zt/zyjs/animate.css"/>
 ```
-Magic.css 动画库
+[Magic.css 动画库](https://www.minimamente.com/example/magic_animations/)
 ```
 <link rel="stylesheet" type="text/css" href="//m.ykclass.com/zt/zyjs/magic.min.css"/>
 ```
 ##### 【js】
-引用方法库
+引用方法库（JQ依赖）
 ```
 <script src="//m.ykclass.com/zt/zyjs/yuanaaa2.0.js"></script>
 ```
@@ -612,11 +601,12 @@ $_y.enterScreenAnimate([
     {
         el: part1,                  // dom元素
         animateType: 'bounceIn',    // 动画类型，动画样式的class
-        addLibrary:'animated'       // 依赖animate.css 库
+        addLibrary: 'animated',     // 依赖animate.css 库
+        remove: true                // 动画完成后是否清除类名
     }, {
         el: '.part-2',              // 类名或者ID
         animateType: 'puffIn',      // 动画类型，动画样式的class
         addLibrary: 'magictime'     // 依赖magic.css 库
     }
-]);
+],0.8);                             // 0.8为元素到达屏幕高度80%时开始执行动画(默认0.8)
 ```
