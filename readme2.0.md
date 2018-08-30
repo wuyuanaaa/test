@@ -243,6 +243,7 @@ $_y.saveActivitySmsInfo({
     needMsg: true,      // 是否短信验证(true表示需要)  非必需
     countdown: 90,      // 首次倒计时时间（默认90）  非必需
     info: infoObj,      // 传入的用户填写信息（一个包含msg参数的对象）   非必需
+    popUp: true,        // 验证通过后是否有弹窗
     callback: function () {      // 获客完成后的回调  非必需
         if(_taq) {
           _taq.push({convert_id: "1606319178273799", event_type: "form"})
