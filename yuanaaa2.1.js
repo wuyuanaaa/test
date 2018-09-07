@@ -1,33 +1,33 @@
 $_y = {
 	registered: function () {  // 普通页面自动公司名称备案号
-		var registeredName = document.querySelector('#registeredName'),
-			registeredNum = document.querySelector('#registeredNum'),
-			certificate = document.querySelector('#certificate');
+		var $registeredName = $('#registeredName'),
+			$registeredNum = $('#registeredNum'),
+			$certificate = $('#certificate');
 		for (var i = 0, len = this.corporationList.length; i < len; i++) {
 			if (this.domainName.indexOf(this.corporationList[i].dName) > -1) {
-				registeredName.innerText = this.corporationList[i].name;
-				registeredNum.innerText = this.corporationList[i].num;
+				$registeredName.text(this.corporationList[i].name);
+				$registeredNum.text(this.corporationList[i].num);
 				if (!this.corporationList[i].hasCertificate) {
-					certificate.innerHTML = '';
+					$certificate.html(' ');
 				}
 			}
 		}
 		return this;
 	},
 	registeredBd: function () {  // 百度单页自动公司名称备案号
-		var footer = document.querySelector('.footer');
+		var $footer = $('.footer');
 		for (var i = 0, len = this.corporationList.length; i < len; i++) {
 			if (this.domainName.indexOf(this.corporationList[i].dName) > -1) {
-				footer.innerHTML = '<p>Copyright © 2018 ' + this.corporationList[i].name + ' All Rights Reserved <br>' + this.corporationList[i].num + '</p>';
+				$footer.html('<p>Copyright © 2018 ' + this.corporationList[i].name + ' All Rights Reserved <br>' + this.corporationList[i].num + '</p>')
 			}
 		}
 		return this;
 	},
 	registeredSh: function () {  					    // 审核页面自动公司名称备案号
-		var footer = document.querySelector('.footer');
+		var $footer = $('.footer');
 		for (var i = 0, len = this.corporationList.length; i < len; i++) {
 			if (this.domainName.indexOf(this.corporationList[i].dName) > -1) {
-				footer.innerText = this.corporationList[i].name;
+				$footer.html(this.corporationList[i].name)
 			}
 		}
 		return this;
@@ -38,6 +38,7 @@ $_y = {
 				countDown: 90,
 				popUpEl: '.layer-warp',
 				popUpCloseEl: '.layer-close',
+				needMsg: true
 			},
 			finalObj = $.extend(defaultOptions, obj),
 			$module = $(finalObj.id),
@@ -54,17 +55,17 @@ $_y = {
 		} else {
 			host = "https://m.ykclass.com"
 		}
-		var setTime = function (obj) {                // 短信验证倒计时
-			var startVal = obj.val();
-			obj.attr("disabled", true);
+		var setTime = function (el) {                // 短信验证倒计时
+			var startVal = el.val();
+			el.attr("disabled", true);
 			function fn() {
 				countDown--;
-				obj.val("重新发送(" + countDown + ")");
+				el.val("重新发送(" + countDown + ")");
 				if (countDown >= 0) {
 					setTimeout(fn, 1000);
 				} else {
-					obj.removeAttr("disabled");
-					obj.val(startVal);
+					el.removeAttr("disabled");
+					el.val(startVal);
 					countDown = 60;
 				}
 			}
@@ -97,7 +98,7 @@ $_y = {
 			saveActivitySmsInfo: function (object, code, callback) {
 				object.accessUrl = window.location.href;
 				object.code = code;
-				if (obj.needMsg) {
+				if (finalObj.needMsg) {
 					$.ajax({
 						type: "get",
 						url: host + "/common/saveActivitySmsInfo.html",
@@ -182,36 +183,32 @@ $_y = {
 		return this;
 	},
 	changeWeChat: function (arr) {
-		var _this = this,
-			code = document.querySelectorAll('.code'),
+		var $code = $('.code'),
 			wxNum = arr[Math.floor(Math.random() * arr.length)]; // 随机取一个微信号
-		if (code.length > 0) {
-			for(var i = 0, len = code.length; i < len; i++){
-				code[i].setAttribute("data-clipboard-text", wxNum);
-				code[i].innerText = wxNum;
-			}
+		if ($code.length > 0) {
+			$code.attr("data-clipboard-text", wxNum);
+			$code.text(wxNum);
 		}
 		return this;
 	},
 	/*复制微信*/
 	copyWeChat: function (arr) {
-		var _this = this,
-			wxNow = arr[Math.floor(Math.random() * arr.length)],  // 随机微信
-			wxNumber = document.querySelector('.wxnumber'),
-			wxCode = document.querySelector('.wxCode'),
-			xnkf = document.querySelectorAll('.nkkf').length > 0 ? 'ntkf' : 'xnkf'; // 确定页面小能类名
+		var wxNow = arr[Math.floor(Math.random() * arr.length)],  // 随机微信
+			$wxnumber = $('.wxnumber'),
+			$wxCode = $('.wxCode'),
+			$xnkf = $('.nkkf').length > 0 ? $('.ntkf') : $('.xnkf'); // 确定页面小能类名
 
-		wxNumber.innerText = wxNow;
-		wxCode.innerText = wxNow;
-		this.sameClassBind(xnkf,'click',openLayer);
+		$wxnumber.text(wxNow);
+		$wxCode.text(wxNow);
+		$xnkf.on('click', openLayer);
 		clipboardFn('.wxCode', openLayer);
 		clipboardFn('.wxnumber');
 
 		function clipboardFn(classNameString, callback) {
-			var clipboard = new Clipboard(classNameString);
-			var obj = document.querySelector(classNameString);
-			_this.EventUtil.addHandler(obj,'click',function () {
-				obj.setAttribute('data-clipboard-text', wxNow);
+			var clipboard = new Clipboard(classNameString),
+				$obj = $(classNameString);
+			$obj.on('click', function () {
+				$obj.attr('data-clipboard-text', wxNow);
 			});
 			clipboard.on('success', function () {
 				layer.msg('复制成功')
@@ -560,7 +557,6 @@ $_y = {
 			}
 		}
 		function anima(el) {
-			console.log(el);
 			el.data('addlibrary') ? el.addClass(el.data('addlibrary')) : '';
 			el.css({
 				'opacity': 1

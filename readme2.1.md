@@ -34,7 +34,7 @@
 引用方法库
 ```
 <script src="//js.ykclass.com/frame/jquery/v2.1.4/jquery.min.js"></script>
-<script src="//m.ykclass.com/zt/zyjs/yuanaaa2.0.js"></script>
+<script src="//m.ykclass.com/zt/zyjs/yuanaaa2.1.js"></script>
 ```
 在js部分引用方法
 ```
@@ -43,7 +43,7 @@ $_y.registeredSh();
 #####  百度单页
 引用方法库
 ```
-<script src="//m.ykclass.com/zt/zyjs/yuanaaa2.0.js"></script>
+<script src="//m.ykclass.com/zt/zyjs/yuanaaa2.1.js"></script>
 ```
 在js部分引用方法
 ```
@@ -52,7 +52,7 @@ $_y.registeredBd();
 #####  其他页面
 引用方法库
 ```
-<script src="//m.ykclass.com/zt/zyjs/yuanaaa2.0.js"></script>
+<script src="//m.ykclass.com/zt/zyjs/yuanaaa2.1.js"></script>
 ```
 公司名称替换成如下：
 ```
@@ -88,7 +88,7 @@ $_y.registered();
 ####  单页微信修改
 引用方法库
 ```
-<script src="//m.ykclass.com/zt/zyjs/yuanaaa2.0.js"></script>
+<script src="//m.ykclass.com/zt/zyjs/yuanaaa2.1.js"></script>
 ```
 在js部分引用方法
 ```
@@ -234,7 +234,7 @@ $_y.changeWeChat(['gpa6597']);
 ##### 【js】
 引用方法库
 ```
-<script src="//m.ykclass.com/zt/zyjs/yuanaaa2.0.js"></script>
+<script src="//m.ykclass.com/zt/zyjs/yuanaaa2.1.js"></script>
 ```
 在js部分引用方法
 ```
@@ -354,7 +354,7 @@ div.layui-layer {   //取消layer默认外阴影
 ```
 <script src="//m.ykclass.com/zt/zyjs/layer/layer.js"></script>
 <script src="//m.ykclass.com/zt/zyjs/clipboard.min.js"></script>
-<script src="//m.ykclass.com/zt/zyjs/yuanaaa2.0.js"></script>
+<script src="//m.ykclass.com/zt/zyjs/yuanaaa2.1.js"></script>
 ```
 调用方法
 ```
@@ -458,7 +458,7 @@ $_y.copyWeChat(['qbk8730']);
 ##### 【js】
 引用方法库（JQ依赖）
 ```
-<script src="//m.ykclass.com/zt/zyjs/yuanaaa2.0.js"></script>
+<script src="//m.ykclass.com/zt/zyjs/yuanaaa2.1.js"></script>
 ```
 调用方法
 ```
@@ -480,7 +480,7 @@ $_y.carousel({
 ##### 【js】
 引用方法库（JQ依赖）
 ```
-<script src="//m.ykclass.com/zt/zyjs/yuanaaa2.0.js"></script>
+<script src="//m.ykclass.com/zt/zyjs/yuanaaa2.1.js"></script>
 ```
 调用方法
 ```
@@ -547,7 +547,7 @@ $(document).on("click", ".ntkf", function() {
 ####  M端页面滚动到指定元素位置
 引用方法库
 ```
-<script src="//m.ykclass.com/zt/zyjs/yuanaaa2.0.js"></script>
+<script src="//m.ykclass.com/zt/zyjs/yuanaaa2.1.js"></script>
 ```
 调用方法
 ```
@@ -573,7 +573,7 @@ if(endDay - today > 0) {
 ##### 【js】
 引用方法库
 ```
-<script src="//m.ykclass.com/zt/zyjs/yuanaaa2.0.js"></script>
+<script src="//m.ykclass.com/zt/zyjs/yuanaaa2.1.js"></script>
 ```
 调用方法
 ```
