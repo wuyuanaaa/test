@@ -196,7 +196,7 @@ $_y = {
 		var wxNow = arr[Math.floor(Math.random() * arr.length)],  // 随机微信
 			$wxnumber = $('.wxnumber'),
 			$wxCode = $('.wxCode'),
-			$xnkf = $('.nkkf').length > 0 ? $('.ntkf') : $('.xnkf'); // 确定页面小能类名
+			$xnkf = $('.ntkf').length > 0 ? $('.ntkf') : $('.xnkf'); // 确定页面小能类名
 
 		$wxnumber.text(wxNow);
 		$wxCode.text(wxNow);
@@ -308,7 +308,7 @@ $_y = {
 			clearTimeout(times);
 			times = setTimeout(function () {
 				change(count + 1);
-				return auto? auto() : ''
+				return autoFn();
 			}, intervalTime)
 		}
 		//  左右控制点击事件
@@ -318,25 +318,22 @@ $_y = {
 		});
 		//  序号控制点击事件
 		$paginationLists.on('click', function () {
+			clearTimeout(times);
 			change($(this).index());
+			if(options.autoplay) {
+				autoFn();
+			}
 		});
 		// 自动轮播
 		if(options.autoplay){
-			auto = function () {
-				autoFn();
-			};
-			auto();
+			autoFn();
 			// 鼠标经过动画暂停
 			if(options.mouseenterStop) {
 				$carousel.on('mouseenter', options.mainListEl +','+ options.paginationListEl +','+ options.controller, function () {
 					clearTimeout(times);
-					auto = null;
 				});
 				$carousel.on('mouseleave', options.mainListEl +','+ options.paginationListEl +','+ options.controller, function () {
-					auto = function() {
-						autoFn();
-					};
-					auto();
+					autoFn();
 				});
 			}
 		}
@@ -573,356 +570,6 @@ $_y = {
 		}
 		return this;
 	},
-	/*全屏滚动*/
-	fullPage: function (pageClassName,bar,minH) {
-		var _this = this,
-			rootElement = this.getRootElement(),
-			H = rootElement.clientHeight,
-			pages = document.querySelectorAll(pageClassName),
-			len = pages.length,
-			pageNum = 0,
-			isOnPage = true;
-		bar = this.getDom(bar);
-
-		// 初始化
-
-		(function () {
-			createLi(); // 创建右侧控件的li
-			_this.EventUtil.addHandler(window,'resize',resetHeight); // 页面大小改变时重置高度
-		})();
-
-		function registerEvents(isAdd) {
-			var lists = bar.querySelectorAll('li'),
-				flag = false,
-				timer = null;
-			resetBarActive(); // 初始化控件的active
-
-			_this.EventUtil.addHandler(bar,'click',barClickEvent);
-			_this.EventUtil.addHandler(window,'scroll',resetBarActive);
-			if(isAdd){
-				_this.EventUtil.addHandler(window,'scroll',throttleScroll);
-			}else {
-				_this.EventUtil.removeHandler(window,'scroll',throttleScroll);
-				_this.EventUtil.removeHandler(window,'mousewheel',debunceMousewheel);
-			}
-
-			function throttleScroll() {
-				if(flag) {
-					return;
-				}
-				flag = true;
-				setTimeout(function () {
-					flag = false;
-					return scrollEvent();
-				},100)
-			}
-
-			function scrollEvent() {
-				var top = rootElement.scrollTop;
-				pageNum = top/H;
-				pageNum % 1 === 0 ? isOnPage = true : isOnPage = false;
-				var min = _this.getOffsetTop(pages[0]);
-				if(top > min && top < min + H * (len - 1)) {
-					_this.EventUtil.addHandler(window,'mousewheel',debunceMousewheel);
-				}
-			}
-
-			function debunceMousewheel() {
-				var event = event || window.event;
-				clearTimeout(timer);
-				timer = setTimeout(function () {
-					return mousewheelEvent(event);
-				},100)
-			}
-
-			function mousewheelEvent(event) {
-				var wheelDelta = _this.EventUtil.getWheelDelta(event);
-				if(wheelDelta > 0){
-					pageNum = Math.floor(pageNum + 0.5);
-					pageNum --;
-					if(pageNum < 0) {
-						pageNum = 0
-					}
-					changePage();
-				}else {
-					pageNum = Math.floor(pageNum + 0.5);
-					pageNum ++;
-					if(pageNum > len - 1) {
-						pageNum = len - 1;
-					}else {
-						changePage();
-					}
-
-				}
-			}
-
-			function changePage() {
-				var h = pageNum * H;
-				_this.animate(rootElement,{"scrollTop": h},function () {
-					_this.EventUtil.addHandler(window,'mousewheel',debunceMousewheel);
-				});
-			}
-
-			function resetBarActive() {
-				var i;
-				var scrollTop = rootElement.scrollTop;
-				for(i = len - 1 ; i >= 0; i--) {
-					if(_this.getOffsetTop(pages[i]) < scrollTop + H/2){
-						_this.siblings(lists[i],function (el) {
-							el.classList.remove('active')
-						});
-						lists[i].classList.add('active');
-						return;
-					}
-				}
-			}
-
-			function barClickEvent() {
-				var event = event || window.event;
-				var target = _this.EventUtil.getTarget(event);
-				if(target.dataset.i) {
-					var h = _this.getOffsetTop(pages[target.dataset.i]);
-					_this.animate(rootElement,{"scrollTop": h })
-				}
-			}
-		}
-
-		function createLi () {
-			var str = '',
-				i;
-			for(i = 0; i < len; i++) {
-				str += '<li data-i='+ i +'></li>';
-			}
-			bar.innerHTML = str;
-			resetHeight(); // 初始化高度
-		}
-
-		function resetHeight() {
-			var i,j;
-			H = rootElement.clientHeight;
-			if(H >= minH) {
-				for(i = 0; i < len; i++){
-					pages[i].style.height = H + 'px';
-				}
-				registerEvents(true);
-			}else {
-				registerEvents(false);
-			}
-
-		}
-	},
-/*
-*公共方法
-*/
-	/*同类名多元素事件绑定*/
-	sameClassBind: function (classNameString,eventType,handler) {
-		this.EventUtil.addHandler(window,eventType,function (event) {
-			var event = event || window.event;
-			var target = event.target || event.srcElement;
-			if(target.classList.contains(classNameString)) {
-				handler();
-			}
-		})
-	},
-	/*为所以兄弟元素执行fn*/
-	siblings: function (el,fn) {
-		el = this.getDom(el);
-		(function prev(el) {
-			var elPreviousSibing = el.previousElementSibling;
-			if(elPreviousSibing && elPreviousSibing.tagName !== 'SCRIPT') {
-				fn(elPreviousSibing);
-				prev(elPreviousSibing);
-			}
-		})(el);
-		(function next(el) {
-			var elNextSibing = el.nextElementSibling;
-			if(elNextSibing && elNextSibing.tagName !== 'SCRIPT') {  // body的后面几个元素是script 即使script 写在html外
-				fn(elNextSibing);
-				next(elNextSibing);
-			}
-		})(el);
-		return this
-	},
-	/*animate*/
-	animate: function (obj,json,fn) {
-		var _this = this,
-			rootElement = this.getRootElement();
-		if(!rootElement.inAnimate){
-			rootElement.inAnimate = true;
-			var timer = function () {
-				var flag = true;
-				for(var attr in json) {
-					var current = 0;
-					if(attr === 'opacity') {
-						current = Math.round(parseInt(_this.getStyle(obj)[attr]*100));
-					} else if (attr === 'scrollTop') {
-						current = parseInt(obj.scrollTop);
-						if(json[attr] > rootElement.scrollHeight - rootElement.clientHeight) {
-							json[attr] = rootElement.scrollHeight - rootElement.clientHeight; // 滚动值超过页面最大滚动值时
-						}else if(json[attr] < 0){
-							json[attr] = 0; // 滚动值超过页面最小滚动值时
-						}
-					} else {
-						current = parseInt(_this.getStyle(obj)[attr]);
-					}
-					var step = (json[attr] - current) / 10;
-					step = step > 0 ? Math.ceil(step) : Math.floor(step);
-					if(attr === 'opacity') {
-						obj.style.opacity = (current + step) / 100;
-					}else if (attr === 'zIndex') {
-						obj.style.zIndex = json[attr];
-					}else if (attr === 'scrollTop') {
-						obj.scrollTop = current + step;
-					} else {
-						obj.style[attr] = current + step + 'px';
-					}
-
-					if (current != json[attr]) {
-						flag = false
-					}
-
-				}
-				if(flag) {
-					rootElement.inAnimate = false;
-					if(fn) {
-						fn();
-					}
-				}else {
-					setTimeout(timer,10);
-				}
-			};
-			setTimeout(timer,10)
-		}
-	},
-	/*获取类似jQuery的offfset().top*/
-	getOffsetTop: function (el) {
-		el = this.getDom(el);
-		var top = 0;
-		(function addTop(el) {
-			top = top + el.offsetTop - el.offsetParent.scrollTop;
-			if(el.offsetParent !== document.body){
-				addTop(el.offsetParent);
-			}
-		})(el);
-		return top;
-	},
-	/*获取dom*/
-	getDom: function (el,context) {
-		context = arguments.length > 1 ? context : document;
-		return typeof el === 'string' ? context.querySelector(el) : el;
-	},
-	/*获取根元素*/
-	getRootElement: function () {
-		if(document.compatMode == "BackCompat") {
-			return document.body;
-		} else {
-			return document.documentElement;
-		}
-	},
-	/*获取元素样式*/
-	getStyle: function (obj) {
-		if(obj.currentStyle){
-			return obj.currentStyle;
-		}else {
-			return window.getComputedStyle(obj,null);
-		}
-	},
-	/*事件绑定*/
-	EventUtil: {
-		addHandler:function(element,type,handler){ //添加事件
-			if(element.addEventListener){
-				element.addEventListener(type,handler,false);  //使用DOM2级方法添加事件
-			}else if(element.attachEvent){                    //使用IE方法添加事件
-				element.attachEvent("on"+type,handler);
-			}else{
-				element["on"+type]=handler;          //使用DOM0级方法添加事件
-			}
-		},
-
-		removeHandler:function(element,type,handler){  //取消事件
-			if(element.removeEventListener){
-				element.removeEventListener(type,handler,false);
-			}else if(element.detachEvent){
-				element.detachEvent("on"+type,handler);
-			}else{
-				element["on"+type]=null;
-			}
-		},
-
-		getEvent:function(event){  //使用这个方法跨浏览器取得event对象
-			return event?event:window.event;
-		},
-
-		getTarget:function(event){  //返回事件的实际目标
-			return event.target||event.srcElement;
-		},
-
-		preventDefault:function(event){   //阻止事件的默认行为
-			if(event.preventDefault){
-				event.preventDefault();
-			}else{
-				event.returnValue=false;
-			}
-		},
-
-		stopPropagation:function(event){  //立即停止事件在DOM中的传播
-			//避免触发注册在document.body上面的事件处理程序
-			if(event.stopPropagation){
-				event.stopPropagation();
-			}else{
-				event.cancelBubble=true;
-			}
-		},
-
-		getRelatedTarget:function(event){  //获取mouseover和mouseout相关元素
-			if(event.relatedTarget){
-				return event.relatedTarget;
-			}else if(event.toElement){      //兼容IE8-
-				return event.toElement;
-			}else if(event.formElement){
-				return event.formElement;
-			}else{
-				return null;
-			}
-		},
-
-		getButton:function(event){    //获取mousedown或mouseup按下或释放的按钮是鼠标中的哪一个
-			if(document.implementation.hasFeature("MouseEvents","2.0")){
-				return event.button;
-			}else{
-				switch(event.button){   //将IE模型下的button属性映射为DOM模型下的button属性
-					case 0:
-					case 1:
-					case 3:
-					case 5:
-					case 7:
-						return 0;  //按下的是鼠标主按钮（一般是左键）
-					case 2:
-					case 6:
-						return 2;  //按下的是中间的鼠标按钮
-					case 4:
-						return 1;  //鼠标次按钮（一般是右键）
-				}
-			}
-		},
-
-		getWheelDelta:function(event){ //获取表示鼠标滚轮滚动方向的数值
-			if(event.wheelDelta){
-				return event.wheelDelta;
-			}else{
-				return -event.detail*40;
-			}
-		},
-
-		getCharCode:function(event){   //以跨浏览器取得相同的字符编码，需在keypress事件中使用
-			if(typeof event.charCode=="number"){
-				return event.charCode;
-			}else{
-				return event.keyCode;
-			}
-		}
-	},
-
 /*
 *公共数据
 */
@@ -1064,50 +711,3 @@ $_y = {
 	// 主域名
 	domainName: window.location.host
 };
-/*
-*API 兼容
-*/
-(function () {
-	// 兼容classList
-	if (!("classList" in document.documentElement)) {
-		Object.defineProperty(HTMLElement.prototype, 'classList', {
-			get: function() {
-				var self = this;
-				function update(fn) {
-					return function(value) {
-						var classes = self.className.split(/\s+/g),
-							index = classes.indexOf(value);
-
-						fn(classes, index, value);
-						self.className = classes.join(" ");
-					}
-				}
-
-				return {
-					add: update(function(classes, index, value) {
-						if (!~index) classes.push(value);
-					}),
-
-					remove: update(function(classes, index) {
-						if (~index) classes.splice(index, 1);
-					}),
-
-					toggle: update(function(classes, index, value) {
-						if (~index)
-							classes.splice(index, 1);
-						else
-							classes.push(value);
-					}),
-
-					contains: function(value) {
-						return !!~self.className.split(/\s+/g).indexOf(value);
-					},
-
-					item: function(i) {
-						return self.className.split(/\s+/g)[i] || null;
-					}
-				};
-			}
-		});
-	}
-})();
