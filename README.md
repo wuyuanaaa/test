@@ -1,19 +1,19 @@
 ##  导航
 - [demo1](#demo1)---百度统计
-- [demo2](#demo2)---自动更换公司名称及资质
+- [demo2](#demo2)---自动更换公司及资质
 - [demo3](#demo3)---单页微信修改
 - [demo4](#demo4)---手机验证码模块
 - [demo5](#demo5)---复制微信
-- [demo6](#demo6)---轮播
-- [demo7](#demo7)---nav滚动
+- [demo6](#demo6)---轮播图
+- [demo7](#demo7)---scrollPage
 - [demo8](#demo8)---视频播放模块
 - [demo9](#demo9)---m端fastClick
 - [demo10](#demo10)---小能代码
-- [demo11](#demo11)---动画至锚点
+- [demo11](#demo11)---M端页面滚动到指定元素位置
 - [demo12](#demo12)---倒计时模块
-- [demo13](#demo13)---表格标题显示切换
-- [demo14](#demo14)---导航滚屏
-- [demo15](#demo15)---元素入屏幕动画
+- [demo13](#demo13)---页面指定位置展示
+- [demo14](#demo14)---元素入屏幕动画
+- [demo15](#demo15)---移动端滑动事件
 
 ###  demo1
 ####  百度统计
@@ -29,30 +29,30 @@
 </script>
 ```
 ###  demo2
-####  自动更换公司名称及资质 registeredSh/registeredBd/registered
+####  自动更换公司及资质
 #####  审核页面
-**引用方法库**
+引用方法库
 ```
-<script src="https://js.ykclass.com/frame/jquery/v2.1.4/jquery.min.js"></script>
-<script src="//m.ykclass.com/zt/zyjs/yuanaaa1.2.js"></script>
+<script src="//js.ykclass.com/frame/jquery/v2.1.4/jquery.min.js"></script>
+<script src="//m.ykclass.com/zt/zyjs/yuanaaa2.1.js"></script>
 ```
-**调用方法**
+在js部分引用方法
 ```
-    $_y.registeredSh();
+$_y.registeredSh();
 ```
 #####  百度单页
-**引用方法库**
+引用方法库
 ```
-<script src="//m.ykclass.com/zt/zyjs/yuanaaa1.2.js"></script>
+<script src="//m.ykclass.com/zt/zyjs/yuanaaa2.1.js"></script>
 ```
-**调用方法**
+在js部分引用方法
 ```
-    $_y.registeredBd();
+$_y.registeredBd();
 ```
 #####  其他页面
-**引用方法库**
+引用方法库
 ```
-<script src="//m.ykclass.com/zt/zyjs/yuanaaa1.2.js"></script>
+<script src="//m.ykclass.com/zt/zyjs/yuanaaa2.1.js"></script>
 ```
 公司名称替换成如下：
 ```
@@ -80,22 +80,22 @@
     <p>互联网出版许可证 鄂字第23号 </p>
 </div>
 ```
-**调用方法**
+在js部分引用方法
 ```
-   $_y.registered();
+$_y.registered();
 ```
 ### demo3
-####  单页微信修改 changeWeChat
-**引用方法库**
+####  单页微信修改
+引用方法库
 ```
-<script src="//m.ykclass.com/zt/zyjs/yuanaaa1.2.js"></script>
+<script src="//m.ykclass.com/zt/zyjs/yuanaaa2.1.js"></script>
 ```
-**调用方法**
+在js部分引用方法
 ```
-    $_y.changeWeChat(['gpa6597']);
+$_y.changeWeChat(['gpa6597']);
 ```
 ### demo4
-####  手机验证码模块 saveActivitySmsInfo
+####  手机验证码模块
 ##### 【html】
 ```
 <!--弹出层 开始-->
@@ -232,19 +232,20 @@
 </div>
 ```
 ##### 【js】
-**引用方法库**
+引用方法库
 ```
-<script src="//m.ykclass.com/zt/zyjs/yuanaaa1.2.js"></script>
+<script src="//m.ykclass.com/zt/zyjs/yuanaaa2.1.js"></script>
 ```
-**调用方法**
+在js部分引用方法
 ```
 $_y.saveActivitySmsInfo({
-    id: '#get-phone2',    // 获客模块id  必需
+    id: '#get-phone',    // 获客模块id  必需
     cjCode: 'YK_TT_TONGJI',     // 场景代码  必需
     needMsg: true,      // 是否短信验证(true表示需要)  非必需
     countdown: 90,      // 首次倒计时时间（默认90）  非必需
     info: infoObj,      // 传入的用户填写信息（一个包含msg参数的对象）   非必需
-    toutiaoCallback: function () {      // 获客完成后回执  非必需
+    popUp: true,        // 验证通过后是否有弹窗
+    callback: function () {      // 获客完成后的回调  非必需
         if(_taq) {
           _taq.push({convert_id: "1606319178273799", event_type: "form"})
         }
@@ -264,7 +265,7 @@ $('.vail-code').on('click',function () {
 });
 ```
 ### demo5
-####  复制微信 copyWeChat
+####  复制微信
 ##### 【html】
 ```
 <!--弹出层 开始-->
@@ -300,52 +301,6 @@ $('.vail-code').on('click',function () {
     }
     .c-yellow {
     	color: #FFF83A;
-    }
-}
-// 微信弹窗
-div.layui-layer {   //取消layer默认外阴影
-	box-shadow: none;
-}
-.weChatB {
-	display: none;
-	width: 8.36rem;
-	height: 6.066666666666666rem;
-	background: url(//m.ykclass.com/zt/zyImages/ykclass/layer-wx.png) no-repeat center;
-	background-size: cover;
-	.title {
-    	height: 1.2533333333333334rem;
-    	font-size: 0.56rem;
-    	line-height: 1.2533333333333334rem;
-    	color: #FFFFFF;
-    	text-align: center;
-    }
-    .weChatTitle {
-    	text-align: center;
-    	margin: 0.7066666666666667rem auto 0.16rem ;
-    	font-size: 0.4rem;
-    	line-height: 0.6666666666666666rem;
-    	color: #ff452d;
-    }
-    .weChatCenter {
-    	width: 5.04rem;
-    	height: 1.24rem;
-    	display: block;
-    	font-weight: bold;
-    	background: #ff1a1f;
-    	border-radius: 0.49333333333333335rem;
-    	margin: 0 auto;
-    	font-size: 0.56rem;
-    	color: #FFFFFF;
-    	text-align: center;
-    	line-height: 1.2933333333333332rem;
-    }
-    .weChatBottom {
-    	text-align: center;
-    	font-weight: bold;
-    	font-size: 0.5rem;
-    	line-height: 0.5333333333333333rem;
-    	color: #ff1a1f;
-    	margin-top: 0.3466666666666667rem;
     }
 }
 // 微信弹窗（新版）
@@ -395,99 +350,177 @@ div.layui-layer {   //取消layer默认外阴影
 }
 ```
 ##### 【js】
-**引用方法库**
+引用方法库
 ```
 <script src="//m.ykclass.com/zt/zyjs/layer/layer.js"></script>
 <script src="//m.ykclass.com/zt/zyjs/clipboard.min.js"></script>
-<script src="//m.ykclass.com/zt/zyjs/yuanaaa1.2.js"></script>
-// 新版弹窗
-<script src="//m.ykclass.com/zt/zyjs/yuanaaa1.2.js"></script>
+<script src="//m.ykclass.com/zt/zyjs/yuanaaa2.1.js"></script>
 ```
-**调用方法**
+调用方法
 ```
 $_y.copyWeChat(['qbk8730']);
 ```
 ### demo6
-####  轮播 slider
+####  轮播图
 ##### 【html】
 ```
-<div id="slide">
-    <ul class="slider">
-        <li></li>
-        <li></li>
+<div class="carousel" id="carousel">
+    <ul class="carousel-main">
+        <li class="active"></li>
         <li></li>
         <li></li>
     </ul>
-    <ol class="control clearfix">
-        <li data-i="0" class="active">1</li>
-        <li data-i="1">2</li>
-        <li data-i="2">3</li>
-        <li data-i="3">4</li>
+    <ol class="carousel-pagination">
+        <li class="active"></li>
+        <li></li>
+        <li></li>
     </ol>
-    <div class="bar">
-        <div class="l"><</div>
-        <div class="r">></div>
+    <div class="carousel-controller">
+        <div class="controller-left"><</div>
+        <div class="controller-right">></div>
     </div>
 </div>
 ```
+##### 【参考初始css】
+```
+.carousel {
+	position: relative;
+	margin: 100px auto;
+	width: 100%;
+	background: #ccc;
+	height: 400px;
+}
+.carousel-main {
+	position: absolute;
+	width: 800px;
+	height: 400px;
+	left: 50%;
+	top: 0;
+	transform: translateX(-50%);
+	li {
+		position: absolute;
+		width: 100%;
+		height: 100%;
+		top: 0;
+		left: 0;
+	}
+	li:nth-of-type(1) {
+		background: #6f9dd4;
+	}
+	li:nth-of-type(2) {
+		background: #f56c50;
+	}
+	li:nth-of-type(3) {
+		background: #fff9ae;
+	}
+}
+.carousel-pagination {
+	position: absolute;
+	width: 100px;
+	height: 20px;
+	left: 50%;
+	bottom: 20px;
+	transform: translateX(-50%);
+	li {
+		float: left;
+		width: 20px;
+		height: 100%;
+		background: #dfdfdf;
+	}
+	li + li {
+		margin-left: 20px;
+	}
+	.active {
+		background: #f62d1d;
+	}
+}
+.carousel-controller {
+	.controller-left,
+	.controller-right {
+		position: absolute;
+		width: 20px;
+		height: 40px;
+		top: 50%;
+		transform: translateY(-50%);
+		line-height: 40px;
+		font-size: 30px;
+		background: #aef7a8;
+		cursor: pointer;
+	}
+	.controller-left {
+		left: 5%;
+	}
+	.controller-right {
+		right: 5%;
+	}
+}
+```
 ##### 【js】
-**引用方法库**
+引用方法库（JQ依赖）
 ```
-<script src="//m.ykclass.com/zt/zyjs/yuanaaa1.2.js"></script>
+<script src="//m.ykclass.com/zt/zyjs/yuanaaa2.1.js"></script>
 ```
-**调用方法**
+调用方法
 ```
-$_y.slider({
-    id: '#slide',   // 轮播模块id   必需
-    mode: 1,        // 轮播方式 1、左右切换 2、淡出淡入切换    必需
-    addTouch: true,     // 是否手指滑动事件 true 有滑动事件     非必需
-    moveTime: 400,      // 轮播切换动画时间（默认800毫秒）    非必需
-    interval: 3000,      // 轮播间隙时间（默认4000毫秒）     非必需
-    mouseenterStop: true      // 鼠标进入时轮播是否停止
+$_y.carousel({
+    el: '#carousel',                          // 轮播模块id
+    mode: 1,                                  // 轮播方式 1、左右切换 2、淡出淡入
+    runTime: 800,                             // 轮播切换的时间
+    intervalTime: 4000,                       // 轮播间隙时间
+    mainListEl: '.carousel-main',             // 轮播主区域类名
+    paginationListEl: '.carousel-pagination', // 轮播序号部分类名
+    controller: '.carousel-controller',       // 轮播切换部分类名
+    addTouchEvent: false,                     // 是否手指滑动事件
+    autoplay: true,                           // 是否自动播放
+    mouseenterStop: false                     // 鼠标进入时轮播是否停止
 });
 ```
 ### demo7
-####  nav滚动(已封装，见demo14)
+####  scrollPage
+##### 【js】
+引用方法库（JQ依赖）
 ```
-<script src="js/scrollPage.js"></script>
-// 滚屏
-    $(".common-module").scrollPage();
+<script src="//m.ykclass.com/zt/zyjs/yuanaaa2.1.js"></script>
+```
+调用方法
+```
+$_y.scrollPage('.class',{navEl: '.md', count: 100});   // 对象内参数为默认值，可传入同名参数进行替换
 ```
 ### demo8
 ####  视频播放模块
 ##### 【js】
 ```
-<script src="http://static.ykclass.com/frame/polyv/polyvplayer.min.js"></script>
+<script src="//static.ykclass.com/frame/polyv/polyvplayer.min.js"></script>
 //视频
-	var uid = "336d8745b4";
-	var vid = "5af4dd0127c62475750485dc988b22d2_5";
-	var videoPlayer = null; //live：直播播放器  video：点播播放器
-	initVidoPlayer(vid);
-	function initVidoPlayer(vid) {
-		videoPlayer = polyvObject('#player').videoPlayer({
-			'width': '100%',
-			'height': '100%',
-			'vid': vid,
-			flashParams: {
-				'allowScriptAccess': 'always',
-				'allowFullScreen': 'true',
-				'quality': 'high',
-				'bgcolor': '#ffffff',
-				'wmode': 'transparent',
-			},
-			flashvars: {
-				'autoplay': '1',
-				'is_auto_replay': 'on',
-				'ban_history_time': 'on',
-				'setScreen': 'fill',
-			}
-		});
-	};
+var uid = "336d8745b4";
+var vid = "5af4dd0127c62475750485dc988b22d2_5";
+var videoPlayer = null; //live：直播播放器  video：点播播放器
+initVidoPlayer(vid);
+function initVidoPlayer(vid) {
+    videoPlayer = polyvObject('#player').videoPlayer({
+        'width': '100%',
+        'height': '100%',
+        'vid': vid,
+        flashParams: {
+            'allowScriptAccess': 'always',
+            'allowFullScreen': 'true',
+            'quality': 'high',
+            'bgcolor': '#ffffff',
+            'wmode': 'transparent',
+        },
+        flashvars: {
+            'autoplay': '1',
+            'is_auto_replay': 'on',
+            'ban_history_time': 'on',
+            'setScreen': 'fill',
+        }
+    });
+};
 ```
 ### demo9
 ####  m端fastClick
 ```
-<script src="http://js.ykclass.com/frame/fastClick/v1.0.0/fastClick.js"></script>
+<script src="//js.ykclass.com/frame/fastClick/v1.0.0/fastClick.js"></script>
 // 快速点击
 FastClick.attach(document.body);
 ```
@@ -506,17 +539,17 @@ $(document).on("click", ".ntkf", function() {
     NTKF.im_openInPageChat(kf);
 });
 ```
-**引用js文件**
+引用js文件：
 ```
 <script type="text/javascript" src="//dl.ntalker.com/js/xn6/ntkfstat.js?siteid=kf_9540" charset="utf-8"></script>
 ```
 ### demo11
-####  动画至锚点 scrollTo
-**引用方法库**
+####  M端页面滚动到指定元素位置
+引用方法库
 ```
-<script src="//m.ykclass.com/zt/zyjs/yuanaaa1.2.js"></script>
+<script src="//m.ykclass.com/zt/zyjs/yuanaaa2.1.js"></script>
 ```
-**调用方法**
+调用方法
 ```
 $_y.scrollTo('#id');
 ```
@@ -536,35 +569,23 @@ if(endDay - today > 0) {
 }
 ```
 ### demo13
-####  表格标题显示切换 fixedTop
+####  页面滚动到指定位置展示
 ##### 【js】
-**引用方法库**
+引用方法库
 ```
-<script src="//m.ykclass.com/zt/zyjs/yuanaaa1.2.js"></script>
+<script src="//m.ykclass.com/zt/zyjs/yuanaaa2.1.js"></script>
 ```
-**调用方法**
+调用方法
 ```
 $_y.fixedTop({
-    target: '#table-title',  // 目标元素
-    relatedTarget: '.table',   // 关联元素
-    time: 50,   // 节流时间（ms）默认50
-    subtractHeight: 0   // 底部预留高度 默认0
+    target: '#table-title',         // 目标元素
+    relatedTarget: '.table',        // 关联元素
+    throttleTime: 50,               // 节流时间（ms）
+    subtractHeight: 150             // 底部预留高度
 });
 ```
 ### demo14
-####  导航滚屏 scrollPage
-##### 【js】
-**引用方法库**
-```
-<script src="//m.ykclass.com/zt/zyjs/yuanaaa1.2.js"></script>
-```
-**调用方法**
-```
-$_y.scrollPage('.class');
-// 导航条需为包含类名'md'的ul/ol
-```
-### demo15
-####  元素入屏幕动画 enterScreenAnimate
+####  enterScreenAnimate
 ##### 【css】
 [Animate.css 动画库](https://daneden.github.io/animate.css/)
 ```
@@ -575,21 +596,41 @@ $_y.scrollPage('.class');
 <link rel="stylesheet" type="text/css" href="//m.ykclass.com/zt/zyjs/magic.min.css"/>
 ```
 ##### 【js】
-**引用方法库**
+引用方法库（JQ依赖）
 ```
-<script src="//m.ykclass.com/zt/zyjs/yuanaaa1.2.js"></script>
+<script src="//m.ykclass.com/zt/zyjs/yuanaaa2.1.js"></script>
 ```
-**调用方法**
+调用方法
 ```
-$_y.enterScreenAnimate([
-    {
-        el: part1,   // dom元素
-        animateType: 'bounceIn',   // 动画类型，动画样式的class
-        addLibrary:'animated'     // 依赖animate.css 库
-    }, {
-        el: '.part-2',   // 类名或者ID
-        animateType: 'puffIn',      // 动画类型，动画样式的class
-        addLibrary: 'magictime'     // 依赖magic.css 库
-    }
-]);
+$_y.enterScreenAnimate({
+    el: '.anima',                   // 需要动画元素的类名 默认 '.anima'
+    scale: 0.8                      // 0.8为元素到达屏幕高度80%时开始执行动画 默认0.8
+});
+/*
+* data-addLibrary="animated"        // 依赖动画库的通用类名
+* data-animateType="bounceInRight"  // 动画的类名
+* data-delay="200"                  // 动画延迟时间
+* data-remove="true"                // 动画执行完成后是否删除类名
+* data-relative=".part-2"           // 动画相对元素
+*/
+
+```
+### demo15
+####  touchEvent
+##### 【js】
+引用方法库（JQ依赖）
+```
+<script src="//m.ykclass.com/zt/zyjs/yuanaaa2.1.js"></script>
+```
+调用方法
+```
+$_y.touchEvent({
+    el: '',                        // 注册事件的元素
+    touchstartFn: null,            // 滑动开始时的事件
+    touchendFn: null,              // 滑动结束的事件 需传值 direction
+    minMove: 70                    // 判断滑动的最小滑动距离
+});
+/*
+* direction                        // 1：向上，2：向下，3：向左，4：向右,0：未滑动
+*/
 ```
