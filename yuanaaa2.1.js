@@ -293,6 +293,9 @@ $_y = {
 		}
 
 		function change(num) {
+			if(num === count){
+				return;
+			}
 			if (num > count) {
 				num = num > max ? 0 : num;
 				mainToNext(num);
@@ -314,14 +317,18 @@ $_y = {
 		//  左右控制点击事件
 		$controllers.on('click', function (event) {
 			var e = event || window.event;
+            clearTimeout(times);
 			$(e.target).index() === 0 ? change(count - 1) : change(count + 1);
+            if(options.autoplay) {
+                return autoFn();
+            }
 		});
 		//  序号控制点击事件
 		$paginationLists.on('click', function () {
 			clearTimeout(times);
 			change($(this).index());
 			if(options.autoplay) {
-				autoFn();
+				return autoFn();
 			}
 		});
 		// 自动轮播
@@ -450,7 +457,7 @@ $_y = {
 			},time)
 		});
 		function changeStatus() {
-			var scrollY = document.documentElement.scrollTop;
+			var scrollY = $('html,body').scrollTop();
 			if (scrollY > minY && scrollY < maxY) {
 				$target.show();
 			} else {
@@ -490,7 +497,7 @@ $_y = {
 		function scrollFn() {
 			$w.on('scroll',function () {
 				for(var top = $w.scrollTop(), arr = [], j = heightArr.length - 1; j >= 0; j--){
-					if(top + count + 3 > heightArr[j]) {
+					if(top + count > heightArr[j]) {
 						arr.push(j);
 					}
 				}
@@ -542,7 +549,7 @@ $_y = {
 			var el = $el.eq(j);
 			if(!el.data('hasdone')) {
 				if(top + count > topArr[j]) {
-					el.data('hasdone',true);   					// 高度达到时即进行标准，防止重复动画
+					el.data('hasdone',true);   					// 高度达到时即进行标注，防止重复动画
 					if(el.data('delay') && parseInt(el.data('delay'))){
 						setTimeout(function () {
 							anima(el)
