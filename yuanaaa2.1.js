@@ -430,42 +430,41 @@ $_y = {
 		return this;
 	},
 	/*页面滚动隐藏/显示*/
-	fixedTop: function (obj) {
-		var defaultOptions = {
-				target: '',
-				relatedTarget: '',
-				throttleTime: 50,
-				subtractHeight: 150
-			},
-			options = $.extend(defaultOptions, obj || {}),
-			$target = $(options.target),  						// 目标元素
-			$relatedTarget = $(options.relatedTarget),    		// 关联元素
-			time = options.throttleTime,   						// 节流时间（ms）
-			subtractHeight = options.subtractHeight,  			// 底部预留高度
-			isRun = false,
-			minY = $relatedTarget ? $relatedTarget.offset().top : '',
-			maxY = $relatedTarget ? $relatedTarget.height() + minY - subtractHeight - $target.height() : '';
-
-		$(window).on('scroll',function () {
-			if(isRun) {
-				return;
-			}
-			isRun = true;
-			setTimeout(function () {
-				changeStatus();
-				isRun = false;
-			},time)
-		});
-		function changeStatus() {
-			var scrollY = $('html,body').scrollTop();
-			if (scrollY > minY && scrollY < maxY) {
-				$target.show();
-			} else {
-				$target.hide();
-			}
-		}
-		return this;
-	},
+    fixedTop: function (obj) {
+        var defaultOptions = {
+                target: '',
+                relatedTarget: '',
+                throttleTime: 50,
+                subtractHeight: 150
+            },
+            options = $.extend(defaultOptions, obj || {}),
+            $target = $(options.target),  						// 目标元素
+            $relatedTarget = $(options.relatedTarget),    		// 关联元素
+            time = options.throttleTime,   						// 节流时间（ms）
+            subtractHeight = options.subtractHeight,  			// 底部预留高度
+            isRun = false;
+        $(window).on('scroll',function () {
+            if(isRun) {
+                return;
+            }
+            isRun = true;
+            setTimeout(function () {
+                changeStatus();
+                isRun = false;
+            },time)
+        });
+        function changeStatus() {
+            var minY = $relatedTarget ? $relatedTarget.offset().top : '',
+                maxY = $relatedTarget ? $relatedTarget.height() + minY - subtractHeight - $target.height() : '',
+                scrollY = $('html,body').scrollTop();
+            if (scrollY > minY && scrollY < maxY) {
+                $target.show();
+            } else {
+                $target.hide();
+            }
+        }
+        return this;
+    },
 	/*页面动画至指定元素*/
 	scrollTo: function (el) {
 		var h = $(el).offset().top - 200;
