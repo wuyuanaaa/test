@@ -154,7 +154,7 @@ $_y = {
                 infoMsg = finalObj.info.msg;
             }
             var object = {
-                sceneCode: finalObj.cjCode,
+                sceneCode: obj.cjCode,
                 phone: $phone.val(),
                 content: infoMsg
             };
