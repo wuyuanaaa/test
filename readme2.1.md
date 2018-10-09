@@ -14,6 +14,7 @@
 - [demo13](#demo13)---页面指定位置展示
 - [demo14](#demo14)---元素入屏幕动画
 - [demo15](#demo15)---移动端滑动事件
+- [demo16](#demo16)---禁止input[type='number']滚轮事件
 
 ###  demo1
 ####  百度统计
@@ -633,4 +634,15 @@ $_y.touchEvent({
 /*
 * direction                        // 1：向上，2：向下，3：向左，4：向右,0：未滑动
 */
+```
+### demo16
+####  preventMouseWheel
+##### 【js】
+引用方法库（JQ依赖）
+```
+<script src="//m.ykclass.com/zt/zyjs/yuanaaa2.1.js"></script>
+```
+调用方法
+```
+$_y.preventMouseWheel();
 ```

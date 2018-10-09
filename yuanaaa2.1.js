@@ -532,7 +532,7 @@ $_y = {
 
         return this;
     },
-    /*元素进入屏幕范围动效*/
+    /* 元素进入屏幕范围动效 */
     enterScreenAnimate: function (obj) {
         var defaultObj = {
                 el: '.anima',
@@ -601,6 +601,19 @@ $_y = {
         }
 
         return this;
+    },
+    /* 禁止input number滚轮事件 */
+    preventMouseWheel: function () {
+        var $nums = $('input[type = "number"]');
+        for(var i = 0, len = $nums.length; i < len; i++) {
+            $nums[i].onmousewheel = function () {
+                return false;
+            };
+            $nums[i].addEventListener('DOMMouseScroll', function (e) {
+                e = e || window.event;
+                e.preventDefault();
+            },false)
+        }
     },
     /*
     *公共数据
