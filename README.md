@@ -1,22 +1,22 @@
 ##  导航
-- [demo1](#demo1)---百度统计
-- [demo2](#demo2)---自动更换公司及资质
-- [demo3](#demo3)---单页微信修改
-- [demo4](#demo4)---手机验证码模块
-- [demo5](#demo5)---复制微信
-- [demo6](#demo6)---轮播图
-- [demo7](#demo7)---scrollPage
-- [demo8](#demo8)---视频播放模块
-- [demo9](#demo9)---m端fastClick
-- [demo10](#demo10)---小能代码
-- [demo11](#demo11)---M端页面滚动到指定元素位置
-- [demo12](#demo12)---倒计时模块
-- [demo13](#demo13)---页面指定位置展示
-- [demo14](#demo14)---元素入屏幕动画
-- [demo15](#demo15)---移动端滑动事件
-- [demo16](#demo16)---禁止input[type='number']滚轮事件
+- [fn1](#fn1)---百度统计
+- [fn2](#fn2)---自动更换公司及资质
+- [fn3](#fn3)---单页微信修改
+- [fn4](#fn4)---手机验证码模块
+- [fn5](#fn5)---复制微信
+- [fn6](#fn6)---轮播图
+- [fn7](#fn7)---scrollPage
+- [fn8](#fn8)---视频播放模块
+- [fn9](#fn9)---m端fastClick
+- [fn10](#fn10)---小能代码
+- [fn11](#fn11)---M端页面滚动到指定元素位置
+- [fn12](#fn12)---倒计时模块
+- [fn13](#fn13)---页面指定位置展示
+- [fn14](#fn14)---元素入屏幕动画
+- [fn15](#fn15)---移动端滑动事件
+- [fn16](#fn16)---禁止input[type='number']滚轮事件
 
-###  demo1
+###  fn1
 ####  百度统计
 ```
 <script>
@@ -29,7 +29,7 @@
     })();
 </script>
 ```
-###  demo2
+###  fn2
 ####  自动更换公司及资质
 #####  审核页面
 引用方法库
@@ -55,22 +55,7 @@ $_y.registeredBd();
 ```
 <script src="//m.ykclass.com/zt/zyjs/yuanaaa2.1.js"></script>
 ```
-公司名称替换成如下：
-```
-<span id="registeredName"></span>
-```
-备案号替换成如下：
-```
-<span id="registeredNum"></span>
-```
-证书部分替换成：
-```
-<div class="p-warp" id="certificate">
-    <p>网络文化经营许可证 鄂网文许字【2014】1409-032号</p>
-    <p>互联网出版许可证 鄂字第23号 </p>
-</div>
-```
-例：M端替换后如下：
+M端替换后如下：
 ```
 <div class="p-warp">
     <p>版权所有@<span id="registeredName"></span> </p>
@@ -85,7 +70,7 @@ $_y.registeredBd();
 ```
 $_y.registered();
 ```
-### demo3
+### fn3
 ####  单页微信修改
 引用方法库
 ```
@@ -95,7 +80,7 @@ $_y.registered();
 ```
 $_y.changeWeChat(['gpa6597']);
 ```
-### demo4
+### fn4
 ####  手机验证码模块
 ##### 【html】
 ```
@@ -229,29 +214,41 @@ $_y.changeWeChat(['gpa6597']);
     <div class="row">
         <input class="code-value" type="number" placeholder="请输入验证码">
     </div>
-    <button class="vail-code">提交</button>
+    <div class="row">
+        <button class="vail-code">提交</button>
+    </div>
 </div>
 ```
 ##### 【js】
 引用方法库
 ```
+<script src="//m.ykclass.com/zt/zyjs/layer/layer.js"></script>
 <script src="//m.ykclass.com/zt/zyjs/yuanaaa2.1.js"></script>
 ```
 在js部分引用方法
 ```
 $_y.saveActivitySmsInfo({
-    id: '#get-phone',    // 获客模块id  必需
-    cjCode: 'YK_TT_TONGJI',     // 场景代码  必需
-    needMsg: true,      // 是否短信验证(true表示需要)  非必需
-    countdown: 90,      // 首次倒计时时间（默认90）  非必需
-    info: infoObj,      // 传入的用户填写信息（一个包含msg参数的对象）   非必需
-    popUp: true,        // 验证通过后是否有弹窗
-    callback: function () {      // 获客完成后的回调  非必需
+    id: '#get-phone',
+    cjCode: 'YK_TT_TONGJI',
+    needMsg: true,
+    countdown: 90,
+    info: infoObj,
+    popUp: true,
+    callback: function () {
         if(_taq) {
           _taq.push({convert_id: "1606319178273799", event_type: "form"})
         }
     }
 });
+/*
+* id:                   // 获客模块id  【必需】
+* cjCode:               // 场景代码  【必需】
+* needMsg:              // 是否短信验证  【非必需】【true】
+* countdown:            // 首次倒计时时间  【非必需】【90】
+* info:                 // 传入的用户填写信息（一个包含msg参数的对象）  【非必需】
+* popUp:                // 验证通过后是否有弹窗  【非必需】【true】
+* callback:             // 获客完成后的回调  【非必需】
+*/
 ```
 附带信息如
 ```
@@ -262,10 +259,10 @@ $('.vail-code').on('click',function () {
     var province = $('#province').val();
     var education = $('#education').val();
     infoObj.msg = province + '-' + education;
-    // 信息自行更换
 });
+ // 信息自行更换
 ```
-### demo5
+### fn5
 ####  复制微信
 ##### 【html】
 ```
@@ -277,7 +274,6 @@ $('.vail-code').on('click',function () {
     <p class="weChatBottom">微信咨询  免费获取信息</p>
 </div>
 <!--弹出层 结束-->
-
 <div class="footerBar">
     <p>老师微信：<span class="c-yellow wxCode"></span>（点击复制）</p>
 </div>
@@ -361,7 +357,7 @@ div.layui-layer {   //取消layer默认外阴影
 ```
 $_y.copyWeChat(['qbk8730']);
 ```
-### demo6
+### fn6
 ####  轮播图
 ##### 【html】
 ```
@@ -464,19 +460,31 @@ $_y.copyWeChat(['qbk8730']);
 调用方法
 ```
 $_y.carousel({
-    el: '#carousel',                          // 轮播模块id
-    mode: 1,                                  // 轮播方式 1、左右切换 2、淡出淡入
-    runTime: 800,                             // 轮播切换的时间
-    intervalTime: 4000,                       // 轮播间隙时间
-    mainListEl: '.carousel-main',             // 轮播主区域类名
-    paginationListEl: '.carousel-pagination', // 轮播序号部分类名
-    controller: '.carousel-controller',       // 轮播切换部分类名
-    addTouchEvent: false,                     // 是否手指滑动事件
-    autoplay: true,                           // 是否自动播放
-    mouseenterStop: false                     // 鼠标进入时轮播是否停止
+    el: '#carousel',
+    mode: 1,
+    runTime: 800,
+    intervalTime: 4000,
+    mainListEl: '.carousel-main',
+    paginationListEl: '.carousel-pagination',
+    controller: '.carousel-controller',
+    addTouchEvent: false,
+    autoplay: true,
+    mouseenterStop: false
 });
+/*
+* el:                   // 轮播模块id  【必需】【'#carousel'】
+* mode:                 // 轮播方式 1、左右切换 2、淡出淡入  【非必需】【1】
+* runTime:              // 轮播切换的时间  【非必需】【800】
+* intervalTime:         // 轮播间隙时间  【非必需】【4000】
+* mainListEl:           // 轮播主区域类名  【非必需】【'.carousel-main'】
+* paginationListEl:     // 轮播序号部分类名  【非必需】【'.carousel-pagination'】
+* controller:           // 轮播切换部分类名  【非必需】【'.carousel-controller'】
+* addTouchEvent:        // 是否手指滑动事件  【非必需】【false】
+* autoplay:             // 是否自动播放  【非必需】【true】
+* mouseenterStop:       // 鼠标进入时轮播是否停止  【非必需】【false】
+*/
 ```
-### demo7
+### fn7
 ####  scrollPage
 ##### 【js】
 引用方法库（JQ依赖）
@@ -487,7 +495,7 @@ $_y.carousel({
 ```
 $_y.scrollPage('.class',{navEl: '.md', count: 100});   // 对象内参数为默认值，可传入同名参数进行替换
 ```
-### demo8
+### fn8
 ####  视频播放模块
 ##### 【js】
 ```
@@ -518,14 +526,14 @@ function initVidoPlayer(vid) {
     });
 };
 ```
-### demo9
+### fn9
 ####  m端fastClick
 ```
 <script src="//js.ykclass.com/frame/fastClick/v1.0.0/fastClick.js"></script>
 // 快速点击
 FastClick.attach(document.body);
 ```
-### demo10
+### fn10
 ####  小能代码
 ```
 var kf = 'kf_9540_1520933792603';
@@ -544,7 +552,7 @@ $(document).on("click", ".ntkf", function() {
 ```
 <script type="text/javascript" src="//dl.ntalker.com/js/xn6/ntkfstat.js?siteid=kf_9540" charset="utf-8"></script>
 ```
-### demo11
+### fn11
 ####  M端页面滚动到指定元素位置
 引用方法库
 ```
@@ -554,7 +562,7 @@ $(document).on("click", ".ntkf", function() {
 ```
 $_y.scrollTo('#id');
 ```
-### demo12
+### fn12
 ####  倒计时模块
 ```
 var today = new Date().getTime();
@@ -569,7 +577,7 @@ if(endDay - today > 0) {
     $(".decade").html(decade);
 }
 ```
-### demo13
+### fn13
 ####  页面滚动到指定位置展示
 ##### 【js】
 引用方法库
@@ -579,13 +587,19 @@ if(endDay - today > 0) {
 调用方法
 ```
 $_y.fixedTop({
-    target: '#table-title',         // 目标元素
-    relatedTarget: '.table',        // 关联元素
-    throttleTime: 50,               // 节流时间（ms）
-    subtractHeight: 150             // 底部预留高度
+    target: '#table-title',
+    relatedTarget: '.table',
+    throttleTime: 50,
+    subtractHeight: 150
 });
+/*
+* target:               // 目标元素  【必需】
+* relatedTarget:        // 关联元素  【必需】
+* throttleTime:         // 节流时间（ms）  【非必需】【50】
+* subtractHeight:       // 底部预留高度  【非必需】【150】
+*/
 ```
-### demo14
+### fn14
 ####  enterScreenAnimate
 ##### 【css】
 [Animate.css 动画库](https://daneden.github.io/animate.css/)
@@ -604,10 +618,12 @@ $_y.fixedTop({
 调用方法
 ```
 $_y.enterScreenAnimate({
-    el: '.anima',                   // 需要动画元素的类名 默认 '.anima'
-    scale: 0.8                      // 0.8为元素到达屏幕高度80%时开始执行动画 默认0.8
+    el: '.anima',
+    scale: 0.8
 });
 /*
+* el:                               // 需要动画元素的类名  【非必需】【'.anima'】
+* scale:                            // 元素到达屏幕高度(scale*100)%时开始执行动画  【非必需】【0.8】
 * data-addLibrary="animated"        // 依赖动画库的通用类名
 * data-animateType="bounceInRight"  // 动画的类名
 * data-delay="200"                  // 动画延迟时间
@@ -616,7 +632,7 @@ $_y.enterScreenAnimate({
 */
 
 ```
-### demo15
+### fn15
 ####  touchEvent
 ##### 【js】
 引用方法库（JQ依赖）
@@ -626,16 +642,20 @@ $_y.enterScreenAnimate({
 调用方法
 ```
 $_y.touchEvent({
-    el: '',                        // 注册事件的元素
-    touchstartFn: null,            // 滑动开始时的事件
-    touchendFn: null,              // 滑动结束的事件 需传值 direction
-    minMove: 70                    // 判断滑动的最小滑动距离
+    el: '',
+    touchstartFn: null,
+    touchendFn: null,
+    minMove: 70
 });
 /*
-* direction                        // 1：向上，2：向下，3：向左，4：向右,0：未滑动
+* el: '',                        // 注册事件的元素
+* touchstartFn: null,            // 滑动开始时的事件
+* touchendFn: null,              // 滑动结束的事件 需传值 direction
+* minMove: 70                    // 判断滑动的最小滑动距离
+* direction                      // 1：向上，2：向下，3：向左，4：向右,0：未滑动
 */
 ```
-### demo16
+### fn16
 ####  preventMouseWheel
 ##### 【js】
 引用方法库（JQ依赖）

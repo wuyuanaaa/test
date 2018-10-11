@@ -374,12 +374,14 @@ $_y = {
                 } else if (direction === 4) {
                     change(count - 1);
                 }
-                return function () {
-                    auto = function () {
-                        autoFn();
-                    };
-                    auto();
-                }();
+                if (options.autoplay) {
+                    return function () {
+                        auto = function () {
+                            autoFn();
+                        };
+                        auto();
+                    }();
+                }
             }
         }
         return this;
@@ -397,18 +399,20 @@ $_y = {
             startY,
             $el = $(options.el);
 
-        $el[0].addEventListener('touchstart', function (ev) {
-            startX = ev.touches[0].pageX;
-            startY = ev.touches[0].pageY;
-            options.touchstartFn ? options.touchstartFn() : '';
-        });
-        $el[0].addEventListener('touchend', function (ev) {
-            var endX, endY, direction;
-            endX = ev.changedTouches[0].pageX;
-            endY = ev.changedTouches[0].pageY;
-            direction = getSlideDirection(startX, startY, endX, endY);
-            options.touchendFn ? options.touchendFn(direction) : '';
-        });
+        if($el[0]) {
+            $el[0].addEventListener('touchstart', function (ev) {
+                startX = ev.touches[0].pageX;
+                startY = ev.touches[0].pageY;
+                options.touchstartFn ? options.touchstartFn() : '';
+            });
+            $el[0].addEventListener('touchend', function (ev) {
+                var endX, endY, direction;
+                endX = ev.changedTouches[0].pageX;
+                endY = ev.changedTouches[0].pageY;
+                direction = getSlideDirection(startX, startY, endX, endY);
+                options.touchendFn ? options.touchendFn(direction) : '';
+            });
+        }
 
         // 返回角度
         function getSlideAngle(dx, dy) {
