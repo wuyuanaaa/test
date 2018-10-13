@@ -362,7 +362,6 @@ $_y = {
             });
             function touchstart() {
                 clearTimeout(times);
-                auto = null;
             }
             function touchend(direction) {
                 touchMove(direction);
@@ -374,12 +373,7 @@ $_y = {
                     change(count - 1);
                 }
                 if (options.autoplay) {
-                    return function () {
-                        auto = function () {
-                            autoFn();
-                        };
-                        auto();
-                    }();
+                    return autoFn();
                 }
             }
         }
