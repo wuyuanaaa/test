@@ -312,6 +312,9 @@ $_y = {
         }
 
         function autoFn() {
+            if(max === 0) {
+                return;
+            }
             clearTimeout(times);
             times = setTimeout(function () {
                 change(count + 1);
@@ -352,22 +355,18 @@ $_y = {
         // 移动端滑动支持
         if (options.addTouchEvent) {
             // 滑动处理
-
             this.touchEvent({
                 el: $carousel[0],
                 touchstartFn: touchstart,
                 touchendFn: touchend
             });
-
             function touchstart() {
                 clearTimeout(times);
                 auto = null;
             }
-
             function touchend(direction) {
                 touchMove(direction);
             }
-
             function touchMove(direction) {
                 if (direction === 3) {
                     change(count + 1);
@@ -530,7 +529,7 @@ $_y = {
             $body.on('click', options.navEl + ' li', function () {
                 var i = $(this).index(),
                     h = heightArr[i];
-                $body.stop().animate({scrollTop: h - count}, 600)
+                $body.stop().animate({scrollTop: h - count + 2}, 600);  // 此处+2只为导航的active及时切换
             })
         }
 
@@ -573,16 +572,17 @@ $_y = {
 
         function arrForEach(j, top) {
             var el = $el.eq(j);
-            if (!el.data('hasdone')) {
-                if (top + count > topArr[j]) {
-                    el.data('hasdone', true);   					// 高度达到时即进行标注，防止重复动画
-                    if (el.data('delay') && parseInt(el.data('delay'))) {
-                        setTimeout(function () {
-                            anima(el)
-                        }, parseInt(el.data('delay')));
-                    } else {
+            if (el.data('_hasdone')) {
+                return;
+            }
+            if (top + count > topArr[j]) {
+                el.data('_hasdone', true);   					// 高度达到时即进行标注，防止重复动画
+                if (el.data('delay') && parseInt(el.data('delay'))) {
+                    setTimeout(function () {
                         anima(el)
-                    }
+                    }, parseInt(el.data('delay')));
+                } else {
+                    anima(el)
                 }
             }
         }
@@ -603,7 +603,6 @@ $_y = {
                 }, 1000)
             }
         }
-
         return this;
     },
     /* 禁止input number滚轮事件 */
