@@ -239,11 +239,10 @@ $_y = {
                 anim: 2
             })
         }
-
         return this;
     },
     /*轮播*/
-    carousel: function (obj) {    // id,mode,addTouch,interval,moveTime
+    carousel: function (obj) {
         var defaultOptions = {
                 el: '#carousel',
                 runTime: 800,
@@ -258,71 +257,79 @@ $_y = {
             },
             options = $.extend(defaultOptions, obj || {}),
             $carousel = $(options.el),
-            runTime = options.runTime,  				// 动画时间
             intervalTime = options.intervalTime,  	// 轮播切换时间
             count = 0,
             $mainLists = $carousel.find(options.mainListEl) ? $carousel.find(options.mainListEl).children() : '',
             $paginationLists = $carousel.find(options.paginationListEl) ? $carousel.find(options.paginationListEl).children() : '',
             $controllers = $carousel.find(options.controller) ? $carousel.find(options.controller).children() : '',
             max = $mainLists.length - 1,
-            width = $mainLists.eq(0).outerWidth(),
-            mainToNext = null,
-            mainToPrev = null,
             times = null;
-        switch (options.mode) {
-            case 1:
-                // 初始化1
-                $mainLists.eq(count).css('left', '0px').siblings().css('left', -width + 'px');
-                // 切换效果1
-                mainToNext = function (num) {
-                    if (num === count) {
-                        return;
-                    }
-                    $mainLists.eq(num).css('left', width + 'px');
-                    $mainLists.eq(count).stop().animate({left: -width + 'px'}, runTime, 'swing');
-                    $mainLists.eq(num).stop().animate({left: '0px'}, runTime, 'swing');
-                };
-                mainToPrev = function (num) {
-                    if (num === count) {
-                        return;
-                    }
-                    $mainLists.eq(num).css('left', -width + 'px');
-                    $mainLists.eq(count).stop().animate({left: width + 'px'}, runTime, 'swing');
-                    $mainLists.eq(num).stop().animate({left: '0px'}, runTime, 'swing');
-                };
-                break;
-            case 2:
-                // 初始化2
-                $mainLists.eq(count).fadeIn(runTime).siblings().fadeOut(runTime);
-                // 切换效果2
-                mainToNext = function (num) {
-                    if (num === count) {
-                        return;
-                    }
-                    $mainLists.eq(num).fadeIn(runTime).siblings().fadeOut(runTime);
-                };
-                mainToPrev = mainToNext;
-                break;
-            default:
-                console.log('模式选择错误');
-                return;
-        }
-
+        // 动画及初始化
         function change(num) {
-            if (num === count) {
-                return;
+            var modeFn = getMode(options.mode);
+            if(!modeFn || num === count) {
+                return ;
             }
             if (num > count) {
                 num = num > max ? 0 : num;
-                mainToNext(num);
+                modeFn.next(num);
             } else {
                 num = num < 0 ? max : num;
-                mainToPrev(num);
+                modeFn.prev(num);
             }
             count = num;
             $paginationLists.eq(count).addClass('active').siblings().removeClass('active');
-        }
 
+            function getMode(mode) {
+                var width = $mainLists.eq(0).outerWidth(),
+                    runTime = options.runTime,  				// 动画时间
+                    mainToNext = null,
+                    mainToPrev = null;
+                switch (mode) {
+                    case 1:
+                        // 初始化1
+                        $mainLists.eq(count).css('left', '0px').siblings().css('left', -width + 'px');
+                        // 切换效果1
+                        mainToNext = function (num) {
+                            if (num === count) {
+                                return;
+                            }
+                            $mainLists.eq(num).css('left', width + 'px');
+                            $mainLists.eq(count).stop().animate({left: -width + 'px'}, runTime, 'swing');
+                            $mainLists.eq(num).stop().animate({left: '0px'}, runTime, 'swing');
+                        };
+                        mainToPrev = function (num) {
+                            if (num === count) {
+                                return;
+                            }
+                            $mainLists.eq(num).css('left', -width + 'px');
+                            $mainLists.eq(count).stop().animate({left: width + 'px'}, runTime, 'swing');
+                            $mainLists.eq(num).stop().animate({left: '0px'}, runTime, 'swing');
+                        };
+                        break;
+                    case 2:
+                        // 初始化2
+                        $mainLists.eq(count).fadeIn(runTime).siblings().fadeOut(runTime);
+                        // 切换效果2
+                        mainToNext = function (num) {
+                            if (num === count) {
+                                return;
+                            }
+                            $mainLists.eq(num).fadeIn(runTime).siblings().fadeOut(runTime);
+                        };
+                        mainToPrev = mainToNext;
+                        break;
+                    default:
+                        console.log('模式选择错误');
+                        return ;
+                }
+                return {
+                    next: mainToNext,
+                    prev: mainToPrev
+                }
+            }
+        }
+        // 自动轮播
         function autoFn() {
             if (max === 0) {
                 return;
@@ -333,7 +340,6 @@ $_y = {
                 return autoFn();
             }, intervalTime)
         }
-
         //  左右控制点击事件
         $controllers.on('click', function (event) {
             var e = event || window.event;
