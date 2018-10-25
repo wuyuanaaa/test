@@ -35,153 +35,157 @@ $_y = {
     saveActivitySmsInfo: function (obj) {  			// 带短信验证获客
         var defaultOptions = {
                 popUp: true,
-                countDown: 90,
+                COUNTDOWN: 90,
                 popUpEl: '.layer-warp',
                 popUpCloseEl: '.layer-close',
                 needMsg: true
             },
             finalObj = $.extend(defaultOptions, obj),
             $module = $(finalObj.id),
-            $phone = $module.find('.phone-num'),		// 手机号码input
+            COUNTDOWN = finalObj.COUNTDOWN, 			// 倒计时
             $sendCode = $module.find('.send-code'),		// 获取验证码
-            $codeValue = $module.find('.code-value'), 	// 验证码input
-            $vailCode = $module.find('.vail-code'),		// 提交按钮
-            countDown = finalObj.countDown, 			// 倒计时
-            host = '',									// 主域名
-            protocol = window.location.protocol,		// 协议
-            regPhone = /^1[34578][0-9]{9}$/;
-        if (protocol === 'http:') {						// 根据页面协议确定验证接口
-            host = "http://tf.topksw.com"
-        } else {
-            host = "https://m.ykclass.com"
-        }
-        var setTime = function (el) {                // 短信验证倒计时
-            var startVal = el.val();
-            el.attr("disabled", true);
+            host = getHost();							// 主域名
 
+        bandEvent();
+
+        // 确定主机号
+        function getHost() {
+            var protocol = window.location.protocol;
+            if (protocol === 'http:') {						// 根据页面协议确定验证接口
+                return "http://tf.topksw.com";
+            } else {
+                return "https://m.ykclass.com";
+            }
+        }
+        // 短信验证倒计时
+        function setTime(el) {
+            var initialVal = el.val();          // 储存初始文字
+            el.attr("disabled", true);
             function fn() {
-                countDown--;
-                el.val("重新发送(" + countDown + ")");
-                if (countDown >= 0) {
+                COUNTDOWN--;
+                el.val("重新发送(" + COUNTDOWN + ")");
+                if (COUNTDOWN >= 0) {
                     setTimeout(fn, 1000);
                 } else {
                     el.removeAttr("disabled");
-                    el.val(startVal);
-                    countDown = 60;
+                    el.val(initialVal);
+                    COUNTDOWN = 60;
                 }
             }
-
             setTimeout(fn, 1000);
-        };
-        var activity = {
-            sendSms: function (phone, platform, callback) {
-                if (!regPhone.test(phone)) {
-                    layer.msg('手机号码输入有误！');
-                } else {
-                    setTime($sendCode);
-                    $.ajax({
-                        type: "get",
-                        url: host + "/common/sendSmsMessage.html",
-                        dataType: "jsonp",
-                        jsonp: "callback", //传递给请求处理程序或页面的，用以获得jsonp回调函数名的参数名(一般默认为:callback)
-                        jsonpCallback: "callback", //自定义的jsonp回调函数名称，默认为jQuery自动生成的随机函数名，也可以写"?"，jQuery会自动为你处理数据
-                        data: {
-                            phone: phone,
-                            platform: platform
-                        },
-                        success: function (data) {
-                            if (callback && typeof callback === 'function') {
-                                callback(data);
-                            }
-                        }
-                    })
+        }
+        // 手机号码验证
+        function testPhoneNum(num) {
+            var regPhone = /^1[34578][0-9]{9}$/;
+            if(num.length > 11) {
+                layer.msg('手机号超出字符限制！');
+                return false;
+            }
+            if (!regPhone.test(num)) {
+                layer.msg('手机号码输入有误！');
+                return false
+            }
+            return true;
+        }
+        // ajax
+        function _ajax(url,data,callback) {
+            $.ajax({
+                type: "get",
+                url: url,
+                dataType: "jsonp",
+                jsonp: "callback", //jsonp回调函数名的参数名
+                data: data,
+                success: function (data) {
+                    if (callback && typeof callback === 'function') {
+                        callback(data);
+                    }
                 }
-            },
-            saveActivitySmsInfo: function (object, code, callback) {
-                object.accessUrl = window.location.href;
-                object.code = code;
-                if (finalObj.needMsg) {
-                    $.ajax({
-                        type: "get",
-                        url: host + "/common/saveActivitySmsInfo.html",
-                        dataType: "jsonp",
-                        jsonp: "callback",
-                        jsonpCallback: "callback",
-                        data: object,
-                        success: function (msg) {
-                            if (callback && typeof callback === 'function') {
-                                callback(msg);
-                            }
+            })
+        }
+        // 验证码发送及验证
+        function sendSms (phone, platform, callback) {
+            if (!testPhoneNum(phone)) {
+                return;
+            }
+            setTime($sendCode);
+            var url = host + "/common/sendSmsMessage.html",
+                data = {
+                    phone: phone,
+                    platform: platform
+                };
+            _ajax(url, data, callback);
+        }
+        function saveActivitySmsInfo (object, code, callback) {
+            object.accessUrl = window.location.href;
+            object.code = code;
+            var url = '';
+            if (finalObj.needMsg) {
+                url = host + "/common/saveActivitySmsInfo.html";
+                _ajax(url, object, callback);
+            } else {
+                if (!testPhoneNum(object.phone))  {
+                    return;
+                }
+                url = host + "/common/saveActivityInfo.html";
+                _ajax(url, object, callback);
+            }
+        }
+        // 事件绑定
+        function bandEvent(){
+            var $phone = $module.find('.phone-num'),		// 手机号码input
+                $codeValue = $module.find('.code-value'), 	// 验证码input
+                $vailCode = $module.find('.vail-code');		// 提交按钮
+
+            // 号码长度验证
+            $phone.keyup(function () {					// 手机号码长度提示
+                var phone = $phone.val();
+                if (phone.length > 11) {
+                    layer.msg('手机号超出字符限制！')
+                }
+            });
+            // 获取验证码
+            $sendCode.on('click', function () {			// 发送验证
+                sendSms($phone.val(), "yk", function (msg) {
+                    if (msg.c === '100') {
+                        layer.msg('短信发送成功！');
+                    }
+                })
+            });
+            $vailCode.on('click', function () {
+                var infoMsg = '';
+                if (finalObj.info && typeof finalObj.info === 'object') {
+                    infoMsg = finalObj.info.msg;
+                }
+                var object = {
+                    sceneCode: obj.cjCode,
+                    phone: $phone.val(),
+                    content: infoMsg
+                };
+                var code = $codeValue.val();
+                saveActivitySmsInfo(object, code, function (msg) {
+                    if (msg.c === '100') {
+                        if (finalObj.popUp) {
+                            $(finalObj.popUpEl).show();
                         }
-                    })
-                } else {
-                    if (!regPhone.test(object.phone)) {
-                        layer.msg('手机号码输入有误！')
+                        $module.find('input').not(".send-code").val("");
+                        if (finalObj.callback && typeof finalObj.callback === 'function') {    // 执行回调函数
+                            finalObj.callback();
+                        }
+                    } else if (msg.m == '用户手机号不能为空') {
+                        layer.msg('手机号码不能为空');
+                    } else if (msg.m == '短信验证码不能为空!') {
+                        layer.msg('短信验证码不能为空!');
+                    } else if (msg.code === 202) {
+                        layer.msg('短信验证码错误!');
                     } else {
-                        $.ajax({
-                            type: "get",
-                            url: _this.domainHost + "/common/saveActivityInfo.html",
-                            dataType: "jsonp",
-                            jsonp: "callback", //传递给请求处理程序或页面的，用以获得jsonp回调函数名的参数名(一般默认为:callback)
-                            jsonpCallback: "callback", //自定义的jsonp回调函数名称，默认为jQuery自动生成的随机函数名，也可以写"?"，jQuery会自动为你处理数据
-                            data: object,
-                            success: function (msg) {
-                                if (callback && typeof callback === 'function') {
-                                    callback(msg);
-                                }
-                            }
-                        })
+                        layer.msg('您的信息输入有误');
                     }
-                }
-            }
-        };
-        $phone.keyup(function () {						// 手机号码长度提示
-            var phone = $phone.val();
-            if (phone.length > 11) {
-                layer.msg('手机号超出字符限制！')
-            }
-        });
-        $sendCode.on('click', function () {			// 发送验证
-            activity.sendSms($phone.val(), "yk", function (msg) {
-                if (msg.c === '100') {
-                    layer.msg('短信发送成功！');
-                }
-            })
-        });
-        $vailCode.on('click', function () {
-            var infoMsg = '';
-            if (finalObj.info && typeof finalObj.info === 'object') {
-                infoMsg = finalObj.info.msg;
-            }
-            var object = {
-                sceneCode: obj.cjCode,
-                phone: $phone.val(),
-                content: infoMsg
-            };
-            var code = $codeValue.val();
-            activity.saveActivitySmsInfo(object, code, function (msg) {
-                if (msg.c === '100') {
-                    if (finalObj.popUp) {
-                        $(finalObj.popUpEl).show();
-                    }
-                    $module.find('input').not(".send-code").val("");
-                    if (finalObj.callback && typeof finalObj.callback === 'function') {    // 执行回调函数
-                        finalObj.callback();
-                    }
-                } else if (msg.m == '用户手机号不能为空') {
-                    layer.msg('手机号码不能为空');
-                } else if (msg.m == '短信验证码不能为空!') {
-                    layer.msg('短信验证码不能为空!');
-                } else if (msg.code === 202) {
-                    layer.msg('短信验证码错误!');
-                } else {
-                    layer.msg('您的信息输入有误');
-                }
-            })
-        });
-        $(finalObj.popUpCloseEl).on('click', function () {
-            $(finalObj.popUpEl).hide();
-        });
+                })
+            });
+            $(finalObj.popUpCloseEl).on('click', function () {
+                $(finalObj.popUpEl).hide();
+            });
+        }
         return this;
     },
     changeWeChat: function (arr) {
@@ -264,7 +268,6 @@ $_y = {
             width = $mainLists.eq(0).outerWidth(),
             mainToNext = null,
             mainToPrev = null,
-            auto = null,
             times = null;
         switch (options.mode) {
             case 1:
@@ -272,11 +275,17 @@ $_y = {
                 $mainLists.eq(count).css('left', '0px').siblings().css('left', -width + 'px');
                 // 切换效果1
                 mainToNext = function (num) {
+                    if (num === count) {
+                        return;
+                    }
                     $mainLists.eq(num).css('left', width + 'px');
                     $mainLists.eq(count).stop().animate({left: -width + 'px'}, runTime, 'swing');
                     $mainLists.eq(num).stop().animate({left: '0px'}, runTime, 'swing');
                 };
                 mainToPrev = function (num) {
+                    if (num === count) {
+                        return;
+                    }
                     $mainLists.eq(num).css('left', -width + 'px');
                     $mainLists.eq(count).stop().animate({left: width + 'px'}, runTime, 'swing');
                     $mainLists.eq(num).stop().animate({left: '0px'}, runTime, 'swing');
@@ -287,6 +296,9 @@ $_y = {
                 $mainLists.eq(count).fadeIn(runTime).siblings().fadeOut(runTime);
                 // 切换效果2
                 mainToNext = function (num) {
+                    if (num === count) {
+                        return;
+                    }
                     $mainLists.eq(num).fadeIn(runTime).siblings().fadeOut(runTime);
                 };
                 mainToPrev = mainToNext;
@@ -312,7 +324,7 @@ $_y = {
         }
 
         function autoFn() {
-            if(max === 0) {
+            if (max === 0) {
                 return;
             }
             clearTimeout(times);
@@ -360,12 +372,15 @@ $_y = {
                 touchstartFn: touchstart,
                 touchendFn: touchend
             });
+
             function touchstart() {
                 clearTimeout(times);
             }
+
             function touchend(direction) {
                 touchMove(direction);
             }
+
             function touchMove(direction) {
                 if (direction === 3) {
                     change(count + 1);
@@ -392,7 +407,7 @@ $_y = {
             startY,
             $el = $(options.el);
 
-        if($el[0]) {
+        if ($el[0]) {
             $el[0].addEventListener('touchstart', function (ev) {
                 startX = ev.touches[0].pageX;
                 startY = ev.touches[0].pageY;
@@ -474,6 +489,7 @@ $_y = {
                 $target.hide();
             }
         }
+
         return this;
     },
     /*页面动画至指定元素*/
@@ -597,19 +613,20 @@ $_y = {
                 }, 1000)
             }
         }
+
         return this;
     },
     /* 禁止input number滚轮事件 */
     preventMouseWheel: function () {
         var $nums = $('input[type = "number"]');
-        for(var i = 0, len = $nums.length; i < len; i++) {
+        for (var i = 0, len = $nums.length; i < len; i++) {
             $nums[i].onmousewheel = function () {
                 return false;
             };
             $nums[i].addEventListener('DOMMouseScroll', function (e) {
                 e = e || window.event;
                 e.preventDefault();
-            },false)
+            }, false)
         }
     },
     /*
