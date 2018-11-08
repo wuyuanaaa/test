@@ -244,7 +244,6 @@ $_y = {
     /*轮播*/
     carousel: function (obj) {
         var defaultOptions = {
-                el: '#carousel',
                 runTime: 800,
                 intervalTime: 4000,
                 mainListEl: '.carousel-main',
@@ -265,6 +264,10 @@ $_y = {
             max = $mainLists.length - 1,
             moveEedFn = null,
             times = null;
+        // 判断是否要轮播
+        if(!(options.el && max > 0)){
+            return;
+        }
         //  左右控制点击事件
         $controllers.on('click', function (event) {
             var e = event || window.event;
@@ -388,9 +391,6 @@ $_y = {
         }
         // 自动轮播方法
         function autoplay() {
-            if (max === 0) {
-                return;
-            }
             clearTimeout(times);
             times = setTimeout(function () {
                 change(count + 1)
@@ -409,15 +409,15 @@ $_y = {
             options = $.extend(defaultOptions, obj || {}),
             startX,
             startY,
-            $el = $(options.el);
+            el = options.el;
 
-        if ($el[0]) {
-            $el[0].addEventListener('touchstart', function (ev) {
+        if (el) {
+            el.addEventListener('touchstart', function (ev) {
                 startX = ev.touches[0].pageX;
                 startY = ev.touches[0].pageY;
                 options.touchstartFn ? options.touchstartFn() : '';
             });
-            $el[0].addEventListener('touchend', function (ev) {
+            el.addEventListener('touchend', function (ev) {
                 var endX, endY, direction;
                 endX = ev.changedTouches[0].pageX;
                 endY = ev.changedTouches[0].pageY;
