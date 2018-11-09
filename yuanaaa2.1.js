@@ -769,6 +769,12 @@ $_y = {
             "name": "湖北云天下教育科技有限公司",
             "num": "鄂ICP备12016896号-8",
             "hasCertificate": true
+        }, {
+            "id": 22,
+            "dName": "cylaikj",
+            "name": "成都成昱莱科技有限公司",
+            "num": "蜀ICP备18022312号-3",
+            "hasCertificate": false
         }
     ],
     // 主域名
