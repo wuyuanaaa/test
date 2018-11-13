@@ -322,6 +322,7 @@ $_y = {
             }
         }
         // 动画及初始化
+        change(count);
         function change(num) {
             var modeFn = getMode(options.mode);
             if(!modeFn || num === count) {
@@ -774,6 +775,12 @@ $_y = {
             "dName": "cylaikj",
             "name": "成都成昱莱科技有限公司",
             "num": "蜀ICP备18022312号-3",
+            "hasCertificate": false
+        }, {
+            "id": 23,
+            "dName": "wzhjtjy",
+            "name": "温州市鸿金途教育科技有限公司",
+            "num": "浙ICP备18044637号-1",
             "hasCertificate": false
         }
     ],
