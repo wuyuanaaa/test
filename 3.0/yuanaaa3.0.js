@@ -29,52 +29,83 @@ $_y = {
             }
         }
     },
-    saveActivitySmsInfo: function (obj) {  			// 带短信验证获客
-        var defaultOptions = {
-                popUp: true,
-                COUNTDOWN: 90,
-                popUpEl: '.layer-warp',
-                popUpCloseEl: '.layer-close',
-                needMsg: true
+    saveActivitySmsInfo: (function () {
+        // 默认参数
+        var defaults = {
+            countdown: 90,
+            els: {
+                cellPhone: '.phone-number',
+                codeValue: '.code-value',
+                sendCode: '.send-code',
+                submitButton: '.submit-button'
             },
-            finalObj = $.extend(defaultOptions, obj),
-            $module = $(finalObj.id),
-            COUNTDOWN = finalObj.COUNTDOWN, 			// 倒计时
-            $sendCode = $module.find('.send-code'),		// 获取验证码
-            host = getHost();							// 主域名
+            popUp: {
+                popUpEl: '.layer-warp',
+                popUpCloseEl: '.layer-close'
+            },
+            needMsg: true
+        };
 
-        bandEvent();
+        // 继承
+        function _extend(subClass, superClass) {
+            var F = function () {
+            };
+            F.prototype = superClass.prototype;
+            subClass.prototype = new F();
+            subClass.prototype.constructor = subClass;
+        }
+
+        // 父类
+        var SaveActivitySmsInfo = function (el, options) {
+            this.$el = $(el);
+            this.opts = options;
+            this.countdown = options.countdown;
+            this.$cellPhone = $(options.els.cellPhone);
+            this.$codeValue = $(options.els.codeValue);
+            this.$sendCode = $(options.els.sendCode);
+            this.sendCodeClass = options.els.sendCode;
+            this.$submitButton = $(options.els.submitButton);
+            this.$popUpEl = $(options.popUp.popUpEl);
+            this.$popUpCloseEl = $(options.popUp.popUpCloseEl);
+            this.platform = 'yk';
+            this.getInfo = options.getInfo;
+            this.callback = options.callback;
+            this.sceneCode = options.sceneCode;
+        };
 
         // 确定主机号
-        function getHost() {
+        SaveActivitySmsInfo.prototype.getHost = function () {
             var protocol = window.location.protocol;
-            if (protocol === 'http:') {						// 根据页面协议确定验证接口
-                return "http://tf.topksw.com";
-            } else {
-                return "https://m.ykclass.com";
-            }
-        }
-        // 短信验证倒计时
-        function setTime(el) {
-            var initialVal = el.val();          // 储存初始文字
+            this.host = protocol === 'http:' ? 'http://tf.topksw.com' : 'https://m.ykclass.com';
+        };
+        // 设置短信倒计时
+        SaveActivitySmsInfo.prototype.setTime = function (el) {
+            var countdown = this.countdown,
+                initialVal = el.val();          // 储存初始文字
             el.attr("disabled", true);
+
             function fn() {
-                COUNTDOWN--;
-                el.val("重新发送(" + COUNTDOWN + ")");
-                if (COUNTDOWN >= 0) {
+                countdown--;
+                el.val("重新发送(" + countdown + ")");
+                if (countdown >= 0) {
                     setTimeout(fn, 1000);
                 } else {
                     el.removeAttr("disabled");
                     el.val(initialVal);
-                    COUNTDOWN = 60;
+                    countdown = 60;
                 }
             }
+
             setTimeout(fn, 1000);
-        }
+        };
         // 手机号码验证
-        function testPhoneNum(num) {
+        SaveActivitySmsInfo.prototype.testPhoneNumber = function (num) {
             var regPhone = /^1[34578][0-9]{9}$/;
-            if(num.length > 11) {
+            if (!num) {
+                layer.msg('请输入手机号码！');
+                return false;
+            }
+            if (num.length > 11) {
                 layer.msg('手机号超出字符限制！');
                 return false;
             }
@@ -83,9 +114,10 @@ $_y = {
                 return false
             }
             return true;
-        }
+        };
         // ajax
-        function _ajax(url,data,callback) {
+        SaveActivitySmsInfo.prototype.ajax = function (url, data, callback) {
+            console.log(data);
             $.ajax({
                 type: "get",
                 url: url,
@@ -98,92 +130,198 @@ $_y = {
                     }
                 }
             })
-        }
-        // 验证码发送及验证
-        function sendSms (phone, platform, callback) {
-            if (!testPhoneNum(phone)) {
-                return;
-            }
-            setTime($sendCode);
-            var url = host + "/common/sendSmsMessage.html",
-                data = {
-                    phone: phone,
-                    platform: platform
-                };
-            _ajax(url, data, callback);
-        }
-        function saveActivitySmsInfo (object, code, callback) {
-            object.accessUrl = window.location.href;
-            object.code = code;
-            var url = '';
-            if (finalObj.needMsg) {
-                url = host + "/common/saveActivitySmsInfo.html";
-                _ajax(url, object, callback);
-            } else {
-                if (!testPhoneNum(object.phone))  {
-                    return;
-                }
-                url = host + "/common/saveActivityInfo.html";
-                _ajax(url, object, callback);
-            }
-        }
-        // 事件绑定
-        function bandEvent(){
-            var $phone = $module.find('.phone-num'),		// 手机号码input
-                $codeValue = $module.find('.code-value'), 	// 验证码input
-                $vailCode = $module.find('.vail-code');		// 提交按钮
-
-            // 号码长度验证
-            $phone.keyup(function () {					// 手机号码长度提示
-                var phone = $phone.val();
-                if (phone.length > 11) {
+        };
+        // 基础事件绑定
+        SaveActivitySmsInfo.prototype.bindBase = function () {
+            var _self = this;
+            _self.$cellPhone.keyup(function () {
+                _self.phoneNumber = $(this).val();
+                if (_self.phoneNumber.length > 11) {
                     layer.msg('手机号超出字符限制！')
                 }
             });
-            // 获取验证码
-            $sendCode.on('click', function () {			// 发送验证
-                sendSms($phone.val(), "yk", function (msg) {
-                    if (msg.c === '100') {
-                        layer.msg('短信发送成功！');
-                    }
+            if (_self.popUp) {
+                _self.$popUpCloseEl.on('click', function () {
+                    _self.$popUpEl.hide();
                 })
-            });
-            $vailCode.on('click', function () {
-                var infoMsg = '';
-                if (finalObj.info && typeof finalObj.info === 'object') {
-                    infoMsg = finalObj.info.msg;
+            }
+        };
+        // 其他事件绑定
+        SaveActivitySmsInfo.prototype.bindMore = function () {
+            throw new Error('此方法需重写');
+        };
+        // 初始化一个短信验证
+        SaveActivitySmsInfo.prototype.init = function () {
+            this.getHost();
+            this.bindBase();
+            this.bindMore();
+        };
+
+
+        // 需要短信验证模式
+        var NeedMsg = function (el, options) {
+            SaveActivitySmsInfo.call(this, el, options);
+        };
+        // 继承父类
+        _extend(NeedMsg, SaveActivitySmsInfo);
+        // 发送验证码
+        NeedMsg.prototype.sendSms = function () {
+            console.log(this);
+            if (!this.testPhoneNumber(this.phoneNumber)) {
+                return;
+            }
+            this.setTime(this.$sendCode);
+            var url = this.host + "/common/sendSmsMessage.html",
+                data = {
+                    phone: this.phoneNumber,
+                    platform: this.platform
+                };
+            this.ajax(url, data, function (msg) {
+                if (msg.c === '100') {
+                    layer.msg('短信发送成功！');
                 }
-                var object = {
-                    sceneCode: obj.cjCode,
-                    phone: $phone.val(),
+            });
+        };
+        // 验证验证码
+        NeedMsg.prototype.testCode = function (code) {
+            var regCode = /[0-9]{6}/;
+            if (!code) {
+                layer.msg('请输入验证码！');
+                return false;
+            }
+            if (!regCode.test(code)) {
+                layer.msg('验证码格式错误，应该为6位数字！');
+                return false;
+            }
+            return true;
+        };
+        // 提交信息
+        NeedMsg.prototype.submit = function (object, code, callback) {
+            object.accessUrl = window.location.href;
+            object.code = code;
+            console.log(this.testCode(code));
+            if (!this.testPhoneNumber(object.phone) || !this.testCode(code)) {
+                return;
+            }
+            var url = this.host + "/common/saveActivitySmsInfo.html";
+            this.ajax(url, object, callback);
+        };
+        // 验证码回调
+        SaveActivitySmsInfo.prototype.msgCallback = function (msg) {
+            if (msg.c === '100') {
+                if (this.$popUpEl.length) {
+                    this.$popUpEl.show();
+                }
+                $el.find('input').not(this.sendCodeClass).val("");
+                if (this.callback && typeof this.callback === 'function') {    // 执行回调函数
+                    this.callback();
+                }
+            } else if (msg.m == '用户手机号不能为空') {
+                layer.msg('手机号码不能为空');
+            } else if (msg.m == '短信验证码不能为空!') {
+                layer.msg('短信验证码不能为空!');
+            } else if (msg.code === 202) {
+                layer.msg('短信验证码错误!');
+            } else {
+                layer.msg('短信验证码错误!');
+            }
+        };
+        // 事件绑定
+        NeedMsg.prototype.bindMore = function () {
+            var _self = this;
+
+            this.$sendCode.on('click', function () {
+                _self.sendSms.call(_self);
+            });
+
+            this.$submitButton.on('click', function () {
+                var infoMsg = '';
+                if (_self.getInfo && typeof _self.getInfo === 'function') {
+                    infoMsg = _self.getInfo();
+                }
+                var obj = {
+                    sceneCode: _self.sceneCode,
+                    phone: _self.phoneNumber,
                     content: infoMsg
                 };
-                var code = $codeValue.val();
-                saveActivitySmsInfo(object, code, function (msg) {
-                    if (msg.c === '100') {
-                        if (finalObj.popUp) {
-                            $(finalObj.popUpEl).show();
-                        }
-                        $module.find('input').not(".send-code").val("");
-                        if (finalObj.callback && typeof finalObj.callback === 'function') {    // 执行回调函数
-                            finalObj.callback();
-                        }
-                    } else if (msg.m == '用户手机号不能为空') {
-                        layer.msg('手机号码不能为空');
-                    } else if (msg.m == '短信验证码不能为空!') {
-                        layer.msg('短信验证码不能为空!');
-                    } else if (msg.code === 202) {
-                        layer.msg('短信验证码错误!');
-                    } else {
-                        layer.msg('您的信息输入有误');
-                    }
+                var code = _self.$codeValue.val();
+                _self.submit(obj, code, function (msg) {
+                    _self.msgCallback.call(_self, msg);
+                });
+            });
+        };
+
+
+        // 无短信验证模式
+        var NoMsg = function (el, options) {
+            SaveActivitySmsInfo.call(this, el, options);
+        };
+        // 继承父类
+        _extend(NoMsg, SaveActivitySmsInfo);
+        // 提交信息
+        NoMsg.prototype.submit = function (object) {
+            object.accessUrl = window.location.href;
+            if (!this.testPhoneNumber(object.phone)) {
+                return;
+            }
+            var url = this.host + "/common/saveActivityInfo.html";
+            this.ajax(url, object);
+        };
+        // 事件绑定
+        NoMsg.prototype.bindMore = function () {
+            var _self = this;
+
+            this.$submitButton.on('click', function () {
+                var infoMsg = '';
+                if (_self.getInfo && typeof _self.getInfo === 'function') {
+                    infoMsg = _self.getInfo();
+                }
+                var obj = {
+                    sendCode: _self.sendCode,
+                    phone: _self.phoneNumber,
+                    content: infoMsg
+                };
+
+                _self.submit(obj);
+            });
+        };
+
+
+        // 实例保存
+        var o = [];
+
+        // 初始化
+        var init = function (el, options) {
+            options = $.extend({}, defaults, options);
+            if (options.needMsg) {
+                var msg = new NeedMsg(el, options);
+                msg.init();
+                o.push({
+                    el: el,
+                    msg: msg
                 })
-            });
-            $(finalObj.popUpCloseEl).on('click', function () {
-                $(finalObj.popUpEl).hide();
-            });
+            } else {
+                new NoMsg(el, options).init();
+            }
+        };
+        // 改变场景代码
+        var changeSceneCode = function (el, code) {
+            var hasChange = false;
+            for(var i = 0, len = o.length; i < len; i++) {
+                if(o[i].el === el) {
+                    o[i].msg.sceneCode = code;
+                    hasChange = true;
+                }
+            }
+            !hasChange && console.error('尝试改变未注册获客组件的场景代码！');
+        };
+
+        return {
+            init: init,
+            changeSceneCode: changeSceneCode
         }
-    },
+    })(),
+    /* 改变微信 */
     changeWeChat: function (arr) {
         var $code = $('.code'),
             wxNum = arr[Math.floor(Math.random() * arr.length)]; // 随机取一个微信号
@@ -192,7 +330,7 @@ $_y = {
             $code.text(wxNum);
         }
     },
-    /*复制微信*/
+    /* 复制微信 */
     copyWeChat: function (arr) {
         var wxNow = arr[Math.floor(Math.random() * arr.length)],  // 随机微信
             $wxnumber = $('.wxnumber'),
@@ -235,7 +373,7 @@ $_y = {
             })
         }
     },
-    /*轮播*/
+    /* 轮播 */
     carousel: (function () {
         // 默认参数
         var defaults = {
@@ -245,9 +383,9 @@ $_y = {
             mainListEl: '.carousel-main',
             paginationListEl: '.carousel-pagination',
             controller: '.carousel-controller',
-            addTouchEvent: true,
+            addTouchEvent: false,
             autoplay: true,
-            mouseenterStop: true,
+            mouseenterStop: false,
             minMove: 70
         };
 

@@ -1,61 +1,61 @@
-##  导航
-- [fn1](#fn1)---百度统计
-- [fn2](#fn2)---自动更换公司及资质
-- [fn3](#fn3)---单页微信修改
-- [fn4](#fn4)---手机验证码模块
-- [fn5](#fn5)---复制微信
-- [fn6](#fn6)---轮播图
-- [fn7](#fn7)---scrollPage
-- [fn8](#fn8)---视频播放模块
-- [fn9](#fn9)---m端fastClick
-- [fn10](#fn10)---小能代码
-- [fn11](#fn11)---M端页面滚动到指定元素位置
-- [fn12](#fn12)---倒计时模块
-- [fn13](#fn13)---页面指定位置展示
-- [fn14](#fn14)---元素入屏幕动画
-- [fn15](#fn15)---移动端滑动事件
-- [fn16](#fn16)---禁止input[type='number']滚轮事件
+#  导航
+- [fn1](#fn1)---自动更换公司及资质
+- [fn2](#fn2)---单页微信修改
+- [fn3](#fn3)---手机验证码模块
+- [fn4](#fn4)---复制微信
+- [fn5](#fn5)---轮播图
+- [fn6](#fn6)---scrollPage
+- [fn7](#fn7)---视频播放模块
+- [fn8](#fn8)---m端fastClick
+- [fn9](#fn9)---小能代码
+- [fn10](#fn10)---M端页面滚动到指定元素位置
+- [fn11](#fn11)---倒计时模块
+- [fn12](#fn12)---页面指定位置展示
+- [fn13](#fn13)---元素入屏幕动画
+- [fn14](#fn14)---移动端滑动事件
+- [fn15](#fn15)---禁止input[type='number']滚轮事件
 
-###  fn1
-####  百度统计
-```
-<script>
-    var _hmt = _hmt || [];
-    (function() {
-        var hm = document.createElement("script");
-        hm.src = "https://hm.baidu.com/hm.js?2c681ae4f5f65e293c799beac90eedb7";
-        var s = document.getElementsByTagName("script")[0];
-        s.parentNode.insertBefore(hm, s);
-    })();
-</script>
-```
-###  fn2
-####  自动更换公司及资质
-#####  审核页面
-引用方法库
+---
+
+##  fn1
+###  自动更换公司及资质
+- ####  审核页面
+
+> 引用方法库
+
 ```
 <script src="//js.ykclass.com/frame/jquery/v2.1.4/jquery.min.js"></script>
-<script src="//m.ykclass.com/zt/zyjs/yuanaaa2.1.js"></script>
+<script src="//m.ykclass.com/zt/zyjs/yuanaaa3.0.js"></script>
 ```
-在js部分引用方法
+
+> 在js部分引用方法
+
 ```
 $_y.registeredSh();
 ```
-#####  百度单页
-引用方法库
+- ####  百度单页
+
+> 引用方法库
+
 ```
-<script src="//m.ykclass.com/zt/zyjs/yuanaaa2.1.js"></script>
+<script src="//m.ykclass.com/zt/zyjs/yuanaaa3.0.js"></script>
 ```
-在js部分引用方法
+
+> 在js部分引用方法
+
 ```
 $_y.registeredBd();
 ```
-#####  其他页面
-引用方法库
+- ####  其他页面
+
+> 引用方法库
+
 ```
-<script src="//m.ykclass.com/zt/zyjs/yuanaaa2.1.js"></script>
+<script src="//m.ykclass.com/zt/zyjs/yuanaaa3.0.js"></script>
 ```
-M端替换后如下：
+
+> M端替换后如下：
+
 ```
 <div class="p-warp">
     <p>版权所有@<span id="registeredName"></span> </p>
@@ -66,23 +66,112 @@ M端替换后如下：
     <p>互联网出版许可证 鄂字第23号 </p>
 </div>
 ```
-在js部分引用方法
+
+> 在js部分引用方法
+
 ```
 $_y.registered();
 ```
-### fn3
-####  单页微信修改
-引用方法库
+
+---
+
+## fn2
+###  单页微信修改
+
+> 引用方法库
+
 ```
-<script src="//m.ykclass.com/zt/zyjs/yuanaaa2.1.js"></script>
+<script src="//m.ykclass.com/zt/zyjs/yuanaaa3.0.js"></script>
 ```
-在js部分引用方法
+> 在js部分引用方法
+
 ```
 $_y.changeWeChat(['gpa6597']);
 ```
-### fn4
-####  手机验证码模块
-##### 【html】
+
+---
+
+## fn3
+###  手机验证码模块
+
+- #### 【js】
+
+> 引用方法库
+
+```
+<script src="//js.ykclass.com/frame/jquery/v2.1.4/jquery.min.js"></script>
+<script src="//m.ykclass.com/zt/zyjs/layer/layer.js"></script>
+<script src="//m.ykclass.com/zt/zyjs/yuanaaa3.0.js"></script>
+```
+
+> 在js部分引用方法
+
+```
+// 创建实例
+$_y.saveActivitySmsInfo.init('#get-phone',{
+    sceneCode: 'YK_TT_TONGJI',
+    needMsg: true,
+    countdown: 90,
+    els: {
+        cellPhone: '.phone-number',
+        codeValue: '.code-value',
+        sendCode: '.send-code',
+        submitButton: '.submit-button'
+    },
+    popUp: {
+        popUpEl: '.layer-warp',
+        popUpCloseEl: '.layer-close'
+    },
+    callback: function () {
+        if(_taq) {
+          _taq.push({convert_id: "1606319178273799", event_type: "form"})
+        }
+    }
+});
+// 修改实例的场景代码
+$_y.saveActivitySmsInfo.changeSceneCode('#get-phone', 'YK_M_KUAIJI');
+```
+
+- #### 主要参数表
+
+| 属性             | 表示内容           | 是否必须 | 可选参数/参数类型 | 默认值       |
+| ------------------ | ---------------------- | -------- | ----------------- | --------------- |
+| id                 | 获客外层dom元素ID | 是      | string            | 无             |
+| sceneCode          | 场景代码           | 是      | string            | 无             |
+| needMsg            | 是否需要短信验证 | 否      | true/false        | true            |
+| countdown          | 首次倒计时时间  | 否      | number            | 90              |
+| els                | 其他类名           | 否      | object            | 见下方       |
+| els.cellPhone      | 号码输入框类名  | 否      | string            | '.phone-number' |
+| els.codeValue      | 验证码输入框类名 | 否      | string            | '.code-value'   |
+| els.sendCode       | 发送验证码按钮类名 | 否      | string            | '.send-code'    |
+| popUp              | 弹窗类名           | 否      | object            | 见下方       |
+| popUp.popUpEl      | 弹窗主体类名     | 否      | string            | '.layer-warp'   |
+| popUp.popUpCloseEl | 关闭弹窗按钮类名 | 否      | string            | '.layer-close'  |
+| getInfo            | 返回传入数据的钩子函数 | 否      | function          | 无             |
+| callback           | 获客成功后的回调 | 否      | function          | 无             |
+
+
+- #### 【html】
+
+> 主体
+
+```
+<div class="get-phone" id="get-phone">
+    <div class="row">
+        <input class="phone-number" type="number" placeholder="请输入电话号码">
+        <input class="send-code" type="button" value="获取验证码">
+    </div>
+    <div class="row">
+        <input class="code-value" type="number" placeholder="请输入验证码">
+    </div>
+    <div class="row">
+        <button class="submit-button">提交</button>
+    </div>
+</div>
+```
+
+> 弹窗
+
 ```
 <!--弹出层 开始-->
 <div class="layer-warp">
@@ -96,7 +185,9 @@ $_y.changeWeChat(['gpa6597']);
 </div>
 <!--弹出层 结束-->
 ```
-##### 【css  M】
+
+- #### 【css  M】
+
 ```
 .layer-warp {
 	position: fixed;
@@ -150,7 +241,9 @@ $_y.changeWeChat(['gpa6597']);
     }
 }
 ```
-##### 【css  PC】
+
+- #### 【css  PC】
+
 ```
 .layer-warp {
     position: fixed;
@@ -204,67 +297,31 @@ $_y.changeWeChat(['gpa6597']);
     }
 }
 ```
-##### 【html】
+
+---
+
+## fn4
+###  复制微信
+
+- #### 【js】
+
+> 引用方法库
+
 ```
-<div id="get-phone">
-    <div class="row">
-        <input class="phone-num" type="number" placeholder="请输入电话号码">
-        <input class="send-code" type="button" value="获取验证码">
-    </div>
-    <div class="row">
-        <input class="code-value" type="number" placeholder="请输入验证码">
-    </div>
-    <div class="row">
-        <button class="vail-code">提交</button>
-    </div>
-</div>
-```
-##### 【js】
-引用方法库
-```
+<script src="//js.ykclass.com/frame/jquery/v2.1.4/jquery.min.js"></script>
 <script src="//m.ykclass.com/zt/zyjs/layer/layer.js"></script>
-<script src="//m.ykclass.com/zt/zyjs/yuanaaa2.1.js"></script>
+<script src="//m.ykclass.com/zt/zyjs/clipboard.min.js"></script>
+<script src="//m.ykclass.com/zt/zyjs/yuanaaa3.0.js"></script>
 ```
-在js部分引用方法
+
+> 调用方法
+
 ```
-$_y.saveActivitySmsInfo({
-    id: '#get-phone',
-    cjCode: 'YK_TT_TONGJI',
-    needMsg: true,
-    countdown: 90,
-    info: infoObj,
-    popUp: true,
-    callback: function () {
-        if(_taq) {
-          _taq.push({convert_id: "1606319178273799", event_type: "form"})
-        }
-    }
-});
-/*
-* id:                   // 获客模块id  【必需】
-* cjCode:               // 场景代码  【必需】
-* needMsg:              // 是否短信验证  【非必需】【true】
-* countdown:            // 首次倒计时时间  【非必需】【90】
-* info:                 // 传入的用户填写信息（一个包含msg参数的对象）  【非必需】
-* popUp:                // 验证通过后是否有弹窗  【非必需】【true】
-* callback:             // 获客完成后的回调  【非必需】
-*/
+$_y.copyWeChat(['qbk8730']);
 ```
-附带信息如
-```
-var infoObj = {
-    msg: ''
-};
-$('.vail-code').on('click',function () {
-    var province = $('#province').val();
-    var education = $('#education').val();
-    infoObj.msg = province + '-' + education;
-});
- // 信息自行更换
-```
-### fn5
-####  复制微信
-##### 【html】
+
+- #### 【html】
+
 ```
 <!--弹出层 开始-->
 <div class="weChatB w_2">
@@ -279,7 +336,9 @@ $('.vail-code').on('click',function () {
 </div>
 <div class="footH" style="height: 1.2rem"></div>
 ```
-##### 【css】
+
+- #### 【css】
+
 ```
 // 底部浮动条
 .footerBar {
@@ -346,20 +405,58 @@ div.layui-layer {   //取消layer默认外阴影
 	}
 }
 ```
-##### 【js】
-引用方法库
+
+---
+
+## fn5
+###  轮播图
+
+- #### 【js】
+
+> 引用方法库（依赖jquery）
+
 ```
-<script src="//m.ykclass.com/zt/zyjs/layer/layer.js"></script>
-<script src="//m.ykclass.com/zt/zyjs/clipboard.min.js"></script>
-<script src="//m.ykclass.com/zt/zyjs/yuanaaa2.1.js"></script>
+<script src="//js.ykclass.com/frame/jquery/v2.1.4/jquery.min.js"></script>
+<script src="//m.ykclass.com/zt/zyjs/yuanaaa3.0.js"></script>
 ```
-调用方法
+
+> 调用方法
+
 ```
-$_y.copyWeChat(['qbk8730']);
+$_y.carousel.init('#carousel',{
+    mode: 'move',
+    runTime: 800,
+    intervalTime: 4000,
+    mainListEl: '.carousel-main',
+    paginationListEl: '.carousel-pagination',
+    controller: '.carousel-controller',
+    addTouchEvent: false,
+    autoplay: true,
+    mouseenterStop: false,
+    minMove: 70
+});
 ```
-### fn6
-####  轮播图
-##### 【html】
+
+- #### 主要参数表
+
+| 属性           | 表示内容           | 是否必须 | 可选参数/参数类型 | 默认值              |
+| ---------------- | ---------------------- | -------- | ----------------- | ---------------------- |
+| id               | 轮播模块外层dom元素ID | 是      | string            | 无                    |
+| mode             | 轮播方式           | 否      | 'move'/'fade'     | 'move'                 |
+| runTime          | 轮播切换的时间  | 否      | number            | 800                    |
+| intervalTime     | 轮播间隙时间     | 否      | number            | 4000                   |
+| mainListEl       | 轮播主区域类名  | 否      | string            | '.carousel-main'       |
+| paginationListEl | 轮播序号部分类名 | 否      | string            | '.carousel-pagination' |
+| controller       | 轮播切换部分类名 | 否      | string            | '.carousel-controller' |
+| addTouchEvent    | 是否手指滑动事件 | 否      | true/false        | false                  |
+| autoplay         | 是否自动播放     | 否      | true/false        | true                   |
+| mouseenterStop   | 鼠标进入时轮播是否停止 | 否      | true/false        | false                  |
+| minMove          | 滑动的最小距离  | 否      | number            | 70                     |
+
+
+
+- #### 【html】
+
 ```
 <div class="carousel" id="carousel">
     <ul class="carousel-main">
@@ -378,7 +475,9 @@ $_y.copyWeChat(['qbk8730']);
     </div>
 </div>
 ```
-##### 【参考初始css】
+
+- #### 【参考初始css】
+
 ```
 .carousel {
 	position: relative;
@@ -452,52 +551,33 @@ $_y.copyWeChat(['qbk8730']);
 	}
 }
 ```
-##### 【js】
-引用方法库（JQ依赖）
+
+---
+
+## fn6
+###  scrollPage
+
+- #### 【js】
+
+> 引用方法库（JQ依赖）
+
 ```
-<script src="//m.ykclass.com/zt/zyjs/yuanaaa2.1.js"></script>
+<script src="//m.ykclass.com/zt/zyjs/yuanaaa3.0.js"></script>
 ```
-调用方法
-```
-$_y.carousel({
-    el: '#carousel',
-    mode: 1,
-    runTime: 800,
-    intervalTime: 4000,
-    mainListEl: '.carousel-main',
-    paginationListEl: '.carousel-pagination',
-    controller: '.carousel-controller',
-    addTouchEvent: false,
-    autoplay: true,
-    mouseenterStop: false
-});
-/*
-* el:                   // 轮播模块id  【必需】【'#carousel'】
-* mode:                 // 轮播方式 1、左右切换 2、淡出淡入  【非必需】【1】
-* runTime:              // 轮播切换的时间  【非必需】【800】
-* intervalTime:         // 轮播间隙时间  【非必需】【4000】
-* mainListEl:           // 轮播主区域类名  【非必需】【'.carousel-main'】
-* paginationListEl:     // 轮播序号部分类名  【非必需】【'.carousel-pagination'】
-* controller:           // 轮播切换部分类名  【非必需】【'.carousel-controller'】
-* addTouchEvent:        // 是否手指滑动事件  【非必需】【false】
-* autoplay:             // 是否自动播放  【非必需】【true】
-* mouseenterStop:       // 鼠标进入时轮播是否停止  【非必需】【false】
-*/
-```
-### fn7
-####  scrollPage
-##### 【js】
-引用方法库（JQ依赖）
-```
-<script src="//m.ykclass.com/zt/zyjs/yuanaaa2.1.js"></script>
-```
-调用方法
+
+> 调用方法
+
 ```
 $_y.scrollPage('.class',{navEl: '.md', count: 100});   // 对象内参数为默认值，可传入同名参数进行替换
 ```
-### fn8
-####  视频播放模块
-##### 【js】
+
+---
+
+## fn7
+###  视频播放模块
+
+- #### 【js】
+
 ```
 <script src="//static.ykclass.com/frame/polyv/polyvplayer.min.js"></script>
 //视频
@@ -526,15 +606,23 @@ function initVidoPlayer(vid) {
     });
 };
 ```
-### fn9
-####  m端fastClick
+
+---
+
+## fn8
+###  m端fastClick
+
 ```
 <script src="//js.ykclass.com/frame/fastClick/v1.0.0/fastClick.js"></script>
 // 快速点击
 FastClick.attach(document.body);
 ```
-### fn10
-####  小能代码
+
+---
+
+## fn9
+###  小能代码
+
 ```
 var kf = 'kf_9540_1520933792603';
 var NTKF_PARAM = {
@@ -548,22 +636,35 @@ $(document).on("click", ".ntkf", function() {
     NTKF.im_openInPageChat(kf);
 });
 ```
-引用js文件：
+
+> 引用js文件：
+
 ```
 <script type="text/javascript" src="//dl.ntalker.com/js/xn6/ntkfstat.js?siteid=kf_9540" charset="utf-8"></script>
 ```
-### fn11
-####  M端页面滚动到指定元素位置
-引用方法库
+
+---
+
+## fn10
+###  M端页面滚动到指定元素位置
+
+> 引用方法库
+
 ```
-<script src="//m.ykclass.com/zt/zyjs/yuanaaa2.1.js"></script>
+<script src="//m.ykclass.com/zt/zyjs/yuanaaa3.0.js"></script>
 ```
-调用方法
+
+> 调用方法
+
 ```
 $_y.scrollTo('#id');
 ```
-### fn12
-####  倒计时模块
+
+---
+
+## fn11
+###  倒计时模块
+
 ```
 var today = new Date().getTime();
 var  examDay = [2018,4,24];
@@ -577,14 +678,22 @@ if(endDay - today > 0) {
     $(".decade").html(decade);
 }
 ```
-### fn13
-####  页面滚动到指定位置展示
-##### 【js】
-引用方法库
+
+---
+
+## fn12
+###  页面滚动到指定位置展示
+
+- #### 【js】
+
+> 引用方法库
+
 ```
-<script src="//m.ykclass.com/zt/zyjs/yuanaaa2.1.js"></script>
+<script src="//m.ykclass.com/zt/zyjs/yuanaaa3.0.js"></script>
 ```
-调用方法
+
+> 调用方法
+
 ```
 $_y.fixedTop({
     target: '#table-title',
@@ -599,23 +708,36 @@ $_y.fixedTop({
 * subtractHeight:       // 底部预留高度  【非必需】【150】
 */
 ```
-### fn14
-####  enterScreenAnimate
-##### 【css】
+
+---
+
+## fn13
+###  enterScreenAnimate
+
+- #### 【css】
+
 [Animate.css 动画库](https://daneden.github.io/animate.css/)
+
 ```
 <link rel="stylesheet" type="text/css" href="//m.ykclass.com/zt/zyjs/animate.css"/>
 ```
+
 [Magic.css 动画库](https://www.minimamente.com/example/magic_animations/)
+
 ```
 <link rel="stylesheet" type="text/css" href="//m.ykclass.com/zt/zyjs/magic.min.css"/>
 ```
-##### 【js】
-引用方法库（JQ依赖）
+
+- #### 【js】
+
+> 引用方法库（JQ依赖）
+
 ```
-<script src="//m.ykclass.com/zt/zyjs/yuanaaa2.1.js"></script>
+<script src="//m.ykclass.com/zt/zyjs/yuanaaa3.0.js"></script>
 ```
-调用方法
+
+> 调用方法
+
 ```
 $_y.enterScreenAnimate({
     el: '.anima',
@@ -632,14 +754,22 @@ $_y.enterScreenAnimate({
 */
 
 ```
-### fn15
-####  touchEvent
-##### 【js】
-引用方法库（JQ依赖）
+
+---
+
+## fn14
+###  touchEvent
+
+- #### 【js】
+
+> 引用方法库（JQ依赖）
+
 ```
-<script src="//m.ykclass.com/zt/zyjs/yuanaaa2.1.js"></script>
+<script src="//m.ykclass.com/zt/zyjs/yuanaaa3.0.js"></script>
 ```
-调用方法
+
+> 调用方法
+
 ```
 $_y.touchEvent({
     el: '',
@@ -655,14 +785,22 @@ $_y.touchEvent({
 * direction                      // 1：向上，2：向下，3：向左，4：向右,0：未滑动
 */
 ```
-### fn16
-####  preventMouseWheel
-##### 【js】
-引用方法库（JQ依赖）
+
+---
+
+## fn15
+###  preventMouseWheel
+
+- #### 【js】
+
+> 引用方法库（JQ依赖）
+
 ```
-<script src="//m.ykclass.com/zt/zyjs/yuanaaa2.1.js"></script>
+<script src="//m.ykclass.com/zt/zyjs/yuanaaa3.0.js"></script>
 ```
-调用方法
+
+> 调用方法
+
 ```
 $_y.preventMouseWheel();
 ```
