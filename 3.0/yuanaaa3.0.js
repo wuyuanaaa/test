@@ -8,7 +8,7 @@ $_y = {
                 $registeredName.text(this.corporationList[i].name);
                 $registeredNum.text(this.corporationList[i].num);
                 if (!this.corporationList[i].hasCertificate) {
-                    $certificate.html(' ');
+                    $certificate.html('');
                 }
             }
         }
@@ -322,26 +322,28 @@ $_y = {
         }
     })(),
     /* 改变微信 */
-    changeWeChat: function (arr) {
-        var $code = $('.code'),
+    changeWeChat: function (arr, el) {
+        var $code = el ? $(el) : $('.code'),
             wxNum = arr[Math.floor(Math.random() * arr.length)]; // 随机取一个微信号
-        if ($code.length > 0) {
-            $code.attr("data-clipboard-text", wxNum);
-            $code.text(wxNum);
+        if ($code.length < 0) {
+            console.error("'changeWeChat'方法指向的dom为空！");
+            return;
         }
+        $code.attr("data-clipboard-text", wxNum);
+        $code.text(wxNum);
     },
     /* 复制微信 */
-    copyWeChat: function (arr) {
+    copyWeChat: function (arr, options) {
         var wxNow = arr[Math.floor(Math.random() * arr.length)],  // 随机微信
-            $wxnumber = $('.wxnumber'),
-            $wxCode = $('.wxCode'),
-            $xnkf = $('.ntkf').length > 0 ? $('.ntkf') : $('.xnkf'); // 确定页面小能类名
+            noLayer = options.noLayer ? options.noLayer : '.wxnumber',
+            openLayer = options.openLayer ? options.openLayer : '.wxCode',
+            $xnkf = options.el ? $(options.el) : ($('.ntkf').length > 0 ? $('.ntkf') : $('.xnkf')); // 确定页面小能类名
 
-        $wxnumber.text(wxNow);
-        $wxCode.text(wxNow);
-        $xnkf.on('click', openLayer);
-        clipboardFn('.wxCode', openLayer);
-        clipboardFn('.wxnumber');
+        $(noLayer).text(wxNow);
+        $(openLayer).text(wxNow);
+        $xnkf.on('click', openLayerFn);
+        clipboardFn(openLayer, openLayerFn);
+        clipboardFn(noLayer);
 
         function clipboardFn(classNameString, callback) {
             var clipboard = new Clipboard(classNameString),
@@ -360,7 +362,7 @@ $_y = {
             });
         }
 
-        function openLayer() {
+        function openLayerFn() {
             layer.open({
                 type: 1,
                 title: false,

@@ -1,8 +1,8 @@
 #  导航
-- [fn1](#fn1)---自动更换公司及资质
-- [fn2](#fn2)---单页微信修改
+- [fn1](#fn1)---自动更换公司及资质(仅用于特定页面)
+- [fn2](#fn2)---单页微信修改(仅用于特定页面)
 - [fn3](#fn3)---手机验证码模块
-- [fn4](#fn4)---复制微信
+- [fn4](#fn4)---复制微信(仅用于特定页面)
 - [fn5](#fn5)---轮播图
 - [fn6](#fn6)---scrollPage
 - [fn7](#fn7)---视频播放模块
@@ -18,7 +18,7 @@
 ---
 
 ##  fn1
-###  自动更换公司及资质
+###  自动更换公司及资质(仅用于特定页面)
 - ####  审核页面
 
 > 引用方法库
@@ -76,7 +76,7 @@ $_y.registered();
 ---
 
 ## fn2
-###  单页微信修改
+###  单页微信修改(仅用于特定页面)
 
 > 引用方法库
 
@@ -86,8 +86,18 @@ $_y.registered();
 > 在js部分引用方法
 
 ```
-$_y.changeWeChat(['gpa6597']);
+// 默认调用
+$_y.changeWeChat(wxArr);
+// 全参调用
+$_y.changeWeChat(wxArr, el);
 ```
+
+- #### 主要参数表
+
+| 属性 | 表示内容        | 是否必须 | 可选参数/参数类型 | 默认值 |
+| ----- | ------------------- | -------- | ----------------- | ------- |
+| wxArr | 随机取值的微信数组 | 是      | Array             | 无     |
+| el    | 存放微信号的dom类名 | 否      | String            | '.code' |
 
 ---
 
@@ -107,8 +117,10 @@ $_y.changeWeChat(['gpa6597']);
 > 在js部分引用方法
 
 ```
-// 创建实例
-$_y.saveActivitySmsInfo.init('#get-phone',{
+// 默认调用
+$_y.saveActivitySmsInfo.init(el);
+// 全参调用
+$_y.saveActivitySmsInfo.init(el, {
     sceneCode: 'YK_TT_TONGJI',
     needMsg: true,
     countdown: 90,
@@ -136,7 +148,7 @@ $_y.saveActivitySmsInfo.changeSceneCode('#get-phone', 'YK_M_KUAIJI');
 
 | 属性             | 表示内容           | 是否必须 | 可选参数/参数类型 | 默认值       |
 | ------------------ | ---------------------- | -------- | ----------------- | --------------- |
-| id                 | 获客外层dom元素ID | 是      | string            | 无             |
+| el                 | 获客外层dom元素ID | 是      | string            | 无             |
 | sceneCode          | 场景代码           | 是      | string            | 无             |
 | needMsg            | 是否需要短信验证 | 否      | true/false        | true            |
 | countdown          | 首次倒计时时间  | 否      | number            | 90              |
@@ -301,7 +313,7 @@ $_y.saveActivitySmsInfo.changeSceneCode('#get-phone', 'YK_M_KUAIJI');
 ---
 
 ## fn4
-###  复制微信
+###  复制微信(仅用于特定页面)
 
 - #### 【js】
 
@@ -317,8 +329,25 @@ $_y.saveActivitySmsInfo.changeSceneCode('#get-phone', 'YK_M_KUAIJI');
 > 调用方法
 
 ```
-$_y.copyWeChat(['qbk8730']);
+// 默认调用
+$_y.copyWeChat(wxArr);
+// 全参调用
+$_y.copyWeChat(wxArr, {
+    el: '.ntkf/.xnkf',
+    noLayer: '.wxnumber',
+    openLayer: '.wxCode'
+});
 ```
+
+- #### 主要参数表
+
+| 属性    | 表示内容          | 是否必须 | 可选参数/参数类型 | 默认值     |
+| --------- | --------------------- | -------- | ----------------- | ------------- |
+| wxArr     | 随机取值的微信数组 | 是      | Array             | 无           |
+| el        | 点击激活弹窗的dom类名 | 否      | String            | '.ntkf/.xnkf' |
+| noLayer   | 复制失败无弹窗类名 | 否      | String            | '.wxnumber'   |
+| openLayer | 复制失败有弹窗类名 | 否      | String            | '.wxCode'     |
+
 
 - #### 【html】
 
