@@ -743,52 +743,127 @@ $_y = {
         return this;
     },
     /*scrollPage*/
-    scrollPage: function (flagClass, obj) {
-        var $el = $(flagClass),
-            $body = $('html,body'),
-            $w = $(window),
-            defaultOptions = {navEl: '.md', count: 100},
-            options = $.extend(defaultOptions, obj || {}),
-            $navEl = $(options.navEl),
-            $lists = $navEl.find('li'),
-            heightArr = [],
-            count = options.count;
-        bindEvent();
+    scrollPage: (function () {
+        // 默认参数
+        var defaults = {
+            navEl: '.md',
+            count: 100,
+            listActiveClass: 'active',
+            animateTime: 600
+        };
 
-        function bindEvent() {
-            storeHeight();
-            scrollFn();
-            handleClick();
-        }
+        // 构造函数
+        var ScrollPage = function (el, options) {
+            this.$el = $(el);
+            this.opts = options;
+            this.$navEl = $(options.navEl);
+            this.count = options.count;
+            this.$list = this.$navEl.find('li');
+            this.listActiveClass = options.listActiveClass;
+            this.animateTime = options.animateTime;
+            this.throttleTime = 200;
+        };
 
-        function storeHeight() {
+        // 存储高度
+        ScrollPage.prototype.storeHeight = function () {
+            var $el = this.$el;
+            this.documentHeight = $(document).height();         // 保存文档高度
+            this.heightArr = [];
             for (var i = 0, len = $el.length; i < len; i++) {
-                heightArr.push($el.eq(i).offset().top);
+                this.heightArr.push($el.eq(i).offset().top);
             }
-        }
+        };
+        // 滚动事件
+        ScrollPage.prototype.scrollFn = function () {
+            var top = $(window).scrollTop();
+            var documentHeight = $(document).height();
+            var arr = this.heightArr;
+            var j = arr.length - 1;
+            var active = this.listActiveClass;
+            var _self = this;
 
-        function scrollFn() {
-            $w.on('scroll', function () {
-                for (var top = $w.scrollTop(), arr = [], j = heightArr.length - 1; j >= 0; j--) {
-                    if (top + count > heightArr[j]) {
-                        arr.push(j);
+            (function findMax() {
+                if (top + _self.count > arr[j]) {
+                    _self.$list.removeClass(active).eq(j).addClass(active)
+                } else {
+                    j--;
+                    if (j >= 0) {
+                        arguments.callee();
                     }
                 }
-                var max = arr[0];
-                $lists.removeClass('active').eq(max).addClass('active');
-            })
-        }
+            })();
 
-        function handleClick() {
-            $body.on('click', options.navEl + ' li', function () {
-                var i = $(this).index(),
-                    h = heightArr[i];
-                $body.stop().animate({scrollTop: h - count + 2}, 600);  // 此处+2只为导航的active及时切换
-            })
-        }
+            documentHeight !== this.documentHeight && this.storeHeight();   // 文档高度改变时，重新存储高度
+        };
+        // 节流
+        ScrollPage.prototype.throttle = function (func, wait) {
+            var timeout, context, args;
+            return function () {
+                context = this;
+                args = arguments;
+                if (!timeout) {
+                    timeout = setTimeout(function () {
+                        timeout = null;
+                        func.apply(context, args);
+                    }, wait)
+                }
+            }
+        };
+        // 点击事件
+        ScrollPage.prototype.handleClick = function (context) {
+            var i = $(this).index(),
+                h = context.heightArr[i];
+            if(i > context.heightArr.length - 1) {  // 序号并没有对应dom元素，直接返回
+                return;
+            }
+            $('body,html').stop().animate({
+                scrollTop: h - context.count + 2    // 此处+2只为导航的active及时切换
+            }, context.animateTime)
+        };
 
-        return this;
-    },
+        // 事件绑定
+        ScrollPage.prototype.bindEvent = function () {
+            var _self = this;
+            // 滚动事件绑定
+            window.onscroll = _self.throttle(function () {
+                _self.scrollFn.call(_self);
+            }, _self.throttleTime);
+            // list点击事件
+            _self.$navEl.on('click', 'li', function (e) {
+                e = e || window.event;
+                _self.handleClick.call(e.target, _self);
+            })
+        };
+
+        // 初始化
+        ScrollPage.prototype.init = function () {
+            this.storeHeight();
+            this.bindEvent();
+        };
+
+        // 实例保存
+        var o = [];
+
+        // 初始化
+        var init = function (el, options) {
+            options = $.extend({}, defaults, options);
+            for(var i = 0, len = o.length; i < len; i++) {
+                if(o[i].el === el) {
+                    console.error('重复初始化'+ el + '的scrollPage');
+                }
+            }
+            var msg = new ScrollPage(el, options);
+            msg.init();
+            o.push({
+                el: el,
+                msg: msg
+            })
+        };
+
+        return {
+            init: init
+        }
+    })(),
     /* 元素进入屏幕范围动效 */
     enterScreenAnimate: function (obj) {
         var defaultObj = {

@@ -452,7 +452,10 @@ div.layui-layer {   //取消layer默认外阴影
 > 调用方法
 
 ```
-$_y.carousel.init('#carousel',{
+// 默认调用
+$_y.carousel.init(el);
+// 全参调用
+$_y.carousel.init(el,{
     mode: 'move',
     runTime: 800,
     intervalTime: 4000,
@@ -470,7 +473,7 @@ $_y.carousel.init('#carousel',{
 
 | 属性           | 表示内容           | 是否必须 | 可选参数/参数类型 | 默认值              |
 | ---------------- | ---------------------- | -------- | ----------------- | ---------------------- |
-| id               | 轮播模块外层dom元素ID | 是      | string            | 无                    |
+| el               | 轮播模块外层dom元素ID | 是      | string            | 无                    |
 | mode             | 轮播方式           | 否      | 'move'/'fade'     | 'move'                 |
 | runTime          | 轮播切换的时间  | 否      | number            | 800                    |
 | intervalTime     | 轮播间隙时间     | 否      | number            | 4000                   |
@@ -597,8 +600,28 @@ $_y.carousel.init('#carousel',{
 > 调用方法
 
 ```
-$_y.scrollPage('.class',{navEl: '.md', count: 100});   // 对象内参数为默认值，可传入同名参数进行替换
+// 默认调用
+$_y.scrollPage(el);
+// 全参调用
+$_y.scrollPage.init(el, {
+    navEl: '.md',
+    listActiveClass: 'active',
+    count: 100,
+    animateTime: 600
+});
 ```
+
+- #### 主要参数表
+
+| 属性          | 表示内容 | 是否必须 | 可选参数/参数类型 | 默认值 |
+| --------------- | ------------ | -------- | ----------------- | -------- |
+| el              | 页面锚点类名 | 是      | String            | 无      |
+| navEl           | 页面导航类名 | 否      | String            | '.md'    |
+| listActiveClass | 导航激活类名 | 否      | String            | 'active' |
+| count           | 偏移高度 | 否      | Number            | 100      |
+| animateTime     | 跳转动画事件 | 否      | Number            | 600      |
+
+
 
 ---
 
