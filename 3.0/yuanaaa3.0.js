@@ -3,6 +3,7 @@
         (typeof global == 'object' && global.global == global && global);
     var $_y = {};
     root.$_y = $_y;
+    $_y.VERSION = '3.0';
     /* 普通页面自动公司名称备案号 */
     $_y.registered = function () {
         var domainName = window.location.host,
