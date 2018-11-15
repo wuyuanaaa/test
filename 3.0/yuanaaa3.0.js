@@ -319,8 +319,8 @@
         // 改变场景代码
         var changeSceneCode = function (el, code) {
             var hasChange = false;
-            for(var i = 0, len = o.length; i < len; i++) {
-                if(o[i].el === el) {
+            for (var i = 0, len = o.length; i < len; i++) {
+                if (o[i].el === el) {
                     o[i].msg.sceneCode = code;
                     hasChange = true;
                 }
@@ -406,7 +406,8 @@
 
         // 继承
         function _extend(subClass, superClass) {
-            var F = function () {};
+            var F = function () {
+            };
             F.prototype = superClass.prototype;
             subClass.prototype = new F();
             subClass.prototype.constructor = subClass;
@@ -430,7 +431,7 @@
         };
 
         // 右边进入动画
-        Carousel.prototype.toNext = function(num) {
+        Carousel.prototype.toNext = function (num) {
             this.$mainLists.eq(num).css('left', this.width + 'px');
             this.$mainLists.eq(this.current).stop().animate({left: -this.width + 'px'}, this.opts.runTime, 'swing');
             this.$mainLists.eq(num).stop().animate({left: '0px'}, this.opts.runTime, 'swing');
@@ -438,7 +439,7 @@
         };
 
         // 左边进入动画
-        Carousel.prototype.toPrev = function(num) {
+        Carousel.prototype.toPrev = function (num) {
             this.$mainLists.eq(num).css('left', -this.width + 'px');
             this.$mainLists.eq(this.current).stop().animate({left: this.width + 'px'}, this.opts.runTime, 'swing');
             this.$mainLists.eq(num).stop().animate({left: '0px'}, this.opts.runTime, 'swing');
@@ -446,7 +447,7 @@
         };
 
         // 动画实现1
-        Carousel.prototype.changeFn = function(num) {
+        Carousel.prototype.changeFn = function (num) {
             if (num === this.current) {
                 return;
             }
@@ -471,7 +472,7 @@
         };
 
         // 移动端滑动事件
-        Carousel.prototype.touchEvent = function(el, touchstartFn, touchendFn) {
+        Carousel.prototype.touchEvent = function (el, touchstartFn, touchendFn) {
             var _self = this,
                 startX,
                 startY;
@@ -521,7 +522,7 @@
         };
 
         // 绑定事件
-        Carousel.prototype.bindEvent = function() {
+        Carousel.prototype.bindEvent = function () {
             var _self = this;
             // 如果只有一张及以下轮播内容，直接返回
             if (this.max <= 0) {
@@ -598,7 +599,7 @@
         };
 
         // 右边进入动画
-        CarouselMove.prototype.toNext = function(num) {
+        CarouselMove.prototype.toNext = function (num) {
             this.$mainLists.eq(num).css('left', this.width + 'px');
             this.$mainLists.eq(this.current).stop().animate({left: -this.width + 'px'}, this.opts.runTime, 'swing');
             this.$mainLists.eq(num).stop().animate({left: '0px'}, this.opts.runTime, 'swing');
@@ -606,7 +607,7 @@
         };
 
         // 左边进入动画
-        CarouselMove.prototype.toPrev = function(num) {
+        CarouselMove.prototype.toPrev = function (num) {
             this.$mainLists.eq(num).css('left', -this.width + 'px');
             this.$mainLists.eq(this.current).stop().animate({left: this.width + 'px'}, this.opts.runTime, 'swing');
             this.$mainLists.eq(num).stop().animate({left: '0px'}, this.opts.runTime, 'swing');
@@ -628,7 +629,7 @@
         };
 
         // 右边进入动画
-        CarouselFade.prototype.toNext = function(num) {
+        CarouselFade.prototype.toNext = function (num) {
 
             this.$mainLists.eq(num).stop().fadeIn(this.opts.runTime).siblings().fadeOut(this.opts.runTime);
 
@@ -749,7 +750,6 @@
     $_y.scrollTo = function (el) {
         var h = $(el).offset().top - 200;
         $('html,body').animate({'scrollTop': h + 'px'}, 500);
-        return this;
     };
     /* scrollPage */
     $_y.scrollPage = (function () {
@@ -822,7 +822,7 @@
         ScrollPage.prototype.handleClick = function (context) {
             var i = $(this).index(),
                 h = context.heightArr[i];
-            if(i > context.heightArr.length - 1) {  // 序号并没有对应dom元素，直接返回
+            if (i > context.heightArr.length - 1) {  // 序号并没有对应dom元素，直接返回
                 return;
             }
             $('body,html').stop().animate({
@@ -834,9 +834,9 @@
         ScrollPage.prototype.bindEvent = function () {
             var _self = this;
             // 滚动事件绑定
-            window.onscroll = _self.throttle(function () {
+            $(window).on('scroll', _self.throttle(function () {
                 _self.scrollFn.call(_self);
-            }, _self.throttleTime);
+            }, _self.throttleTime));
             // list点击事件
             _self.$navEl.on('click', 'li', function (e) {
                 e = e || window.event;
@@ -856,9 +856,9 @@
         // 初始化
         var init = function (el, options) {
             options = $.extend({}, defaults, options);
-            for(var i = 0, len = o.length; i < len; i++) {
-                if(o[i].el === el) {
-                    console.error('重复初始化'+ el + '的scrollPage');
+            for (var i = 0, len = o.length; i < len; i++) {
+                if (o[i].el === el) {
+                    console.error('重复初始化' + el + '的scrollPage');
                     return;
                 }
             }
