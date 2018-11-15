@@ -1,10 +1,16 @@
-$_y = {
-    registered: function () {  // 普通页面自动公司名称备案号
-        var $registeredName = $('#registeredName'),
+(function () {
+    var root = (typeof window == 'object' && window.window == window && window) ||
+        (typeof global == 'object' && global.global == global && global);
+    var $_y = {};
+    root.$_y = $_y;
+    /* 普通页面自动公司名称备案号 */
+    $_y.registered = function () {
+        var domainName = window.location.host,
+            $registeredName = $('#registeredName'),
             $registeredNum = $('#registeredNum'),
             $certificate = $('#certificate');
         for (var i = 0, len = this.corporationList.length; i < len; i++) {
-            if (this.domainName.indexOf(this.corporationList[i].dName) > -1) {
+            if (domainName.indexOf(this.corporationList[i].dName) > -1) {
                 $registeredName.text(this.corporationList[i].name);
                 $registeredNum.text(this.corporationList[i].num);
                 if (!this.corporationList[i].hasCertificate) {
@@ -12,24 +18,29 @@ $_y = {
                 }
             }
         }
-    },
-    registeredBd: function () {  // 百度单页自动公司名称备案号
-        var $footer = $('.footer');
+    };
+    /* 百度单页自动公司名称备案号 */
+    $_y.registeredBd = function () {
+        var domainName = window.location.host,
+            $footer = $('.footer');
         for (var i = 0, len = this.corporationList.length; i < len; i++) {
-            if (this.domainName.indexOf(this.corporationList[i].dName) > -1) {
+            if (domainName.indexOf(this.corporationList[i].dName) > -1) {
                 $footer.html('<p>Copyright © 2018 ' + this.corporationList[i].name + ' All Rights Reserved <br>' + this.corporationList[i].num + '</p>')
             }
         }
-    },
-    registeredSh: function () {  					    // 审核页面自动公司名称备案号
-        var $footer = $('.footer');
+    };
+    /* 审核页面自动公司名称备案号 */
+    $_y.registeredSh = function () {
+        var domainName = window.location.host,
+            $footer = $('.footer');
         for (var i = 0, len = this.corporationList.length; i < len; i++) {
-            if (this.domainName.indexOf(this.corporationList[i].dName) > -1) {
+            if (domainName.indexOf(this.corporationList[i].dName) > -1) {
                 $footer.html(this.corporationList[i].name)
             }
         }
-    },
-    saveActivitySmsInfo: (function () {
+    };
+    /* 手机号码获客 */
+    $_y.saveActivitySmsInfo = (function () {
         // 默认参数
         var defaults = {
             countdown: 90,
@@ -320,22 +331,23 @@ $_y = {
             init: init,
             changeSceneCode: changeSceneCode
         }
-    })(),
+    })();
     /* 改变微信 */
-    changeWeChat: function (arr, el) {
+    $_y.changeWeChat = function (arr, el) {
         var $code = el ? $(el) : $('.code'),
-            wxNum = arr[Math.floor(Math.random() * arr.length)]; // 随机取一个微信号
+            // wxNum = arr[Math.floor(Math.random() * arr.length)]; // 随机取一个微信号
+            wxNum = arr[+new Date() % arr.length];      // 18.11.15 更新随机方式
         if ($code.length < 0) {
             console.error("'changeWeChat'方法指向的dom为空！");
             return;
         }
         $code.attr("data-clipboard-text", wxNum);
         $code.text(wxNum);
-    },
+    };
     /* 复制微信 */
-    copyWeChat: function (arr, options) {
-        var wxNow = arr[Math.floor(Math.random() * arr.length)],  // 随机微信
-            noLayer = options.noLayer ? options.noLayer : '.wxnumber',
+    $_y.copyWeChat = function (arr, options) {
+        var wxNow = arr[+new Date() % arr.length];      // 18.11.15 更新随机方式
+        noLayer = options.noLayer ? options.noLayer : '.wxnumber',
             openLayer = options.openLayer ? options.openLayer : '.wxCode',
             $xnkf = options.el ? $(options.el) : ($('.ntkf').length > 0 ? $('.ntkf') : $('.xnkf')); // 确定页面小能类名
 
@@ -374,9 +386,9 @@ $_y = {
                 anim: 2
             })
         }
-    },
+    };
     /* 轮播 */
-    carousel: (function () {
+    $_y.carousel = (function () {
         // 默认参数
         var defaults = {
             mode: 'move',
@@ -637,9 +649,9 @@ $_y = {
         return {
             init: init
         }
-    })(),
-    /*鼠标滑动事件*/
-    touchEvent: function (obj) {
+    })();
+    /* 鼠标滑动事件 */
+    $_y.touchEvent = function (obj) {
         var defaultOptions = {
                 el: '',
                 touchstartFn: null,
@@ -693,11 +705,9 @@ $_y = {
             }
             return result;
         }
-
-        return this;
-    },
-    /*页面滚动隐藏/显示*/
-    fixedTop: function (obj) {
+    };
+    /* 页面滚动隐藏/显示 */
+    $_y.fixedTop = function (obj) {
         var defaultOptions = {
                 target: '',
                 relatedTarget: '',
@@ -733,17 +743,15 @@ $_y = {
                 $target.hide();
             }
         }
-
-        return this;
-    },
-    /*页面动画至指定元素*/
-    scrollTo: function (el) {
+    };
+    /* 页面动画至指定元素 */
+    $_y.scrollTo = function (el) {
         var h = $(el).offset().top - 200;
         $('html,body').animate({'scrollTop': h + 'px'}, 500);
         return this;
-    },
-    /*scrollPage*/
-    scrollPage: (function () {
+    };
+    /* scrollPage */
+    $_y.scrollPage = (function () {
         // 默认参数
         var defaults = {
             navEl: '.md',
@@ -864,9 +872,9 @@ $_y = {
         return {
             init: init
         }
-    })(),
+    })();
     /* 元素进入屏幕范围动效 */
-    enterScreenAnimate: function (obj) {
+    $_y.enterScreenAnimate = function (obj) {
         var defaultObj = {
                 el: '.anima',
                 scale: 0.8,
@@ -933,11 +941,9 @@ $_y = {
                 }, 1000)
             }
         }
-
-        return this;
-    },
+    };
     /* 禁止input number滚轮事件 */
-    preventMouseWheel: function () {
+    $_y.preventMouseWheel = function () {
         var $nums = $('input[type = "number"]');
         for (var i = 0, len = $nums.length; i < len; i++) {
             $nums[i].onmousewheel = function () {
@@ -948,11 +954,9 @@ $_y = {
                 e.preventDefault();
             }, false)
         }
-    },
-    /*
-    *公共数据
-    */
-    corporationList: [
+    };
+    /* 公共数据 */
+    $_y.corporationList = [
         {
             "id": 0,
             "dName": "ytxedu",
@@ -1092,7 +1096,6 @@ $_y = {
             "num": "蜀ICP备18022312号-3",
             "hasCertificate": false
         }
-    ],
-    // 主域名
-    domainName: window.location.host
-};
+    ];
+})();
+
