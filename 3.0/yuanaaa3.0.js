@@ -850,6 +850,7 @@ $_y = {
             for(var i = 0, len = o.length; i < len; i++) {
                 if(o[i].el === el) {
                     console.error('重复初始化'+ el + '的scrollPage');
+                    return;
                 }
             }
             var msg = new ScrollPage(el, options);
