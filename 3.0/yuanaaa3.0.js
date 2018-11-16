@@ -1,6 +1,8 @@
 (function () {
-    var root = (typeof window == 'object' && window.window == window && window) ||
-        (typeof global == 'object' && global.global == global && global);
+    var root = (typeof self == 'object' && self.self == self && self) ||
+        (typeof global == 'object' && global.global == global && global) ||
+        this ||
+        {};
     var $_y = {};
     root.$_y = $_y;
     $_y.VERSION = '3.0';
@@ -582,6 +584,7 @@
             this.throttleTime = 200;
         };
 
+
         // 存储高度
         ScrollPage.prototype.storeHeight = function () {
             var $el = this.$el;
@@ -655,6 +658,7 @@
 
         // 初始化
         ScrollPage.prototype.init = function () {
+            this.$list.eq(0).addClass(this.listActiveClass);
             this.storeHeight();
             this.bindEvent();
         };
