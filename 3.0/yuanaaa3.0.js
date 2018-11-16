@@ -4,42 +4,270 @@
     var $_y = {};
     root.$_y = $_y;
     $_y.VERSION = '3.0';
-    /* 普通页面自动公司名称备案号 */
-    $_y.registered = function () {
-        var domainName = window.location.host,
-            $registeredName = $('#registeredName'),
-            $registeredNum = $('#registeredNum'),
-            $certificate = $('#certificate');
-        for (var i = 0, len = this.corporationList.length; i < len; i++) {
-            if (domainName.indexOf(this.corporationList[i].dName) > -1) {
-                $registeredName.text(this.corporationList[i].name);
-                $registeredNum.text(this.corporationList[i].num);
-                if (!this.corporationList[i].hasCertificate) {
-                    $certificate.html('');
+    /* 轮播 */
+    $_y.carousel = (function () {
+        // 默认参数
+        var defaults = {
+            mode: 'move',
+            runTime: 800,
+            intervalTime: 4000,
+            mainListEl: '.carousel-main',
+            paginationListEl: '.carousel-pagination',
+            controller: '.carousel-controller',
+            addTouchEvent: false,
+            autoplay: true,
+            mouseenterStop: false,
+            minMove: 70
+        };
+
+        // 继承
+        function _extend(subClass, superClass) {
+            var F = function () {
+            };
+            F.prototype = superClass.prototype;
+            subClass.prototype = new F();
+            subClass.prototype.constructor = subClass;
+        }
+
+        // 父类
+        var Carousel = function (el, options) {
+            this.$el = $(el);
+            this.current = 0;           // 初始选中第0项
+            this.opts = options;
+            this.$mainLists = this.$el.find(options.mainListEl) ? this.$el.find(options.mainListEl).children() : '';
+            this.$paginationLists = this.$el.find(options.paginationListEl) ? this.$el.find(options.paginationListEl).children() : '';
+            this.$controllers = this.$el.find(options.controller) ? this.$el.find(options.controller).children() : '';
+            this.width = this.$mainLists.eq(0).outerWidth();
+            this.max = this.$mainLists.length - 1;
+        };
+
+        // 初始化轮播dom
+        Carousel.prototype.initialize = function () {
+            throw new Error('子类需要重写此方法');
+        };
+
+        // 右边进入动画
+        Carousel.prototype.toNext = function (num) {
+            this.$mainLists.eq(num).css('left', this.width + 'px');
+            this.$mainLists.eq(this.current).stop().animate({left: -this.width + 'px'}, this.opts.runTime, 'swing');
+            this.$mainLists.eq(num).stop().animate({left: '0px'}, this.opts.runTime, 'swing');
+            return this.moveEedFn && this.moveEedFn();
+        };
+
+        // 左边进入动画
+        Carousel.prototype.toPrev = function (num) {
+            this.$mainLists.eq(num).css('left', -this.width + 'px');
+            this.$mainLists.eq(this.current).stop().animate({left: this.width + 'px'}, this.opts.runTime, 'swing');
+            this.$mainLists.eq(num).stop().animate({left: '0px'}, this.opts.runTime, 'swing');
+            return this.moveEedFn && this.moveEedFn();
+        };
+
+        // 动画实现1
+        Carousel.prototype.changeFn = function (num) {
+            if (num === this.current) {
+                return;
+            }
+            if (num > this.current) {
+                num = num > this.max ? 0 : num;
+                this.toNext(num);
+            } else {
+                num = num < 0 ? this.max : num;
+                this.toPrev(num);
+            }
+            this.current = num;
+            this.$paginationLists && this.$paginationLists.eq(this.current).addClass('active').siblings().removeClass('active');
+        };
+
+        // 自动轮播
+        Carousel.prototype.autoplay = function () {
+            var _self = this;
+            clearTimeout(this.times);
+            this.times = setTimeout(function () {
+                _self.changeFn(_self.current + 1);
+            }, _self.opts.intervalTime)
+        };
+
+        // 移动端滑动事件
+        Carousel.prototype.touchEvent = function (el, touchstartFn, touchendFn) {
+            var _self = this,
+                startX,
+                startY;
+
+            if (el[0]) {
+                el[0].addEventListener('touchstart', function (ev) {
+                    startX = ev.touches[0].pageX;
+                    startY = ev.touches[0].pageY;
+                    touchstartFn ? touchstartFn() : '';
+                });
+                el[0].addEventListener('touchend', function (ev) {
+                    var endX, endY, direction;
+                    endX = ev.changedTouches[0].pageX;
+                    endY = ev.changedTouches[0].pageY;
+                    direction = getSlideDirection(startX, startY, endX, endY);
+                    touchendFn ? touchendFn(direction) : '';
+                });
+            }
+
+            // 返回角度
+            function getSlideAngle(dx, dy) {
+                return Math.atan2(dy, dx) * 180 / Math.PI;
+            }
+
+            // 根据起点和终点返回方向 1：向上，2：向下，3：向左，4：向右,0：未滑动
+            function getSlideDirection(startX, startY, endX, endY) {
+                var dy = startY - endY;
+                var dx = endX - startX;
+                var result = 0;
+                // 如果滑动距离太短
+                if (Math.abs(dx) < _self.opts.minMove && Math.abs(dy) < _self.opts.minMove) {
+                    return result;
+                }
+                var angle = getSlideAngle(dx, dy);
+                if (angle >= -45 && angle < 45) {
+                    result = 4;
+                } else if (angle >= 45 && angle < 135) {
+                    result = 1;
+                } else if (angle >= -135 && angle < -45) {
+                    result = 2;
+                }
+                else if ((angle >= 135 && angle <= 180) || (angle >= -180 && angle < -135)) {
+                    result = 3;
+                }
+                return result;
+            }
+        };
+
+        // 绑定事件
+        Carousel.prototype.bindEvent = function () {
+            var _self = this;
+            // 如果只有一张及以下轮播内容，直接返回
+            if (this.max <= 0) {
+                return;
+            }
+            // 是否自动轮播
+            if (this.opts.autoplay) {
+                this.autoplay();
+                this.moveEedFn = this.autoplay;
+            }
+            // 鼠标经过动画暂停
+            if (this.opts.mouseenterStop) {
+                this.$el.on('mouseenter', this.opts.mainListEl + ',' + this.opts.paginationListEl + ',' + this.opts.controller, function () {
+                    clearTimeout(_self.times);
+                });
+                this.$el.on('mouseleave', this.opts.mainListEl + ',' + this.opts.paginationListEl + ',' + this.opts.controller, function () {
+                    if (_self.opts.autoplay) {
+                        _self.autoplay();
+                    }
+                });
+            }
+            this.$controllers.on('click', function (e) {
+                e = e || window.event;
+                $(e.target).index() === 0 ? _self.changeFn(_self.current - 1) : _self.changeFn(_self.current + 1);
+            });
+            //  序号控制点击事件
+            this.$paginationLists.on('click', function () {
+                _self.changeFn($(this).index());
+            });
+            // 移动端滑动支持
+            if (this.opts.addTouchEvent) {
+                // 滑动处理
+                this.touchEvent(this.$el, touchstart, touchend);
+
+                function touchstart() {
+                    clearTimeout(_self.times);
+                }
+
+                function touchend(direction) {
+                    touchMove(direction);
+                }
+
+                function touchMove(direction) {
+                    if (direction === 3) {
+                        _self.changeFn(_self.current + 1);
+                    } else if (direction === 4) {
+                        _self.changeFn(_self.current - 1);
+                    }
+                    if (_self.opts.autoplay) {
+                        _self.autoplay();
+                    }
                 }
             }
-        }
-    };
-    /* 百度单页自动公司名称备案号 */
-    $_y.registeredBd = function () {
-        var domainName = window.location.host,
-            $footer = $('.footer');
-        for (var i = 0, len = this.corporationList.length; i < len; i++) {
-            if (domainName.indexOf(this.corporationList[i].dName) > -1) {
-                $footer.html('<p>Copyright © 2018 ' + this.corporationList[i].name + ' All Rights Reserved <br>' + this.corporationList[i].num + '</p>')
+        };
+
+        // 初始化一个轮播
+        Carousel.prototype.init = function () {
+            this.initialize();
+            this.bindEvent();
+        };
+
+
+        // 移动模式
+        var CarouselMove = function (el, options) {
+            Carousel.call(this, el, options);
+        };
+
+        // 继承父类
+        _extend(CarouselMove, Carousel);
+
+        // 初始化轮播dom
+        CarouselMove.prototype.initialize = function () {
+            this.$mainLists.eq(this.current).css('left', '0px').siblings().css('left', -this.width + 'px');
+        };
+
+        // 右边进入动画
+        CarouselMove.prototype.toNext = function (num) {
+            this.$mainLists.eq(num).css('left', this.width + 'px');
+            this.$mainLists.eq(this.current).stop().animate({left: -this.width + 'px'}, this.opts.runTime, 'swing');
+            this.$mainLists.eq(num).stop().animate({left: '0px'}, this.opts.runTime, 'swing');
+            return this.moveEedFn && this.moveEedFn();
+        };
+
+        // 左边进入动画
+        CarouselMove.prototype.toPrev = function (num) {
+            this.$mainLists.eq(num).css('left', -this.width + 'px');
+            this.$mainLists.eq(this.current).stop().animate({left: this.width + 'px'}, this.opts.runTime, 'swing');
+            this.$mainLists.eq(num).stop().animate({left: '0px'}, this.opts.runTime, 'swing');
+            return this.moveEedFn && this.moveEedFn();
+        };
+
+
+        // 淡出淡入模式
+        var CarouselFade = function (el, options) {
+            Carousel.call(this, el, options);
+        };
+
+        // 继承父类
+        _extend(CarouselFade, Carousel);
+
+        // 初始化轮播dom
+        CarouselFade.prototype.initialize = function () {
+            this.$mainLists.eq(this.current).show().siblings().hide();
+        };
+
+        // 右边进入动画
+        CarouselFade.prototype.toNext = function (num) {
+
+            this.$mainLists.eq(num).stop().fadeIn(this.opts.runTime).siblings().fadeOut(this.opts.runTime);
+
+            return this.moveEedFn && this.moveEedFn();
+        };
+        CarouselFade.prototype.toPrev = CarouselFade.prototype.toNext;
+
+
+        // 初始化
+        var init = function (el, options) {
+            options = $.extend({}, defaults, options);
+            if (options.mode === 'fade') {
+                new CarouselFade(el, options).init();
+            } else {
+                new CarouselMove(el, options).init();
             }
+        };
+
+        return {
+            init: init
         }
-    };
-    /* 审核页面自动公司名称备案号 */
-    $_y.registeredSh = function () {
-        var domainName = window.location.host,
-            $footer = $('.footer');
-        for (var i = 0, len = this.corporationList.length; i < len; i++) {
-            if (domainName.indexOf(this.corporationList[i].dName) > -1) {
-                $footer.html(this.corporationList[i].name)
-            }
-        }
-    };
+    })();
     /* 手机号码获客 */
     $_y.saveActivitySmsInfo = (function () {
         // 默认参数
@@ -333,425 +561,7 @@
             changeSceneCode: changeSceneCode
         }
     })();
-    /* 改变微信 */
-    $_y.changeWeChat = function (arr, el) {
-        var $code = el ? $(el) : $('.code'),
-            // wxNum = arr[Math.floor(Math.random() * arr.length)]; // 随机取一个微信号
-            wxNum = arr[+new Date() % arr.length];      // 18.11.15 更新随机方式
-        if ($code.length < 0) {
-            console.error("'changeWeChat'方法指向的dom为空！");
-            return;
-        }
-        $code.attr("data-clipboard-text", wxNum);
-        $code.text(wxNum);
-    };
-    /* 复制微信 */
-    $_y.copyWeChat = function (arr, options) {
-        var wxNow = arr[+new Date() % arr.length];      // 18.11.15 更新随机方式
-        noLayer = options.noLayer ? options.noLayer : '.wxnumber',
-            openLayer = options.openLayer ? options.openLayer : '.wxCode',
-            $xnkf = options.el ? $(options.el) : ($('.ntkf').length > 0 ? $('.ntkf') : $('.xnkf')); // 确定页面小能类名
-
-        $(noLayer).text(wxNow);
-        $(openLayer).text(wxNow);
-        $xnkf.on('click', openLayerFn);
-        clipboardFn(openLayer, openLayerFn);
-        clipboardFn(noLayer);
-
-        function clipboardFn(classNameString, callback) {
-            var clipboard = new Clipboard(classNameString),
-                $obj = $(classNameString);
-            $obj.on('click', function () {
-                $obj.attr('data-clipboard-text', wxNow);
-            });
-            clipboard.on('success', function () {
-                layer.msg('复制成功')
-            });
-            clipboard.on('error', function () {
-                if (callback) {
-                    callback();
-                }
-                layer.msg('当前浏览器不支持点击复制，请长按复制')
-            });
-        }
-
-        function openLayerFn() {
-            layer.open({
-                type: 1,
-                title: false,
-                content: $('.w_2'),
-                area: ['7.6rem', '8rem'],
-                closeBtn: 0,
-                shadeClose: true,
-                shade: [0.7, '#000'],
-                anim: 2
-            })
-        }
-    };
-    /* 轮播 */
-    $_y.carousel = (function () {
-        // 默认参数
-        var defaults = {
-            mode: 'move',
-            runTime: 800,
-            intervalTime: 4000,
-            mainListEl: '.carousel-main',
-            paginationListEl: '.carousel-pagination',
-            controller: '.carousel-controller',
-            addTouchEvent: false,
-            autoplay: true,
-            mouseenterStop: false,
-            minMove: 70
-        };
-
-        // 继承
-        function _extend(subClass, superClass) {
-            var F = function () {
-            };
-            F.prototype = superClass.prototype;
-            subClass.prototype = new F();
-            subClass.prototype.constructor = subClass;
-        }
-
-        // 父类
-        var Carousel = function (el, options) {
-            this.$el = $(el);
-            this.current = 0;           // 初始选中第0项
-            this.opts = options;
-            this.$mainLists = this.$el.find(options.mainListEl) ? this.$el.find(options.mainListEl).children() : '';
-            this.$paginationLists = this.$el.find(options.paginationListEl) ? this.$el.find(options.paginationListEl).children() : '';
-            this.$controllers = this.$el.find(options.controller) ? this.$el.find(options.controller).children() : '';
-            this.width = this.$mainLists.eq(0).outerWidth();
-            this.max = this.$mainLists.length - 1;
-        };
-
-        // 初始化轮播dom
-        Carousel.prototype.initialize = function () {
-            throw new Error('子类需要重写此方法');
-        };
-
-        // 右边进入动画
-        Carousel.prototype.toNext = function (num) {
-            this.$mainLists.eq(num).css('left', this.width + 'px');
-            this.$mainLists.eq(this.current).stop().animate({left: -this.width + 'px'}, this.opts.runTime, 'swing');
-            this.$mainLists.eq(num).stop().animate({left: '0px'}, this.opts.runTime, 'swing');
-            return this.moveEedFn && this.moveEedFn();
-        };
-
-        // 左边进入动画
-        Carousel.prototype.toPrev = function (num) {
-            this.$mainLists.eq(num).css('left', -this.width + 'px');
-            this.$mainLists.eq(this.current).stop().animate({left: this.width + 'px'}, this.opts.runTime, 'swing');
-            this.$mainLists.eq(num).stop().animate({left: '0px'}, this.opts.runTime, 'swing');
-            return this.moveEedFn && this.moveEedFn();
-        };
-
-        // 动画实现1
-        Carousel.prototype.changeFn = function (num) {
-            if (num === this.current) {
-                return;
-            }
-            if (num > this.current) {
-                num = num > this.max ? 0 : num;
-                this.toNext(num);
-            } else {
-                num = num < 0 ? this.max : num;
-                this.toPrev(num);
-            }
-            this.current = num;
-            this.$paginationLists && this.$paginationLists.eq(this.current).addClass('active').siblings().removeClass('active');
-        };
-
-        // 自动轮播
-        Carousel.prototype.autoplay = function () {
-            var _self = this;
-            clearTimeout(this.times);
-            this.times = setTimeout(function () {
-                _self.changeFn(_self.current + 1);
-            }, _self.opts.intervalTime)
-        };
-
-        // 移动端滑动事件
-        Carousel.prototype.touchEvent = function (el, touchstartFn, touchendFn) {
-            var _self = this,
-                startX,
-                startY;
-
-            if (el[0]) {
-                el[0].addEventListener('touchstart', function (ev) {
-                    startX = ev.touches[0].pageX;
-                    startY = ev.touches[0].pageY;
-                    touchstartFn ? touchstartFn() : '';
-                });
-                el[0].addEventListener('touchend', function (ev) {
-                    var endX, endY, direction;
-                    endX = ev.changedTouches[0].pageX;
-                    endY = ev.changedTouches[0].pageY;
-                    direction = getSlideDirection(startX, startY, endX, endY);
-                    touchendFn ? touchendFn(direction) : '';
-                });
-            }
-
-            // 返回角度
-            function getSlideAngle(dx, dy) {
-                return Math.atan2(dy, dx) * 180 / Math.PI;
-            }
-
-            // 根据起点和终点返回方向 1：向上，2：向下，3：向左，4：向右,0：未滑动
-            function getSlideDirection(startX, startY, endX, endY) {
-                var dy = startY - endY;
-                var dx = endX - startX;
-                var result = 0;
-                // 如果滑动距离太短
-                if (Math.abs(dx) < _self.opts.minMove && Math.abs(dy) < _self.opts.minMove) {
-                    return result;
-                }
-                var angle = getSlideAngle(dx, dy);
-                if (angle >= -45 && angle < 45) {
-                    result = 4;
-                } else if (angle >= 45 && angle < 135) {
-                    result = 1;
-                } else if (angle >= -135 && angle < -45) {
-                    result = 2;
-                }
-                else if ((angle >= 135 && angle <= 180) || (angle >= -180 && angle < -135)) {
-                    result = 3;
-                }
-                return result;
-            }
-        };
-
-        // 绑定事件
-        Carousel.prototype.bindEvent = function () {
-            var _self = this;
-            // 如果只有一张及以下轮播内容，直接返回
-            if (this.max <= 0) {
-                return;
-            }
-            // 是否自动轮播
-            if (this.opts.autoplay) {
-                this.autoplay();
-                this.moveEedFn = this.autoplay;
-            }
-            // 鼠标经过动画暂停
-            if (this.opts.mouseenterStop) {
-                this.$el.on('mouseenter', this.opts.mainListEl + ',' + this.opts.paginationListEl + ',' + this.opts.controller, function () {
-                    clearTimeout(_self.times);
-                });
-                this.$el.on('mouseleave', this.opts.mainListEl + ',' + this.opts.paginationListEl + ',' + this.opts.controller, function () {
-                    if (_self.opts.autoplay) {
-                        _self.autoplay();
-                    }
-                });
-            }
-            this.$controllers.on('click', function (e) {
-                e = e || window.event;
-                $(e.target).index() === 0 ? _self.changeFn(_self.current - 1) : _self.changeFn(_self.current + 1);
-            });
-            //  序号控制点击事件
-            this.$paginationLists.on('click', function () {
-                _self.changeFn($(this).index());
-            });
-            // 移动端滑动支持
-            if (this.opts.addTouchEvent) {
-                // 滑动处理
-                this.touchEvent(this.$el, touchstart, touchend);
-
-                function touchstart() {
-                    clearTimeout(_self.times);
-                }
-
-                function touchend(direction) {
-                    touchMove(direction);
-                }
-
-                function touchMove(direction) {
-                    if (direction === 3) {
-                        _self.changeFn(_self.current + 1);
-                    } else if (direction === 4) {
-                        _self.changeFn(_self.current - 1);
-                    }
-                    if (_self.opts.autoplay) {
-                        _self.autoplay();
-                    }
-                }
-            }
-        };
-
-        // 初始化一个轮播
-        Carousel.prototype.init = function () {
-            this.initialize();
-            this.bindEvent();
-        };
-
-
-        // 移动模式
-        var CarouselMove = function (el, options) {
-            Carousel.call(this, el, options);
-        };
-
-        // 继承父类
-        _extend(CarouselMove, Carousel);
-
-        // 初始化轮播dom
-        CarouselMove.prototype.initialize = function () {
-            this.$mainLists.eq(this.current).css('left', '0px').siblings().css('left', -this.width + 'px');
-        };
-
-        // 右边进入动画
-        CarouselMove.prototype.toNext = function (num) {
-            this.$mainLists.eq(num).css('left', this.width + 'px');
-            this.$mainLists.eq(this.current).stop().animate({left: -this.width + 'px'}, this.opts.runTime, 'swing');
-            this.$mainLists.eq(num).stop().animate({left: '0px'}, this.opts.runTime, 'swing');
-            return this.moveEedFn && this.moveEedFn();
-        };
-
-        // 左边进入动画
-        CarouselMove.prototype.toPrev = function (num) {
-            this.$mainLists.eq(num).css('left', -this.width + 'px');
-            this.$mainLists.eq(this.current).stop().animate({left: this.width + 'px'}, this.opts.runTime, 'swing');
-            this.$mainLists.eq(num).stop().animate({left: '0px'}, this.opts.runTime, 'swing');
-            return this.moveEedFn && this.moveEedFn();
-        };
-
-
-        // 淡出淡入模式
-        var CarouselFade = function (el, options) {
-            Carousel.call(this, el, options);
-        };
-
-        // 继承父类
-        _extend(CarouselFade, Carousel);
-
-        // 初始化轮播dom
-        CarouselFade.prototype.initialize = function () {
-            this.$mainLists.eq(this.current).show().siblings().hide();
-        };
-
-        // 右边进入动画
-        CarouselFade.prototype.toNext = function (num) {
-
-            this.$mainLists.eq(num).stop().fadeIn(this.opts.runTime).siblings().fadeOut(this.opts.runTime);
-
-            return this.moveEedFn && this.moveEedFn();
-        };
-        CarouselFade.prototype.toPrev = CarouselFade.prototype.toNext;
-
-
-        // 初始化
-        var init = function (el, options) {
-            options = $.extend({}, defaults, options);
-            if (options.mode === 'fade') {
-                new CarouselFade(el, options).init();
-            } else {
-                new CarouselMove(el, options).init();
-            }
-        };
-
-        return {
-            init: init
-        }
-    })();
-    /* 鼠标滑动事件 */
-    $_y.touchEvent = function (obj) {
-        var defaultOptions = {
-                el: '',
-                touchstartFn: null,
-                touchendFn: null,
-                minMove: 70
-            },
-            options = $.extend(defaultOptions, obj || {}),
-            startX,
-            startY,
-            el = options.el;
-
-        if (el) {
-            el.addEventListener('touchstart', function (ev) {
-                startX = ev.touches[0].pageX;
-                startY = ev.touches[0].pageY;
-                options.touchstartFn ? options.touchstartFn() : '';
-            });
-            el.addEventListener('touchend', function (ev) {
-                var endX, endY, direction;
-                endX = ev.changedTouches[0].pageX;
-                endY = ev.changedTouches[0].pageY;
-                direction = getSlideDirection(startX, startY, endX, endY);
-                options.touchendFn ? options.touchendFn(direction) : '';
-            });
-        }
-
-        // 返回角度
-        function getSlideAngle(dx, dy) {
-            return Math.atan2(dy, dx) * 180 / Math.PI;
-        }
-
-        // 根据起点和终点返回方向 1：向上，2：向下，3：向左，4：向右,0：未滑动
-        function getSlideDirection(startX, startY, endX, endY) {
-            var dy = startY - endY;
-            var dx = endX - startX;
-            var result = 0;
-            // 如果滑动距离太短
-            if (Math.abs(dx) < options.minMove && Math.abs(dy) < options.minMove) {
-                return result;
-            }
-            var angle = getSlideAngle(dx, dy);
-            if (angle >= -45 && angle < 45) {
-                result = 4;
-            } else if (angle >= 45 && angle < 135) {
-                result = 1;
-            } else if (angle >= -135 && angle < -45) {
-                result = 2;
-            }
-            else if ((angle >= 135 && angle <= 180) || (angle >= -180 && angle < -135)) {
-                result = 3;
-            }
-            return result;
-        }
-    };
-    /* 页面滚动隐藏/显示 */
-    $_y.fixedTop = function (obj) {
-        var defaultOptions = {
-                target: '',
-                relatedTarget: '',
-                throttleTime: 50,
-                subtractHeight: 150
-            },
-            options = $.extend(defaultOptions, obj || {}),
-            $target = $(options.target),  						// 目标元素
-            $relatedTarget = $(options.relatedTarget),    		// 关联元素
-            time = options.throttleTime,   						// 节流时间（ms）
-            subtractHeight = options.subtractHeight,  			// 底部预留高度
-            isRun = false,
-            minY,
-            maxY;
-        $(window).on('scroll', function () {
-            if (isRun) {
-                return;
-            }
-            isRun = true;
-            setTimeout(function () {
-                changeStatus();
-                isRun = false;
-            }, time)
-        });
-
-        function changeStatus() {
-            var scrollY = $('html,body').scrollTop();
-            minY = $relatedTarget ? $relatedTarget.offset().top : '';
-            maxY = $relatedTarget ? $relatedTarget.height() + minY - subtractHeight - $target.height() : '';
-            if (scrollY > minY && scrollY < maxY) {
-                $target.show();
-            } else {
-                $target.hide();
-            }
-        }
-    };
-    /* 页面动画至指定元素 */
-    $_y.scrollTo = function (el) {
-        var h = $(el).offset().top - 200;
-        $('html,body').animate({'scrollTop': h + 'px'}, 500);
-    };
-    /* scrollPage */
+    /* 滚屏导航 */
     $_y.scrollPage = (function () {
         // 默认参数
         var defaults = {
@@ -764,7 +574,6 @@
         // 构造函数
         var ScrollPage = function (el, options) {
             this.$el = $(el);
-            this.opts = options;
             this.$navEl = $(options.navEl);
             this.count = options.count;
             this.$list = this.$navEl.find('li');
@@ -858,7 +667,7 @@
             options = $.extend({}, defaults, options);
             for (var i = 0, len = o.length; i < len; i++) {
                 if (o[i].el === el) {
-                    console.error('重复初始化' + el + '的scrollPage');
+                    console.error('重复初始化类名为' + el + '的scrollPage');
                     return;
                 }
             }
@@ -874,72 +683,236 @@
             init: init
         }
     })();
-    /* 元素进入屏幕范围动效 */
-    $_y.enterScreenAnimate = function (obj) {
-        var defaultObj = {
-                el: '.anima',
-                scale: 0.8,
-            },
-            finalObj = $.extend(defaultObj, obj || {}),
-            $w = $(window),
-            $el = $(defaultObj.el),
-            len = $el ? $el.length : 0,
-            count = $w.innerHeight() * finalObj.scale,
-            topArr = [];
+    /* 入屏动画 */
+    $_y.animationIn = (function () {
+        // 默认参数
+        var defaults = {
+            el: '.anima',
+            scale: 0.8,
+            throttleTime: 200
+        };
 
-        bindEvent();
+        // 构造函数
+        var AnimationIn = function (options) {
+            this.$el = $(options.el);
+            this.throttleTime = options.throttleTime;
+            this.scale = options.scale;
+            this.first = true;
+        };
 
-        function bindEvent() {
-            $el.css({'opacity': 0});
-            storeHeight();
-            scrollFn();
-        }
-
-        function storeHeight() {
-            for (var i = 0; i < len; i++) {
-                $el.eq(i).data('relative') ? topArr.push($($el.eq(i).data('relative')).offset().top) : topArr.push($el.eq(i).offset().top);							// 保存元素相对页面的高度；如果元素有相对元素，则取相对元素相对页面的高度。
+        // 存储高度
+        AnimationIn.prototype.storeHeight = function () {
+            var $el = this.$el;
+            this.heightArr = [];
+            for (var i = 0, len = $el.length; i < len; i++) {
+                // 保存元素相对页面的高度；如果元素有相对元素，则取相对元素相对页面的高度
+                $el.eq(i).data('relative') ? this.heightArr.push($($el.eq(i).data('relative')).offset().top) : this.heightArr.push($el.eq(i).offset().top);
             }
-        }
-
-        function scrollFn() {
-            $w.on('scroll', function () {
-                for (var top = $w.scrollTop(), i = len - 1; i >= 0; i--) {
-                    arrForEach(i, top);
+            if(this.first) {            // 首次进入页面触发一次，
+                this.scrollFn();
+                this.first = false;
+            }
+        };
+        // 滚动事件
+        AnimationIn.prototype.scrollFn = function () {
+            var top = $(window).scrollTop();
+            var arr = this.heightArr;
+            var j = 0;
+            var count = $(window).innerHeight() * this.scale;
+            var $el = this.$el;
+            var _self = this;
+            (function findReady() {
+                if (!$el.eq(j).data('hasDone') && top + count > arr[j]) {
+                    _self.readyToAnimation($el.eq(j));
                 }
+                j++;
+                if (j < arr.length) {
+                    arguments.callee();
+                }
+            })();
+        };
+        // 单个元素动画判断
+        AnimationIn.prototype.readyToAnimation = function ($singleEl) {
+            $singleEl.data('hasDone', true);        // 进行标注，防止重复动画
+            var delay,
+                _self = this;
+            if ($singleEl.data('delay') && (delay = parseInt(el.data('delay')))) {
+                setTimeout(function () {
+                    _self.animation($singleEl);
+                }, delay)
+            }
+            else {
+                _self.animation($singleEl);
+            }
+        };
+        // 单个元素动画
+        AnimationIn.prototype.animation = function ($singleEl) {
+            $singleEl.data('addlibrary') ? $singleEl.addClass($singleEl.data('addlibrary')) : '';
+            $singleEl.css({
+                'opacity': 1
+            }).addClass($singleEl.data('animatetype'));
+            ($singleEl.data('remove') !== false) && this.removeClass($singleEl);    // 除非标注不移除，默认移除类名
+        };
+        // 移除添加的类名
+        AnimationIn.prototype.removeClass = function ($singleEl) {
+            setTimeout(function () {
+                $singleEl.data('addlibrary') ? $singleEl.removeClass($singleEl.data('addlibrary')) : '';
+                $singleEl.removeClass($singleEl.data('animatetype'));
+            }, 1000)    // 1秒后动画执行完成，移除类名
+        };
+
+        // 节流
+        AnimationIn.prototype.throttle = function (func, wait) {
+            var timeout, context, args;
+            return function () {
+                context = this;
+                args = arguments;
+                if (!timeout) {
+                    timeout = setTimeout(function () {
+                        timeout = null;
+                        func.apply(context, args);
+                    }, wait)
+                }
+            }
+        };
+
+
+        // 事件绑定
+        AnimationIn.prototype.bindEvent = function () {
+            var _self = this;
+            // 滚动事件绑定
+            $(window).on('scroll', _self.throttle(function () {
+                _self.scrollFn.call(_self);
+            }, _self.throttleTime));
+        };
+
+        // 初始化
+        AnimationIn.prototype.init = function () {
+            this.$el.css({'opacity': 0});
+            this.storeHeight();
+            this.bindEvent();
+        };
+
+        // 实例保存
+        var o = [];
+
+        // 初始化
+        var init = function (options) {
+            options = $.extend({}, defaults, options);
+            for (var i = 0, len = o.length; i < len; i++) {
+                if (o[i].el === options.el) {
+                    console.error('重复初始化类名为' + options.el + '的animationIn');
+                    return;
+                }
+            }
+            var msg = new AnimationIn(options);
+            msg.init();
+            o.push({
+                el: options.el,
+                msg: msg
             })
+        };
+
+        return {
+            init: init
+        }
+    })();
+    /* 鼠标滑动事件 */
+    $_y.touchEvent = function (obj) {
+        var defaultOptions = {
+                el: '',
+                touchstartFn: null,
+                touchendFn: null,
+                minMove: 70
+            },
+            options = $.extend(defaultOptions, obj || {}),
+            startX,
+            startY,
+            el = options.el;
+
+        if (el) {
+            el.addEventListener('touchstart', function (ev) {
+                startX = ev.touches[0].pageX;
+                startY = ev.touches[0].pageY;
+                options.touchstartFn ? options.touchstartFn() : '';
+            });
+            el.addEventListener('touchend', function (ev) {
+                var endX, endY, direction;
+                endX = ev.changedTouches[0].pageX;
+                endY = ev.changedTouches[0].pageY;
+                direction = getSlideDirection(startX, startY, endX, endY);
+                options.touchendFn ? options.touchendFn(direction) : '';
+            });
         }
 
-        function arrForEach(j, top) {
-            var el = $el.eq(j);
-            if (el.data('_hasdone')) {
+        // 返回角度
+        function getSlideAngle(dx, dy) {
+            return Math.atan2(dy, dx) * 180 / Math.PI;
+        }
+
+        // 根据起点和终点返回方向 1：向上，2：向下，3：向左，4：向右,0：未滑动
+        function getSlideDirection(startX, startY, endX, endY) {
+            var dy = startY - endY;
+            var dx = endX - startX;
+            var result = 0;
+            // 如果滑动距离太短
+            if (Math.abs(dx) < options.minMove && Math.abs(dy) < options.minMove) {
+                return result;
+            }
+            var angle = getSlideAngle(dx, dy);
+            if (angle >= -45 && angle < 45) {
+                result = 4;
+            } else if (angle >= 45 && angle < 135) {
+                result = 1;
+            } else if (angle >= -135 && angle < -45) {
+                result = 2;
+            }
+            else if ((angle >= 135 && angle <= 180) || (angle >= -180 && angle < -135)) {
+                result = 3;
+            }
+            return result;
+        }
+    };
+    /* 页面动画至指定元素 */
+    $_y.scrollTo = function (el) {
+        var h = $(el).offset().top - 200;
+        $('html,body').animate({'scrollTop': h + 'px'}, 500);
+    };
+    /* 元素指定位置展示 */
+    $_y.fixedTop = function (obj) {
+        var defaultOptions = {
+                target: '',
+                relatedTarget: '',
+                throttleTime: 50,
+                subtractHeight: 150
+            },
+            options = $.extend(defaultOptions, obj || {}),
+            $target = $(options.target),  						// 目标元素
+            $relatedTarget = $(options.relatedTarget),    		// 关联元素
+            time = options.throttleTime,   						// 节流时间（ms）
+            subtractHeight = options.subtractHeight,  			// 底部预留高度
+            isRun = false,
+            minY,
+            maxY;
+        $(window).on('scroll', function () {
+            if (isRun) {
                 return;
             }
-            if (top + count > topArr[j]) {
-                el.data('_hasdone', true);   					// 高度达到时即进行标注，防止重复动画
-                if (el.data('delay') && parseInt(el.data('delay'))) {
-                    setTimeout(function () {
-                        anima(el)
-                    }, parseInt(el.data('delay')));
-                } else {
-                    anima(el)
-                }
-            }
-        }
+            isRun = true;
+            setTimeout(function () {
+                changeStatus();
+                isRun = false;
+            }, time)
+        });
 
-        function anima(el) {
-            el.data('addlibrary') ? el.addClass(el.data('addlibrary')) : '';
-            el.css({
-                'opacity': 1
-            }).addClass(el.data('animatetype'));
-            remove(el);
-        }
-
-        function remove($dom) {
-            if ($dom.data('remove')) {
-                setTimeout(function () {
-                    $dom.data('addlibrary') ? $dom.removeClass($dom.data('addlibrary')) : '';
-                    $dom.removeClass($dom.data('animatetype'));
-                }, 1000)
+        function changeStatus() {
+            var scrollY = $('html,body').scrollTop();
+            minY = $relatedTarget ? $relatedTarget.offset().top : '';
+            maxY = $relatedTarget ? $relatedTarget.height() + minY - subtractHeight - $target.height() : '';
+            if (scrollY > minY && scrollY < maxY) {
+                $target.show();
+            } else {
+                $target.hide();
             }
         }
     };
@@ -954,6 +927,97 @@
                 e = e || window.event;
                 e.preventDefault();
             }, false)
+        }
+    };
+    /* 普通页面自动公司名称备案号 */
+    $_y.registered = function () {
+        var domainName = window.location.host,
+            $registeredName = $('#registeredName'),
+            $registeredNum = $('#registeredNum'),
+            $certificate = $('#certificate');
+        for (var i = 0, len = this.corporationList.length; i < len; i++) {
+            if (domainName.indexOf(this.corporationList[i].dName) > -1) {
+                $registeredName.text(this.corporationList[i].name);
+                $registeredNum.text(this.corporationList[i].num);
+                if (!this.corporationList[i].hasCertificate) {
+                    $certificate.html('');
+                }
+            }
+        }
+    };
+    /* 百度单页自动公司名称备案号 */
+    $_y.registeredBd = function () {
+        var domainName = window.location.host,
+            $footer = $('.footer');
+        for (var i = 0, len = this.corporationList.length; i < len; i++) {
+            if (domainName.indexOf(this.corporationList[i].dName) > -1) {
+                $footer.html('<p>Copyright © 2018 ' + this.corporationList[i].name + ' All Rights Reserved <br>' + this.corporationList[i].num + '</p>')
+            }
+        }
+    };
+    /* 审核页面自动公司名称备案号 */
+    $_y.registeredSh = function () {
+        var domainName = window.location.host,
+            $footer = $('.footer');
+        for (var i = 0, len = this.corporationList.length; i < len; i++) {
+            if (domainName.indexOf(this.corporationList[i].dName) > -1) {
+                $footer.html(this.corporationList[i].name)
+            }
+        }
+    };
+    /* 改变微信 */
+    $_y.changeWeChat = function (arr, el) {
+        var $code = el ? $(el) : $('.code'),
+            // wxNum = arr[Math.floor(Math.random() * arr.length)]; // 随机取一个微信号
+            wxNum = arr[+new Date() % arr.length];      // 18.11.15 更新随机方式
+        if ($code.length < 0) {
+            console.error("'changeWeChat'方法指向的dom为空！");
+            return;
+        }
+        $code.attr("data-clipboard-text", wxNum);
+        $code.text(wxNum);
+    };
+    /* 复制微信 */
+    $_y.copyWeChat = function (arr, options) {
+        var wxNow = arr[+new Date() % arr.length];      // 18.11.15 更新随机方式
+        noLayer = options.noLayer ? options.noLayer : '.wxnumber',
+            openLayer = options.openLayer ? options.openLayer : '.wxCode',
+            $xnkf = options.el ? $(options.el) : ($('.ntkf').length > 0 ? $('.ntkf') : $('.xnkf')); // 确定页面小能类名
+
+        $(noLayer).text(wxNow);
+        $(openLayer).text(wxNow);
+        $xnkf.on('click', openLayerFn);
+        clipboardFn(openLayer, openLayerFn);
+        clipboardFn(noLayer);
+
+        function clipboardFn(classNameString, callback) {
+            var clipboard = new Clipboard(classNameString),
+                $obj = $(classNameString);
+            $obj.on('click', function () {
+                $obj.attr('data-clipboard-text', wxNow);
+            });
+            clipboard.on('success', function () {
+                layer.msg('复制成功')
+            });
+            clipboard.on('error', function () {
+                if (callback) {
+                    callback();
+                }
+                layer.msg('当前浏览器不支持点击复制，请长按复制')
+            });
+        }
+
+        function openLayerFn() {
+            layer.open({
+                type: 1,
+                title: false,
+                content: $('.w_2'),
+                area: ['7.6rem', '8rem'],
+                closeBtn: 0,
+                shadeClose: true,
+                shade: [0.7, '#000'],
+                anim: 2
+            })
         }
     };
     /* 公共数据 */

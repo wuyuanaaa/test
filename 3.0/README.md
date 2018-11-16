@@ -1,110 +1,173 @@
 #  导航
-- [fn1](#fn1)---自动更换公司及资质(仅用于特定页面)
-- [fn2](#fn2)---单页微信修改(仅用于特定页面)
-- [fn3](#fn3)---手机验证码模块
-- [fn4](#fn4)---复制微信(仅用于特定页面)
-- [fn5](#fn5)---轮播图
-- [fn6](#fn6)---scrollPage
-- [fn7](#fn7)---视频播放模块
-- [fn8](#fn8)---m端fastClick
-- [fn9](#fn9)---小能代码
-- [fn10](#fn10)---M端页面滚动到指定元素位置
-- [fn11](#fn11)---倒计时模块
-- [fn12](#fn12)---页面指定位置展示
-- [fn13](#fn13)---元素入屏幕动画
-- [fn14](#fn14)---移动端滑动事件
-- [fn15](#fn15)---禁止input[type='number']滚轮事件
+
+- [1、__carousel__（轮播）](#carousel)
+- [2、__saveActivitySmsInfo__（手机验证）](#saveActivitySmsInfo)
+- [3、__scrollPage__（滚屏导航）](#scrollPage)
+- [4、__animationIn__（入屏动画）](#animationIn)
+- [5、__touchEvent__（移动端滑动事件）](#touchEvent)
+- [6、__scrollTo__（页面滚动到指定元素位置）](#scrollTo)
+- [7、__fixedTop__（元素指定位置展示）](#fixedTop)
+- [8、__preventMouseWheel__（禁止input[type='number']滚轮事件）](#preventMouseWheel)
+- [9、__registered__（自动更换公司及资质）【仅用于特定页面】](#registered)
+- [10、__changeWeChat__（单页微信修改）【仅用于特定页面】](#changeWeChat)
+- [11、__copyWeChat__（复制微信）【仅用于特定页面】](#copyWeChat)
 
 ---
 
-##  fn1
-###  自动更换公司及资质(仅用于特定页面)
-- ####  审核页面
+##  carousel
 
-> 引用方法库
+> 轮播
+
+- __【js】__
+
+> 引用方法库（依赖jquery）
 
 ```
 <script src="//js.ykclass.com/frame/jquery/v2.1.4/jquery.min.js"></script>
 <script src="//m.ykclass.com/zt/zyjs/yuanaaa3.0.js"></script>
 ```
 
-> 在js部分引用方法
-
-```
-$_y.registeredSh();
-```
-- ####  百度单页
-
-> 引用方法库
-
-```
-<script src="//m.ykclass.com/zt/zyjs/yuanaaa3.0.js"></script>
-```
-
-> 在js部分引用方法
-
-```
-$_y.registeredBd();
-```
-- ####  其他页面
-
-> 引用方法库
-
-```
-<script src="//m.ykclass.com/zt/zyjs/yuanaaa3.0.js"></script>
-```
-
-> M端替换后如下：
-
-```
-<div class="p-warp">
-    <p>版权所有@<span id="registeredName"></span> </p>
-    <p> 2018 保留一切权利 <span id="registeredNum"></span> </p>
-</div>
-<div class="p-warp" id="certificate">
-    <p>网络文化经营许可证 鄂网文许字【2014】1409-032号</p>
-    <p>互联网出版许可证 鄂字第23号 </p>
-</div>
-```
-
-> 在js部分引用方法
-
-```
-$_y.registered();
-```
-
----
-
-## fn2
-###  单页微信修改(仅用于特定页面)
-
-> 引用方法库
-
-```
-<script src="//m.ykclass.com/zt/zyjs/yuanaaa3.0.js"></script>
-```
-> 在js部分引用方法
+> 调用方法
 
 ```
 // 默认调用
-$_y.changeWeChat(wxArr);
+$_y.carousel.init(el);
 // 全参调用
-$_y.changeWeChat(wxArr, el);
+$_y.carousel.init(el,{
+    mode: 'move',
+    runTime: 800,
+    intervalTime: 4000,
+    mainListEl: '.carousel-main',
+    paginationListEl: '.carousel-pagination',
+    controller: '.carousel-controller',
+    addTouchEvent: false,
+    autoplay: true,
+    mouseenterStop: false,
+    minMove: 70
+});
 ```
 
-- #### 主要参数表
+- __主要参数表__
 
-| 属性 | 表示内容        | 是否必须 | 可选参数/参数类型 | 默认值 |
-| ----- | ------------------- | -------- | ----------------- | ------- |
-| wxArr | 随机取值的微信数组 | 是      | Array             | 无     |
-| el    | 存放微信号的dom类名 | 否      | String            | '.code' |
+| 属性           | 表示内容           | 是否必须 | 可选参数/参数类型 | 默认值              |
+| ---------------- | ---------------------- | -------- | ----------------- | ---------------------- |
+| el               | 轮播模块外层dom元素ID | 是      | string            | 无                    |
+| mode             | 轮播方式           | 否      | 'move'/'fade'     | 'move'                 |
+| runTime          | 轮播切换的时间  | 否      | number            | 800                    |
+| intervalTime     | 轮播间隙时间     | 否      | number            | 4000                   |
+| mainListEl       | 轮播主区域类名  | 否      | string            | '.carousel-main'       |
+| paginationListEl | 轮播序号部分类名 | 否      | string            | '.carousel-pagination' |
+| controller       | 轮播切换部分类名 | 否      | string            | '.carousel-controller' |
+| addTouchEvent    | 是否手指滑动事件 | 否      | true/false        | false                  |
+| autoplay         | 是否自动播放     | 否      | true/false        | true                   |
+| mouseenterStop   | 鼠标进入时轮播是否停止 | 否      | true/false        | false                  |
+| minMove          | 滑动的最小距离  | 否      | number            | 70                     |
+
+
+- __【html】__
+
+```
+<div class="carousel" id="carousel">
+    <ul class="carousel-main">
+        <li class="active"></li>
+        <li></li>
+        <li></li>
+    </ul>
+    <ol class="carousel-pagination">
+        <li class="active"></li>
+        <li></li>
+        <li></li>
+    </ol>
+    <div class="carousel-controller">
+        <div class="controller-left"><</div>
+        <div class="controller-right">></div>
+    </div>
+</div>
+```
+
+- __【参考初始css】__
+
+```
+.carousel {
+	position: relative;
+	margin: 100px auto;
+	width: 100%;
+	background: #ccc;
+	height: 400px;
+}
+.carousel-main {
+	position: absolute;
+	width: 800px;
+	height: 400px;
+	left: 50%;
+	top: 0;
+	transform: translateX(-50%);
+	li {
+		position: absolute;
+		width: 100%;
+		height: 100%;
+		top: 0;
+		left: 0;
+	}
+	li:nth-of-type(1) {
+		background: #6f9dd4;
+	}
+	li:nth-of-type(2) {
+		background: #f56c50;
+	}
+	li:nth-of-type(3) {
+		background: #fff9ae;
+	}
+}
+.carousel-pagination {
+	position: absolute;
+	width: 100px;
+	height: 20px;
+	left: 50%;
+	bottom: 20px;
+	transform: translateX(-50%);
+	li {
+		float: left;
+		width: 20px;
+		height: 100%;
+		background: #dfdfdf;
+	}
+	li + li {
+		margin-left: 20px;
+	}
+	.active {
+		background: #f62d1d;
+	}
+}
+.carousel-controller {
+	.controller-left,
+	.controller-right {
+		position: absolute;
+		width: 20px;
+		height: 40px;
+		top: 50%;
+		transform: translateY(-50%);
+		line-height: 40px;
+		font-size: 30px;
+		background: #aef7a8;
+		cursor: pointer;
+	}
+	.controller-left {
+		left: 5%;
+	}
+	.controller-right {
+		right: 5%;
+	}
+}
+```
 
 ---
 
-## fn3
-###  手机验证码模块
+##  saveActivitySmsInfo
 
-- #### 【js】
+> 手机验证
+
+- __【js】__
 
 > 引用方法库
 
@@ -144,7 +207,7 @@ $_y.saveActivitySmsInfo.init(el, {
 $_y.saveActivitySmsInfo.changeSceneCode('#get-phone', 'YK_M_KUAIJI');
 ```
 
-- #### 主要参数表
+- __主要参数表__
 
 | 属性             | 表示内容           | 是否必须 | 可选参数/参数类型 | 默认值       |
 | ------------------ | ---------------------- | -------- | ----------------- | --------------- |
@@ -163,7 +226,7 @@ $_y.saveActivitySmsInfo.changeSceneCode('#get-phone', 'YK_M_KUAIJI');
 | callback           | 获客成功后的回调 | 否      | function          | 无             |
 
 
-- #### 【html】
+- __【html】__
 
 > 主体
 
@@ -254,7 +317,7 @@ $_y.saveActivitySmsInfo.changeSceneCode('#get-phone', 'YK_M_KUAIJI');
 }
 ```
 
-- #### 【css  PC】
+- __【css  PC】__
 
 ```
 .layer-warp {
@@ -312,8 +375,298 @@ $_y.saveActivitySmsInfo.changeSceneCode('#get-phone', 'YK_M_KUAIJI');
 
 ---
 
-## fn4
-###  复制微信(仅用于特定页面)
+
+##  scrollPage
+
+> 滚屏导航
+
+- __【js】__
+
+> 引用方法库（JQ依赖）
+
+```
+<script src="//m.ykclass.com/zt/zyjs/yuanaaa3.0.js"></script>
+```
+
+> 调用方法
+
+```
+// 默认调用
+$_y.scrollPage(el);
+// 全参调用
+$_y.scrollPage.init(el, {
+    navEl: '.md',
+    listActiveClass: 'active',
+    count: 100,
+    animateTime: 600
+});
+```
+
+- __主要参数表__
+
+| 属性          | 表示内容 | 是否必须 | 可选参数/参数类型 | 默认值 |
+| --------------- | ------------ | -------- | ----------------- | -------- |
+| el              | 页面锚点类名 | 是      | String            | 无      |
+| navEl           | 页面导航类名 | 否      | String            | '.md'    |
+| listActiveClass | 导航激活类名 | 否      | String            | 'active' |
+| count           | 偏移高度 | 否      | Number            | 100      |
+| animateTime     | 跳转动画事件 | 否      | Number            | 600      |
+
+
+---
+
+##  animationIn
+
+> 入屏动画
+
+- __【css】__
+
+[Animate.css 动画库](https://daneden.github.io/animate.css/)
+
+```
+<link rel="stylesheet" type="text/css" href="//m.ykclass.com/zt/zyjs/animate.css"/>
+```
+
+[Magic.css 动画库](https://www.minimamente.com/example/magic_animations/)
+
+```
+<link rel="stylesheet" type="text/css" href="//m.ykclass.com/zt/zyjs/magic.min.css"/>
+```
+
+- __【js】__
+
+> 引用方法库（JQ依赖）
+
+```
+<script src="//js.ykclass.com/frame/jquery/v2.1.4/jquery.min.js"></script>
+<script src="//m.ykclass.com/zt/zyjs/yuanaaa3.0.js"></script>
+```
+
+> 调用方法
+
+```
+// 默认调用
+$_y.animationIn.init();
+// 全参调用
+$_y.animationIn.init({
+    el: '.anima',
+    scale: 0.8,
+    throttleTime: 200
+});
+```
+
+- __主要参数表__
+
+| 属性           | 表示内容                           | 是否必须 | 可选参数/参数类型 | 默认值       |
+| ---------------- | -------------------------------------- | -------- | ----------------- | --------------- |
+| el               | 标注需要动画元素类名         | 否      | String            | '.anima'        |
+| scale            | 元素到达屏幕高度(scale*100)%时开始动画 | 否      | Number            | 0.8             |
+| throttleTime     | 滚动事件节流时间               | 否      | Number            | 200             |
+| __data-属性__
+| data-animateType | 动画的类名                        | 是      | String            | 无             |
+| data-addLibrary  | 依赖动画库的通用类名         | 否      | String            | 无             |
+| data-delay       | 动画延迟时间                     | 否      | String            | 无             |
+| data-remove      | 动画执行完成后是否删除类名 | 否      | String            | 非'false'则移除 |
+| data-relative    | 动画相对元素                     | 否      | String            | 无             |
+
+
+---
+
+
+##  touchEvent
+
+> 移动端滑动事件
+
+- __【js】__
+
+> 引用方法库（JQ依赖）
+
+```
+<script src="//m.ykclass.com/zt/zyjs/yuanaaa3.0.js"></script>
+```
+
+> 调用方法
+
+```
+$_y.touchEvent({
+    el: '',
+    touchstartFn: null,
+    touchendFn: null,
+    minMove: 70
+});
+/*
+* el: '',                        // 注册事件的元素
+* touchstartFn: null,            // 滑动开始时的事件
+* touchendFn: null,              // 滑动结束的事件 需传值 direction
+* minMove: 70                    // 判断滑动的最小滑动距离
+* direction                      // 1：向上，2：向下，3：向左，4：向右,0：未滑动
+*/
+```
+
+---
+
+##  scrollTo
+
+> 页面滚动到指定元素位置
+
+> 引用方法库
+
+```
+<script src="//m.ykclass.com/zt/zyjs/yuanaaa3.0.js"></script>
+```
+
+> 调用方法
+
+```
+$_y.scrollTo('#id');
+```
+
+---
+
+
+##  fixedTop
+
+> 元素指定位置展示
+
+- __【js】__
+
+> 引用方法库
+
+```
+<script src="//m.ykclass.com/zt/zyjs/yuanaaa3.0.js"></script>
+```
+
+> 调用方法
+
+```
+$_y.fixedTop({
+    target: '#table-title',
+    relatedTarget: '.table',
+    throttleTime: 50,
+    subtractHeight: 150
+});
+/*
+* target:               // 目标元素  【必需】
+* relatedTarget:        // 关联元素  【必需】
+* throttleTime:         // 节流时间（ms）  【非必需】【50】
+* subtractHeight:       // 底部预留高度  【非必需】【150】
+*/
+```
+
+---
+
+##  preventMouseWheel
+
+> 禁止input[type='number']滚轮事件
+
+- __【js】__
+
+> 引用方法库（JQ依赖）
+
+```
+<script src="//m.ykclass.com/zt/zyjs/yuanaaa3.0.js"></script>
+```
+
+> 调用方法
+
+```
+$_y.preventMouseWheel();
+```
+
+---
+
+##  registered
+
+> 自动更换公司及资质【仅用于特定页面】
+
+- __审核页面__
+
+> 引用方法库
+
+```
+<script src="//js.ykclass.com/frame/jquery/v2.1.4/jquery.min.js"></script>
+<script src="//m.ykclass.com/zt/zyjs/yuanaaa3.0.js"></script>
+```
+
+> 在js部分引用方法
+
+```
+$_y.registeredSh();
+```
+- __百度单页__
+
+> 引用方法库
+
+```
+<script src="//m.ykclass.com/zt/zyjs/yuanaaa3.0.js"></script>
+```
+
+> 在js部分引用方法
+
+```
+$_y.registeredBd();
+```
+- __其他页面__
+
+> 引用方法库
+
+```
+<script src="//m.ykclass.com/zt/zyjs/yuanaaa3.0.js"></script>
+```
+
+> M端替换后如下：
+
+```
+<div class="p-warp">
+    <p>版权所有@<span id="registeredName"></span> </p>
+    <p> 2018 保留一切权利 <span id="registeredNum"></span> </p>
+</div>
+<div class="p-warp" id="certificate">
+    <p>网络文化经营许可证 鄂网文许字【2014】1409-032号</p>
+    <p>互联网出版许可证 鄂字第23号 </p>
+</div>
+```
+
+> 在js部分引用方法
+
+```
+$_y.registered();
+```
+
+---
+
+
+##  changeWeChat
+
+> 单页微信修改【仅用于特定页面】
+
+> 引用方法库
+
+```
+<script src="//m.ykclass.com/zt/zyjs/yuanaaa3.0.js"></script>
+```
+> 在js部分引用方法
+
+```
+// 默认调用
+$_y.changeWeChat(wxArr);
+// 全参调用
+$_y.changeWeChat(wxArr, el);
+```
+
+- #### 主要参数表
+
+| 属性 | 表示内容        | 是否必须 | 可选参数/参数类型 | 默认值 |
+| ----- | ------------------- | -------- | ----------------- | ------- |
+| wxArr | 随机取值的微信数组 | 是      | Array             | 无     |
+| el    | 存放微信号的dom类名 | 否      | String            | '.code' |
+
+---
+
+
+##  copyWeChat
+
+> 复制微信(仅用于特定页面)
 
 - #### 【js】
 
@@ -339,7 +692,7 @@ $_y.copyWeChat(wxArr, {
 });
 ```
 
-- #### 主要参数表
+- __主要参数表__
 
 | 属性    | 表示内容          | 是否必须 | 可选参数/参数类型 | 默认值     |
 | --------- | --------------------- | -------- | ----------------- | ------------- |
@@ -349,7 +702,7 @@ $_y.copyWeChat(wxArr, {
 | openLayer | 复制失败有弹窗类名 | 否      | String            | '.wxCode'     |
 
 
-- #### 【html】
+- __【html】__
 
 ```
 <!--弹出层 开始-->
@@ -366,7 +719,7 @@ $_y.copyWeChat(wxArr, {
 <div class="footH" style="height: 1.2rem"></div>
 ```
 
-- #### 【css】
+- __【css】__
 
 ```
 // 底部浮动条
@@ -436,423 +789,3 @@ div.layui-layer {   //取消layer默认外阴影
 ```
 
 ---
-
-## fn5
-###  轮播图
-
-- #### 【js】
-
-> 引用方法库（依赖jquery）
-
-```
-<script src="//js.ykclass.com/frame/jquery/v2.1.4/jquery.min.js"></script>
-<script src="//m.ykclass.com/zt/zyjs/yuanaaa3.0.js"></script>
-```
-
-> 调用方法
-
-```
-// 默认调用
-$_y.carousel.init(el);
-// 全参调用
-$_y.carousel.init(el,{
-    mode: 'move',
-    runTime: 800,
-    intervalTime: 4000,
-    mainListEl: '.carousel-main',
-    paginationListEl: '.carousel-pagination',
-    controller: '.carousel-controller',
-    addTouchEvent: false,
-    autoplay: true,
-    mouseenterStop: false,
-    minMove: 70
-});
-```
-
-- #### 主要参数表
-
-| 属性           | 表示内容           | 是否必须 | 可选参数/参数类型 | 默认值              |
-| ---------------- | ---------------------- | -------- | ----------------- | ---------------------- |
-| el               | 轮播模块外层dom元素ID | 是      | string            | 无                    |
-| mode             | 轮播方式           | 否      | 'move'/'fade'     | 'move'                 |
-| runTime          | 轮播切换的时间  | 否      | number            | 800                    |
-| intervalTime     | 轮播间隙时间     | 否      | number            | 4000                   |
-| mainListEl       | 轮播主区域类名  | 否      | string            | '.carousel-main'       |
-| paginationListEl | 轮播序号部分类名 | 否      | string            | '.carousel-pagination' |
-| controller       | 轮播切换部分类名 | 否      | string            | '.carousel-controller' |
-| addTouchEvent    | 是否手指滑动事件 | 否      | true/false        | false                  |
-| autoplay         | 是否自动播放     | 否      | true/false        | true                   |
-| mouseenterStop   | 鼠标进入时轮播是否停止 | 否      | true/false        | false                  |
-| minMove          | 滑动的最小距离  | 否      | number            | 70                     |
-
-
-
-- #### 【html】
-
-```
-<div class="carousel" id="carousel">
-    <ul class="carousel-main">
-        <li class="active"></li>
-        <li></li>
-        <li></li>
-    </ul>
-    <ol class="carousel-pagination">
-        <li class="active"></li>
-        <li></li>
-        <li></li>
-    </ol>
-    <div class="carousel-controller">
-        <div class="controller-left"><</div>
-        <div class="controller-right">></div>
-    </div>
-</div>
-```
-
-- #### 【参考初始css】
-
-```
-.carousel {
-	position: relative;
-	margin: 100px auto;
-	width: 100%;
-	background: #ccc;
-	height: 400px;
-}
-.carousel-main {
-	position: absolute;
-	width: 800px;
-	height: 400px;
-	left: 50%;
-	top: 0;
-	transform: translateX(-50%);
-	li {
-		position: absolute;
-		width: 100%;
-		height: 100%;
-		top: 0;
-		left: 0;
-	}
-	li:nth-of-type(1) {
-		background: #6f9dd4;
-	}
-	li:nth-of-type(2) {
-		background: #f56c50;
-	}
-	li:nth-of-type(3) {
-		background: #fff9ae;
-	}
-}
-.carousel-pagination {
-	position: absolute;
-	width: 100px;
-	height: 20px;
-	left: 50%;
-	bottom: 20px;
-	transform: translateX(-50%);
-	li {
-		float: left;
-		width: 20px;
-		height: 100%;
-		background: #dfdfdf;
-	}
-	li + li {
-		margin-left: 20px;
-	}
-	.active {
-		background: #f62d1d;
-	}
-}
-.carousel-controller {
-	.controller-left,
-	.controller-right {
-		position: absolute;
-		width: 20px;
-		height: 40px;
-		top: 50%;
-		transform: translateY(-50%);
-		line-height: 40px;
-		font-size: 30px;
-		background: #aef7a8;
-		cursor: pointer;
-	}
-	.controller-left {
-		left: 5%;
-	}
-	.controller-right {
-		right: 5%;
-	}
-}
-```
-
----
-
-## fn6
-###  scrollPage
-
-- #### 【js】
-
-> 引用方法库（JQ依赖）
-
-```
-<script src="//m.ykclass.com/zt/zyjs/yuanaaa3.0.js"></script>
-```
-
-> 调用方法
-
-```
-// 默认调用
-$_y.scrollPage(el);
-// 全参调用
-$_y.scrollPage.init(el, {
-    navEl: '.md',
-    listActiveClass: 'active',
-    count: 100,
-    animateTime: 600
-});
-```
-
-- #### 主要参数表
-
-| 属性          | 表示内容 | 是否必须 | 可选参数/参数类型 | 默认值 |
-| --------------- | ------------ | -------- | ----------------- | -------- |
-| el              | 页面锚点类名 | 是      | String            | 无      |
-| navEl           | 页面导航类名 | 否      | String            | '.md'    |
-| listActiveClass | 导航激活类名 | 否      | String            | 'active' |
-| count           | 偏移高度 | 否      | Number            | 100      |
-| animateTime     | 跳转动画事件 | 否      | Number            | 600      |
-
-
-
----
-
-## fn7
-###  视频播放模块
-
-- #### 【js】
-
-```
-<script src="//static.ykclass.com/frame/polyv/polyvplayer.min.js"></script>
-//视频
-var uid = "336d8745b4";
-var vid = "5af4dd0127c62475750485dc988b22d2_5";
-var videoPlayer = null; //live：直播播放器  video：点播播放器
-initVidoPlayer(vid);
-function initVidoPlayer(vid) {
-    videoPlayer = polyvObject('#player').videoPlayer({
-        'width': '100%',
-        'height': '100%',
-        'vid': vid,
-        flashParams: {
-            'allowScriptAccess': 'always',
-            'allowFullScreen': 'true',
-            'quality': 'high',
-            'bgcolor': '#ffffff',
-            'wmode': 'transparent',
-        },
-        flashvars: {
-            'autoplay': '1',
-            'is_auto_replay': 'on',
-            'ban_history_time': 'on',
-            'setScreen': 'fill',
-        }
-    });
-};
-```
-
----
-
-## fn8
-###  m端fastClick
-
-```
-<script src="//js.ykclass.com/frame/fastClick/v1.0.0/fastClick.js"></script>
-// 快速点击
-FastClick.attach(document.body);
-```
-
----
-
-## fn9
-###  小能代码
-
-```
-var kf = 'kf_9540_1520933792603';
-var NTKF_PARAM = {
-    "siteid": "kf_9540" /*网站siteid*/ ,
-    "settingid": kf /*代码ID*/ ,
-    "uid": "" /*会员ID*/ ,
-    "uname": "" /*会员名*/ ,
-    "userlevel": "0" /*会员等级*/
-};
-$(document).on("click", ".ntkf", function() {
-    NTKF.im_openInPageChat(kf);
-});
-```
-
-> 引用js文件：
-
-```
-<script type="text/javascript" src="//dl.ntalker.com/js/xn6/ntkfstat.js?siteid=kf_9540" charset="utf-8"></script>
-```
-
----
-
-## fn10
-###  M端页面滚动到指定元素位置
-
-> 引用方法库
-
-```
-<script src="//m.ykclass.com/zt/zyjs/yuanaaa3.0.js"></script>
-```
-
-> 调用方法
-
-```
-$_y.scrollTo('#id');
-```
-
----
-
-## fn11
-###  倒计时模块
-
-```
-var today = new Date().getTime();
-var  examDay = [2018,4,24];
-var endDay = new Date(examDay[0], examDay[1]-1, examDay[2]).getTime();
-if(endDay - today > 0) {
-    var day = Math.ceil((endDay - today) / (24 * 60 * 60 * 1000));
-    var single = day % 10;
-    var decade = parseInt((day % 100) / 10);
-    var hundreds = parseInt((day % 1000) / 100);
-    $(".single").html(single);
-    $(".decade").html(decade);
-}
-```
-
----
-
-## fn12
-###  页面滚动到指定位置展示
-
-- #### 【js】
-
-> 引用方法库
-
-```
-<script src="//m.ykclass.com/zt/zyjs/yuanaaa3.0.js"></script>
-```
-
-> 调用方法
-
-```
-$_y.fixedTop({
-    target: '#table-title',
-    relatedTarget: '.table',
-    throttleTime: 50,
-    subtractHeight: 150
-});
-/*
-* target:               // 目标元素  【必需】
-* relatedTarget:        // 关联元素  【必需】
-* throttleTime:         // 节流时间（ms）  【非必需】【50】
-* subtractHeight:       // 底部预留高度  【非必需】【150】
-*/
-```
-
----
-
-## fn13
-###  enterScreenAnimate
-
-- #### 【css】
-
-[Animate.css 动画库](https://daneden.github.io/animate.css/)
-
-```
-<link rel="stylesheet" type="text/css" href="//m.ykclass.com/zt/zyjs/animate.css"/>
-```
-
-[Magic.css 动画库](https://www.minimamente.com/example/magic_animations/)
-
-```
-<link rel="stylesheet" type="text/css" href="//m.ykclass.com/zt/zyjs/magic.min.css"/>
-```
-
-- #### 【js】
-
-> 引用方法库（JQ依赖）
-
-```
-<script src="//m.ykclass.com/zt/zyjs/yuanaaa3.0.js"></script>
-```
-
-> 调用方法
-
-```
-$_y.enterScreenAnimate({
-    el: '.anima',
-    scale: 0.8
-});
-/*
-* el:                               // 需要动画元素的类名  【非必需】【'.anima'】
-* scale:                            // 元素到达屏幕高度(scale*100)%时开始执行动画  【非必需】【0.8】
-* data-addLibrary="animated"        // 依赖动画库的通用类名
-* data-animateType="bounceInRight"  // 动画的类名
-* data-delay="200"                  // 动画延迟时间
-* data-remove="true"                // 动画执行完成后是否删除类名
-* data-relative=".part-2"           // 动画相对元素
-*/
-
-```
-
----
-
-## fn14
-###  touchEvent
-
-- #### 【js】
-
-> 引用方法库（JQ依赖）
-
-```
-<script src="//m.ykclass.com/zt/zyjs/yuanaaa3.0.js"></script>
-```
-
-> 调用方法
-
-```
-$_y.touchEvent({
-    el: '',
-    touchstartFn: null,
-    touchendFn: null,
-    minMove: 70
-});
-/*
-* el: '',                        // 注册事件的元素
-* touchstartFn: null,            // 滑动开始时的事件
-* touchendFn: null,              // 滑动结束的事件 需传值 direction
-* minMove: 70                    // 判断滑动的最小滑动距离
-* direction                      // 1：向上，2：向下，3：向左，4：向右,0：未滑动
-*/
-```
-
----
-
-## fn15
-###  preventMouseWheel
-
-- #### 【js】
-
-> 引用方法库（JQ依赖）
-
-```
-<script src="//m.ykclass.com/zt/zyjs/yuanaaa3.0.js"></script>
-```
-
-> 调用方法
-
-```
-$_y.preventMouseWheel();
-```
