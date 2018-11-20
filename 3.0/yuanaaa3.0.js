@@ -573,6 +573,8 @@
             animateTime: 600
         };
 
+        var MutationObserver = root.MutationObserver || root.WebkitMutationObserver || root.MozMutationObserver;
+
         // 构造函数
         var ScrollPage = function (el, options) {
             this.$el = $(el);
@@ -588,16 +590,15 @@
         // 存储高度
         ScrollPage.prototype.storeHeight = function () {
             var $el = this.$el;
-            this.documentHeight = $(document).height();         // 保存文档高度
             this.heightArr = [];
             for (var i = 0, len = $el.length; i < len; i++) {
                 this.heightArr.push($el.eq(i).offset().top);
             }
+            console.log(this.heightArr);
         };
         // 滚动事件
         ScrollPage.prototype.scrollFn = function () {
             var top = $(window).scrollTop();
-            var documentHeight = $(document).height();
             var arr = this.heightArr;
             var j = arr.length - 1;
             var active = this.listActiveClass;
@@ -614,7 +615,6 @@
                 }
             })();
 
-            documentHeight !== this.documentHeight && this.storeHeight();   // 文档高度改变时，重新存储高度
         };
         // 节流
         ScrollPage.prototype.throttle = function (func, wait) {
@@ -653,6 +653,13 @@
             _self.$navEl.on('click', 'li', function (e) {
                 e = e || window.event;
                 _self.handleClick.call(e.target, _self);
+            });
+            // 文档高度变化是重新计算各锚点高度
+            var observer = new MutationObserver(function () {
+                _self.storeHeight();
+            });
+            observer.observe(document.documentElement, {
+                attributes: true
             })
         };
 
