@@ -1,5 +1,7 @@
 #  导航
 
+- [_更新记录_](#update)
+
 - [1、__carousel__（轮播）](#carousel)
 - [2、__saveActivitySmsInfo__（手机验证）](#saveActivitySmsInfo)
 - [3、__scrollPage__（滚屏导航）](#scrollPage)
@@ -400,6 +402,8 @@ $_y.scrollPage.init(el, {
     count: 100,
     animateTime: 600
 });
+// 重置高度钩子
+$_y.scrollPage.reset(el);
 ```
 
 - __主要参数表__
@@ -789,3 +793,9 @@ div.layui-layer {   //取消layer默认外阴影
 ```
 
 ---
+
+
+##  update
+
+- 2018.11.20 __scrollPage 使用 Mutation Observer API 进行高度重新存储的触发条件__
+- 2018.11.20 __scrollPage 新增 reset 钩子，手动触发重新存储高度__

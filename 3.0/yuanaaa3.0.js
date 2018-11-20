@@ -555,7 +555,7 @@
                     hasChange = true;
                 }
             }
-            !hasChange && console.error('尝试改变未注册获客组件的场景代码！');
+            !hasChange && console.warn('尝试改变未注册 saveActivitySmsInfo 组件的场景代码！');
         };
 
         return {
@@ -678,7 +678,7 @@
             options = $.extend({}, defaults, options);
             for (var i = 0, len = o.length; i < len; i++) {
                 if (o[i].el === el) {
-                    console.error('重复初始化类名为' + el + '的scrollPage');
+                    console.warn('重复初始化类名为' + el + '的scrollPage');
                     return;
                 }
             }
@@ -690,8 +690,20 @@
             })
         };
 
+        // 更新高度钩子
+         var reset = function (el) {
+             for (var i = 0, len = o.length; i < len; i++) {
+                 if (o[i].el === el) {
+                     o[i].msg.storeHeight();
+                     return;
+                 }
+             }
+             console.warn('scrollPage.reset 未找到' + el + '类名注册的组件');
+         };
+
         return {
-            init: init
+            init: init,
+            reset: reset
         }
     })();
     /* 入屏动画 */
@@ -812,7 +824,7 @@
             options = $.extend({}, defaults, options);
             for (var i = 0, len = o.length; i < len; i++) {
                 if (o[i].el === options.el) {
-                    console.error('重复初始化类名为' + options.el + '的animationIn');
+                    console.warn('重复初始化类名为' + options.el + '的animationIn');
                     return;
                 }
             }
@@ -982,7 +994,7 @@
             // wxNum = arr[Math.floor(Math.random() * arr.length)]; // 随机取一个微信号
             wxNum = arr[+new Date() % arr.length];      // 18.11.15 更新随机方式
         if ($code.length < 0) {
-            console.error("'changeWeChat'方法指向的dom为空！");
+            console.warn("'changeWeChat'方法指向的dom为空！");
             return;
         }
         $code.attr("data-clipboard-text", wxNum);
