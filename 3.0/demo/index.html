@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" type="text/css" href="//m.ykclass.com/zt/zyjs/animate.css"/>
+    <link rel="stylesheet" href="./css/index.css?v=53155be6f1">
+    <style>
+        .get-phone {
+            margin: 40px;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="top">
+        头部区域
+    </div>
+
+    <div class="nav">
+        <ul class="md anima" data-addLibrary="animated" data-animateType="bounceInRight">
+            <li class="list-item">导航1</li>
+            <li class="list-item">导航2</li>
+            <li class="list-item">导航3</li>
+            <li class="list-item">其他</li>
+        </ul>
+    </div>
+
+
+    <div class="carousel scrollHere anima" data-addLibrary="animated" data-animateType="bounceInRight" id="carousel1">
+        <ul class="carousel-main">
+            <li class="active"></li>
+            <li></li>
+            <li></li>
+        </ul>
+        <ol class="carousel-pagination">
+            <li class="active"></li>
+            <li></li>
+            <li></li>
+        </ol>
+        <div class="carousel-controller">
+            <div class="controller-left"><</div>
+            <div class="controller-right">></div>
+        </div>
+    </div>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <div class="carousel scrollHere anima" data-addLibrary="animated" data-animateType="bounceInRight" data-remove='false' id="carousel2">
+        <ul class="carousel-main">
+            <li class="active"></li>
+            <li></li>
+            <li></li>
+        </ul>
+        <ol class="carousel-pagination">
+            <li class="active"></li>
+            <li></li>
+            <li></li>
+        </ol>
+        <div class="carousel-controller">
+            <div class="controller-left"><</div>
+            <div class="controller-right">></div>
+        </div>
+    </div>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br><br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <div class="get-phone anima" data-addLibrary="animated" data-animateType="bounceInRight" id="get-phone">
+        <div class="row">
+            <input class="phone-number" type="number" placeholder="请输入电话号码">
+            <input class="send-code" type="button" value="获取验证码">
+        </div>
+        <div class="row">
+            <input class="code-value" type="number" placeholder="请输入验证码">
+        </div>
+        <div class="row">
+            <button class="submit-button">提交</button>
+        </div>
+    </div>
+    <div class="hhh"></div>
+
+    <div class="get-phone scrollHere anima" data-addLibrary="animated" data-animateType="bounceInRight" id="get-phone2">
+        <div class="row">
+            <input class="phone-num" type="number" placeholder="请输入电话号码">
+            <input class="send-code" type="button" value="获取验证码">
+        </div>
+        <div class="row">
+            <input class="code-value" type="number" placeholder="请输入验证码">
+        </div>
+        <div class="row">
+            <button class="vail-code">提交</button>
+        </div>
+    </div>
+
+
+    <div class="hhh"></div>
+
+</body>
+</html>
+<script src="//js.ykclass.com/frame/jquery/v2.1.4/jquery.min.js"></script>
+<script src="//m.ykclass.com/zt/zyjs/layer/layer.js"></script>
+<script src="../yuanaaa3.0.js"></script>
+<script>
+    $(function () {
+
+        $_y.registered();
+
+        $_y.carousel.init('#carousel1');
+        $_y.carousel.init('#carousel2', {
+            mode: 'fade'
+        });
+
+        $_y.saveActivitySmsInfo.init('#get-phone', {
+            sceneCode: '1515'
+        });
+        $_y.saveActivitySmsInfo.changeSceneCode('#get-phone', 'YK_M_KUAIJI');
+
+
+        $_y.scrollPage.init('.scrollHere', {
+            navEl: '.md',
+            count: 100,
+            listActiveClass: 'active',
+            animateTime: 600
+        });
+
+        setTimeout(function () {
+            $('.hhh').css({height: 1000});
+            $_y.scrollPage.reset('.scrollHere');
+        }, 3000);
+
+
+
+        $_y.animationIn.init();
+
+
+
+        $_y.fixedTop.init('.nav');
+
+
+
+
+    })
+</script>

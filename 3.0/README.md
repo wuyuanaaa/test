@@ -805,3 +805,5 @@ div.layui-layer {   //取消layer默认外阴影
 
 - 2018.11.20 __scrollPage 使用 Mutation Observer API 进行高度重新存储的触发条件__
 - 2018.11.20 __scrollPage 新增 reset 钩子，手动触发重新存储高度__
+- 2018.11.23 __fixedTop 全部重写，功能类似，效果更好__
+- 2018.11.23 __demo [写代码的测试demo，将就看看](https://wuyuanaaa.github.io/yuanaaa.js/3.0/demo/index.html)__
