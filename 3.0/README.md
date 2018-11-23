@@ -8,7 +8,7 @@
 - [4、__animationIn__（入屏动画）](#animationIn)
 - [5、__touchEvent__（移动端滑动事件）](#touchEvent)
 - [6、__scrollTo__（页面滚动到指定元素位置）](#scrollTo)
-- [7、__fixedTop__（元素指定位置展示）](#fixedTop)
+- [7、__fixedTop__（滚屏吸顶）](#fixedTop)
 - [8、__preventMouseWheel__（禁止input[type='number']滚轮事件）](#preventMouseWheel)
 - [9、__registered__（自动更换公司及资质）【仅用于特定页面】](#registered)
 - [10、__changeWeChat__（单页微信修改）【仅用于特定页面】](#changeWeChat)
@@ -530,7 +530,7 @@ $_y.scrollTo('#id');
 
 ##  fixedTop
 
-> 元素指定位置展示
+> 滚屏吸顶
 
 - __【js】__
 
@@ -543,19 +543,25 @@ $_y.scrollTo('#id');
 > 调用方法
 
 ```
-$_y.fixedTop({
-    target: '#table-title',
-    relatedTarget: '.table',
-    throttleTime: 50,
-    subtractHeight: 150
-});
-/*
-* target:               // 目标元素  【必需】
-* relatedTarget:        // 关联元素  【必需】
-* throttleTime:         // 节流时间（ms）  【非必需】【50】
-* subtractHeight:       // 底部预留高度  【非必需】【150】
-*/
+// 默认调用
+$_y.fixedTop.init(el);
+// 全参调用
+$_y.fixedTop.init(el, {
+    top: 0,
+    target: '#el',
+    throttleTime: 60
+})
 ```
+
+- __主要参数表__
+
+| 属性       | 表示内容             | 是否必须 | 可选参数/参数类型 | 默认值 |
+| ------------ | ------------------------ | -------- | ----------------- | ------ |
+| el           | 需要吸顶的元素class或id | 是      | String            | 无    |
+| top          | 元素吸顶时的top值 | 否      | Number            | 0      |
+| target       | 元素超过该元素范围即隐藏 | 否      | String            | 无    |
+| throttleTime | 页面滚动节流时间 | 否      | Number            | 60     |
+
 
 ---
 

@@ -594,11 +594,10 @@
             for (var i = 0, len = $el.length; i < len; i++) {
                 this.heightArr.push($el.eq(i).offset().top);
             }
-            console.log(this.heightArr);
         };
         // 滚动事件
         ScrollPage.prototype.scrollFn = function () {
-            var top = $(window).scrollTop();
+            var top = $(document).scrollTop();
             var arr = this.heightArr;
             var j = arr.length - 1;
             var active = this.listActiveClass;
@@ -646,7 +645,7 @@
         ScrollPage.prototype.bindEvent = function () {
             var _self = this;
             // 滚动事件绑定
-            $(window).on('scroll', _self.throttle(function () {
+            $(document).on('scroll', _self.throttle(function () {
                 _self.scrollFn.call(_self);
             }, _self.throttleTime));
             // list点击事件
@@ -738,7 +737,7 @@
         };
         // 滚动事件
         AnimationIn.prototype.scrollFn = function () {
-            var top = $(window).scrollTop();
+            var top = $(document).scrollTop();
             var arr = this.heightArr;
             var j = 0;
             var count = $(window).innerHeight() * this.scale;
@@ -804,7 +803,7 @@
         AnimationIn.prototype.bindEvent = function () {
             var _self = this;
             // 滚动事件绑定
-            $(window).on('scroll', _self.throttle(function () {
+            $(document).on('scroll', _self.throttle(function () {
                 _self.scrollFn.call(_self);
             }, _self.throttleTime));
         };
@@ -902,43 +901,132 @@
         $('html,body').animate({'scrollTop': h + 'px'}, 500);
     };
     /* 元素指定位置展示 */
-    $_y.fixedTop = function (obj) {
-        var defaultOptions = {
-                target: '',
-                relatedTarget: '',
-                throttleTime: 50,
-                subtractHeight: 150
-            },
-            options = $.extend(defaultOptions, obj || {}),
-            $target = $(options.target),  						// 目标元素
-            $relatedTarget = $(options.relatedTarget),    		// 关联元素
-            time = options.throttleTime,   						// 节流时间（ms）
-            subtractHeight = options.subtractHeight,  			// 底部预留高度
-            isRun = false,
-            minY,
-            maxY;
-        $(window).on('scroll', function () {
-            if (isRun) {
-                return;
-            }
-            isRun = true;
-            setTimeout(function () {
-                changeStatus();
-                isRun = false;
-            }, time)
-        });
+    $_y.fixedTop = (function () {
+        var defaults = {
+            top: 0,
+            fixedClass: 'hasFixed',
+            throttleTime: 60
+        };
 
-        function changeStatus() {
-            var scrollY = $('html,body').scrollTop();
-            minY = $relatedTarget ? $relatedTarget.offset().top : '';
-            maxY = $relatedTarget ? $relatedTarget.height() + minY - subtractHeight - $target.height() : '';
-            if (scrollY > minY && scrollY < maxY) {
-                $target.show();
-            } else {
-                $target.hide();
+        var Fixed = function (el, options) {
+            this.$el = $(el);
+            this.$target = $(options.target);
+            this.top = options.top;
+            this.hasFixed = false;
+            this.fixedClass = options.fixedClass;
+            this.throttleTime = options.throttleTime;
+        };
+
+        var proto = Fixed.prototype;
+        // 获取 dom 的数据，包含： 1、导航距顶部高度   2、导航下一元素需要增加的marginTop    3、如果有参照 参照 dom 的底部距页面顶部高度
+        proto.getTop = function () {
+            var h = 0;
+
+            h += parseInt(this.$el.css('marginTop'));   // 导航自身的marginTop
+            h += parseInt(this.$el[0].getBoundingClientRect().height);  // 导航自身的高度
+
+            this.marginTop = h;     // 2
+            this.offsetTop = this.$el.offset().top;    // 1
+
+            if (this.$target.length) {  // 3
+                this.bottom = this.$target[0].getBoundingClientRect().height + this.$target.offset().top;
+                console.log(this.bottom);
             }
+
+        };
+        // 添加 fixed 属性
+        proto.addFixed = function () {
+            this.$el.css({
+                'position': 'fixed',
+                'top': this.top
+            });
+
+            this.nextMarginTop = parseInt(this.$el.next().css('marginTop'));
+            this.$el.next().css({'marginTop': this.nextMarginTop + this.marginTop + 'px'});
+            this.hasFixed = true;
+        };
+        // 移除 fixed 属性
+        proto.moveFixed = function () {
+            this.$el.css({
+                'position': 'relative',
+                'top': 0
+            });
+            if (!this.nextMarginTop) {
+                this.$el.next().css({'marginTop': this.nextMarginTop + 'px'});
+            }
+            this.hasFixed = false;
+        };
+        // 页面滚动事件函数
+        proto.scrollFn = function () {
+            if(this.bottom) {       // 判断是否有参照 dom，如果有，到达参照 dom 底部时导航隐藏
+                proto.scrollFn = function () {      // 惰性函数进行重新赋值，防止重复判断
+                    var top = $(document).scrollTop();
+
+                    if (!this.hasFixed && top > this.offsetTop) {
+                        this.addFixed();
+                    }
+
+                    if (this.hasFixed) {
+                        if (top < this.offsetTop) {
+                            this.moveFixed();
+                        }
+                        if (top > this.bottom) {
+                            this.$el.hide();
+                        } else {
+                            this.$el.show();
+                        }
+                    }
+                }
+            } else  {
+                proto.scrollFn = function () {
+                    var top = $(document).scrollTop();
+
+                    if (!this.hasFixed && top > this.offsetTop) {
+                        this.addFixed();
+                    }
+
+                    if (this.hasFixed && top < this.offsetTop) {
+                        this.moveFixed();
+                    }
+                }
+            }
+        };
+
+        proto.throttle = function (func, wait) {
+            var timeout, context, args;
+            return function () {
+                context = this;
+                args = arguments;
+                if (!timeout) {
+                    timeout = setTimeout(function () {
+                        timeout = null;
+                        func.apply(context, args);
+                    }, wait)
+                }
+            }
+        };
+
+        proto.bindEvent = function () {
+            var _self = this;
+            _self.scrollFn();
+            $(document).on('scroll', _self.throttle(_self.scrollFn.bind(_self),_self.throttleTime))
+        };
+
+        proto.init = function () {
+            this.getTop();
+            this.bindEvent();
+        };
+
+        var init = function (el, options) {
+            options = $.extend({}, defaults, options);
+            new Fixed(el, options).init();
+        };
+
+        return {
+            init: init
         }
-    };
+
+    })();
     /* 禁止input number滚轮事件 */
     $_y.preventMouseWheel = function () {
         var $nums = $('input[type = "number"]');
