@@ -904,8 +904,7 @@
     $_y.fixedTop = (function () {
         var defaults = {
             top: 0,
-            fixedClass: 'hasFixed',
-            throttleTime: 60
+            throttleTime: 32
         };
 
         var Fixed = function (el, options) {
@@ -913,7 +912,6 @@
             this.$target = $(options.target);
             this.top = options.top;
             this.hasFixed = false;
-            this.fixedClass = options.fixedClass;
             this.throttleTime = options.throttleTime;
         };
 
@@ -930,7 +928,6 @@
 
             if (this.$target.length) {  // 3
                 this.bottom = this.$target[0].getBoundingClientRect().height + this.$target.offset().top;
-                console.log(this.bottom);
             }
 
         };
@@ -959,18 +956,18 @@
         // 页面滚动事件函数
         proto.scrollFn = function () {
             if(this.bottom) {       // 判断是否有参照 dom，如果有，到达参照 dom 底部时导航隐藏
-                proto.scrollFn = function () {      // 惰性函数进行重新赋值，防止重复判断
+                this.scrollFn = function () {      // 惰性函数进行重新赋值，防止重复判断
                     var top = $(document).scrollTop();
 
-                    if (!this.hasFixed && top > this.offsetTop) {
+                    if (!this.hasFixed && (top + this.top) > this.offsetTop) {
                         this.addFixed();
                     }
 
                     if (this.hasFixed) {
-                        if (top < this.offsetTop) {
+                        if ((top + this.top) < this.offsetTop) {
                             this.moveFixed();
                         }
-                        if (top > this.bottom) {
+                        if ((top + this.top) > this.bottom) {
                             this.$el.hide();
                         } else {
                             this.$el.show();
@@ -978,14 +975,14 @@
                     }
                 }
             } else  {
-                proto.scrollFn = function () {
+                this.scrollFn = function () {
                     var top = $(document).scrollTop();
 
-                    if (!this.hasFixed && top > this.offsetTop) {
+                    if (!this.hasFixed && (top + this.top) > this.offsetTop) {
                         this.addFixed();
                     }
 
-                    if (this.hasFixed && top < this.offsetTop) {
+                    if (this.hasFixed && (top + this.top) < this.offsetTop) {
                         this.moveFixed();
                     }
                 }

@@ -560,7 +560,7 @@ $_y.fixedTop.init(el, {
 | el           | 需要吸顶的元素class或id | 是      | String            | 无    |
 | top          | 元素吸顶时的top值 | 否      | Number            | 0      |
 | target       | 元素超过该元素范围即隐藏 | 否      | String            | 无    |
-| throttleTime | 页面滚动节流时间 | 否      | Number            | 60     |
+| throttleTime | 页面滚动节流时间 | 否      | Number            | 32     |
 
 
 ---
@@ -807,3 +807,4 @@ div.layui-layer {   //取消layer默认外阴影
 - 2018.11.20 __scrollPage 新增 reset 钩子，手动触发重新存储高度__
 - 2018.11.23 __fixedTop 全部重写，功能类似，效果更好__
 - 2018.11.23 __demo [写代码的测试demo，将就看看](https://wuyuanaaa.github.io/yuanaaa.js/demo/)__
+- 2018.11.24 __fixedTop 修复惰性函数的对构造函数原型的修改，修复fixed后包含top值时的位置计算偏差__
