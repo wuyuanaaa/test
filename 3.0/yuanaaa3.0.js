@@ -904,6 +904,7 @@
     $_y.fixedTop = (function () {
         var defaults = {
             top: 0,
+            zIndex: 888,
             throttleTime: 32
         };
 
@@ -911,44 +912,57 @@
             this.$el = $(el);
             this.$target = $(options.target);
             this.top = options.top;
+            this.zIndex = options.zIndex;
             this.hasFixed = false;
             this.throttleTime = options.throttleTime;
+            this.show = true;
         };
 
         var proto = Fixed.prototype;
-        // 获取 dom 的数据，包含： 1、导航距顶部高度   2、导航下一元素需要增加的marginTop    3、如果有参照 参照 dom 的底部距页面顶部高度
-        proto.getTop = function () {
+        /**
+         * 获取 dom 的数据，包含：
+         * 1、初始z-index
+         * 2、this.height :导航距自身高度
+         * 3、this.offsetTop :导航距顶部高度
+         * 4、this.totalHeight :导航下一元素需要增加的marginTop
+         * 5、this.bottom 如果有参照 参照 dom 的底部距页面顶部高度
+         * */
+        proto.storageAttr = function () {
+            this.initialZIndex = this.$el.css('z-index');       // 1、初始z-index
+            console.log(this.initialZIndex);
+            this.height = parseInt(this.$el[0].getBoundingClientRect().height);  // 2 导航自身的高度
+            this.offsetTop = this.$el.offset().top;    // 3
+
             var h = 0;
-
             h += parseInt(this.$el.css('marginTop'));   // 导航自身的marginTop
-            h += parseInt(this.$el[0].getBoundingClientRect().height);  // 导航自身的高度
+            h += this.height;
 
-            this.marginTop = h;     // 2
-            this.offsetTop = this.$el.offset().top;    // 1
+            this.totalHeight = h;     // 4
 
-            if (this.$target.length) {  // 3
+            if (this.$target.length) {  // 5
                 this.bottom = this.$target[0].getBoundingClientRect().height + this.$target.offset().top;
             }
-
         };
         // 添加 fixed 属性
         proto.addFixed = function () {
             this.$el.css({
                 'position': 'fixed',
-                'top': this.top
+                'top': this.top,
+                'z-index': this.zIndex
             });
 
             this.nextMarginTop = parseInt(this.$el.next().css('marginTop'));
-            this.$el.next().css({'marginTop': this.nextMarginTop + this.marginTop + 'px'});
+            this.$el.next().css({'marginTop': this.nextMarginTop + this.totalHeight + 'px'});
             this.hasFixed = true;
         };
         // 移除 fixed 属性
         proto.moveFixed = function () {
             this.$el.css({
                 'position': 'relative',
-                'top': 0
+                'top': 0,
+                'z-index': this.initialZIndex
             });
-            if (!this.nextMarginTop) {
+            if (this.nextMarginTop) {
                 this.$el.next().css({'marginTop': this.nextMarginTop + 'px'});
             }
             this.hasFixed = false;
@@ -958,7 +972,6 @@
             if(this.bottom) {       // 判断是否有参照 dom，如果有，到达参照 dom 底部时导航隐藏
                 this.scrollFn = function () {      // 惰性函数进行重新赋值，防止重复判断
                     var top = $(document).scrollTop();
-
                     if (!this.hasFixed && (top + this.top) > this.offsetTop) {
                         this.addFixed();
                     }
@@ -967,10 +980,17 @@
                         if ((top + this.top) < this.offsetTop) {
                             this.moveFixed();
                         }
-                        if ((top + this.top) > this.bottom) {
-                            this.$el.hide();
+                        if ((top + this.top + this.height) > this.bottom) {
+                            if (this.show) {
+                                this.show = false;
+                                this.$el.hide();
+                            }
                         } else {
-                            this.$el.show();
+                            if (!this.show) {
+                                this.show = true;
+                                this.$el.show();
+                            }
+
                         }
                     }
                 }
@@ -1010,7 +1030,7 @@
         };
 
         proto.init = function () {
-            this.getTop();
+            this.storageAttr();
             this.bindEvent();
         };
 
@@ -1022,7 +1042,6 @@
         return {
             init: init
         }
-
     })();
     /* 禁止input number滚轮事件 */
     $_y.preventMouseWheel = function () {

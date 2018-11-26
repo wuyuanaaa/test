@@ -17,7 +17,7 @@
         头部区域
     </div>
 
-    <div class="nav">
+    <div class="nav" id="nav1">
         <ul class="md anima" data-addLibrary="animated" data-animateType="bounceInRight">
             <li class="list-item">导航1</li>
             <li class="list-item">导航2</li>
@@ -25,6 +25,7 @@
             <li class="list-item">其他</li>
         </ul>
     </div>
+
 
 
     <div class="carousel scrollHere anima" data-addLibrary="animated" data-animateType="bounceInRight" id="carousel1">
@@ -49,6 +50,7 @@
     <br>
     <br>
     <br>
+
     <br>
     <br>
     <br>
@@ -61,12 +63,17 @@
     <br>
     <br>
     <br>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
+    <div class="nav" id="nav2">
+        <ul class="md anima" data-addLibrary="animated" data-animateType="bounceInRight">
+            <li class="list-item">导航1</li>
+            <li class="list-item">导航2</li>
+            <li class="list-item">导航3</li>
+            <li class="list-item">其他</li>
+        </ul>
+    </div>
+
+
+
     <div class="carousel scrollHere anima" data-addLibrary="animated" data-animateType="bounceInRight" data-remove='false' id="carousel2">
         <ul class="carousel-main">
             <li class="active"></li>
@@ -152,7 +159,7 @@
 </html>
 <script src="//js.ykclass.com/frame/jquery/v2.1.4/jquery.min.js"></script>
 <script src="//m.ykclass.com/zt/zyjs/layer/layer.js"></script>
-<script src="./js/yuanaaa3.0.js"></script>
+<script src="./js/yuanaaa3.0.js?v=59b8ea0f15"></script>
 <script>
     $(function () {
 
@@ -187,7 +194,11 @@
 
 
 
-        $_y.fixedTop.init('.nav');
+        $_y.fixedTop.init('#nav1');
+        $_y.fixedTop.init('#nav2', {
+            top: 50,
+            target: '#carousel2'
+        });
 
 
 
