@@ -924,22 +924,18 @@
          * 1、初始z-index
          * 2、this.height :导航距自身高度
          * 3、this.offsetTop :导航距顶部高度
-         * 4、this.totalHeight :导航下一元素需要增加的marginTop
-         * 5、this.bottom 如果有参照 参照 dom 的底部距页面顶部高度
+         * 4、this.nextOffsetTop :导航相邻元素距顶部高度
+         * 5、this.nextMarginTop :相邻元素的 marginTop
+         * 6、this.bottom 如果有参照 参照 dom 的底部距页面顶部高度
          * */
         proto.storageAttr = function () {
-            this.initialZIndex = this.$el.css('z-index');       // 1、初始z-index
-            console.log(this.initialZIndex);
-            this.height = parseInt(this.$el[0].getBoundingClientRect().height);  // 2 导航自身的高度
+            this.initialZIndex = this.$el.css('z-index');       // 1
+            this.height = parseInt(this.$el[0].getBoundingClientRect().height);  // 2
             this.offsetTop = this.$el.offset().top;    // 3
-
-            var h = 0;
-            h += parseInt(this.$el.css('marginTop'));   // 导航自身的marginTop
-            h += this.height;
-
-            this.totalHeight = h;     // 4
-
-            if (this.$target.length) {  // 5
+            this.next = this.$el.next();
+            this.nextOffsetTop = this.next.offset().top;      // 4
+            this.nextMarginTop = parseInt(this.next.css('marginTop'));  // 5
+            if (this.$target.length) {  // 6
                 this.bottom = this.$target[0].getBoundingClientRect().height + this.$target.offset().top;
             }
         };
@@ -951,8 +947,10 @@
                 'z-index': this.zIndex
             });
 
-            this.nextMarginTop = parseInt(this.$el.next().css('marginTop'));
-            this.$el.next().css({'marginTop': this.nextMarginTop + this.totalHeight + 'px'});
+            var next = this.next,
+                nextOffsetTop = next.offset().top;
+
+            next.css({'marginTop': this.nextMarginTop + this.nextOffsetTop - nextOffsetTop + 'px'});
             this.hasFixed = true;
         };
         // 移除 fixed 属性
@@ -963,7 +961,7 @@
                 'z-index': this.initialZIndex
             });
             if (this.nextMarginTop) {
-                this.$el.next().css({'marginTop': this.nextMarginTop + 'px'});
+                this.next.css({'marginTop': this.nextMarginTop + 'px'});
             }
             this.hasFixed = false;
         };
@@ -990,7 +988,6 @@
                                 this.show = true;
                                 this.$el.show();
                             }
-
                         }
                     }
                 }

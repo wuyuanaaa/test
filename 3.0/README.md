@@ -804,9 +804,10 @@ div.layui-layer {   //取消layer默认外阴影
 
 ##  update
 
-- 2018.11.20 __scrollPage 使用 Mutation Observer API 进行高度重新存储的触发条件__
+- 2018.11.20 __scrollPage 新增 Mutation Observer API 进行高度重新存储的触发条件__
 - 2018.11.20 __scrollPage 新增 reset 钩子，手动触发重新存储高度__
 - 2018.11.23 __fixedTop 全部重写，功能类似，效果更好__
 - 2018.11.23 __demo [写代码的测试demo，将就看看](https://wuyuanaaa.github.io/yuanaaa.js/demo/)__
-- 2018.11.24 __fixedTop 修复惰性函数的对构造函数原型的修改，修复fixed后包含top值时的位置计算偏差__
+- 2018.11.24 __fixedTop 修复 惰性函数的对构造函数原型的修改，修复fixed后包含top值时的位置计算偏差__
 - 2018.11.26 __fixedTop 新增 z-Index 自定义属性，支持 z-Index 修改__
+- 2018.11.27 __fixedTop 优化 相邻元素marginTop的计算方式，减少导航元素自身及子元素对结果的影响（如：导航子元素的marginTop穿透父元素会导致结果不准确）__
