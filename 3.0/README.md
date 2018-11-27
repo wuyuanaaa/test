@@ -465,7 +465,7 @@ $_y.animationIn.init({
 | ---------------- | -------------------------------------- | -------- | ----------------- | --------------- |
 | el               | 标注需要动画元素类名         | 否      | String            | '.anima'        |
 | scale            | 元素到达屏幕高度(scale*100)%时开始动画 | 否      | Number            | 0.8             |
-| throttleTime     | 滚动事件节流时间               | 否      | Number            | 200             |
+| throttleTime     | 滚动事件节流时间(ms)            | 否      | Number            | 200             |
 | __data-属性__
 | data-animateType | 动画的类名                        | 是      | String            | 无             |
 | data-addLibrary  | 依赖动画库的通用类名         | 否      | String            | 无             |
@@ -548,8 +548,9 @@ $_y.fixedTop.init(el);
 // 全参调用
 $_y.fixedTop.init(el, {
     top: 0,
+    zIndex: 888,
     target: '#el',
-    throttleTime: 60
+    throttleTime: 32
 })
 ```
 
@@ -561,7 +562,7 @@ $_y.fixedTop.init(el, {
 | top          | 元素吸顶时的top值 | 否      | Number            | 0      |
 | zIndex       | 元素吸顶时的zIndex值 | 否      | Number            | 888      |
 | target       | 元素超过该元素范围即隐藏 | 否      | String            | 无    |
-| throttleTime | 页面滚动节流时间 | 否      | Number            | 32     |
+| throttleTime | 页面滚动节流时间(ms) | 否      | Number            | 32     |
 
 
 ---
