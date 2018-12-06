@@ -811,4 +811,5 @@ div.layui-layer {   //取消layer默认外阴影
 - 2018.11.23 __demo [写代码的测试demo，将就看看](https://wuyuanaaa.github.io/yuanaaa.js/demo/)__
 - 2018.11.24 __fixedTop 修复 惰性函数的对构造函数原型的修改，修复fixed后包含top值时的位置计算偏差__
 - 2018.11.26 __fixedTop 新增 z-Index 自定义属性，支持 z-Index 修改__
-- 2018.11.27 __fixedTop 优化 相邻元素marginTop的计算方式，减少导航元素自身及子元素对结果的影响（如：导航子元素的marginTop穿透父元素会导致结果不准确）__
+- 2018.11.27 __fixedTop 优化 相邻元素 marginTop 的计算方式，减少导航元素自身及子元素对结果的影响（如：导航子元素的marginTop穿透父元素会导致结果不准确）__
+- 2018.12.06 __fixedTop 优化 导航元素 fixed 后占位方式由为相邻元素添加 marginTop 更改至 新增占位元素，修复导航元素为最后一个子元素及导航元素前一兄弟元素的 marginBottom 折叠导致的高度不正确__

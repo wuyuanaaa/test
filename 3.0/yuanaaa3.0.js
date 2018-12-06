@@ -920,21 +920,25 @@
 
         var proto = Fixed.prototype;
         /**
-         * 获取 dom 的数据，包含：
+         * 初始化并获取 dom 的数据，包含：
          * 1、初始z-index
          * 2、this.height :导航距自身高度
          * 3、this.offsetTop :导航距顶部高度
-         * 4、this.nextOffsetTop :导航相邻元素距顶部高度
-         * 5、this.nextMarginTop :相邻元素的 marginTop
+         * 4、this.nextinner :占位元素内元素
+         * 5、this.nextOffsetTop :相邻元素距顶部高度
          * 6、this.bottom 如果有参照 参照 dom 的底部距页面顶部高度
          * */
         proto.storageAttr = function () {
             this.initialZIndex = this.$el.css('z-index');       // 1
             this.height = parseInt(this.$el[0].getBoundingClientRect().height);  // 2
             this.offsetTop = this.$el.offset().top;    // 3
-            this.next = this.$el.next();
-            this.nextOffsetTop = this.next.offset().top;      // 4
-            this.nextMarginTop = parseInt(this.next.css('marginTop'));  // 5
+            // 导航条后面添加占位元素 并为外层添加 BFC，防止 margin 折叠或者穿透
+            this.$el.after('<div id="fixedTop-placeholder" style="overflow: hidden"><div id="fixedTop-placeholder-inner"></div></div>');
+
+            this.nextinner = $('#fixedTop-placeholder-inner');  // 4
+
+            this.nextOffsetTop = this.nextinner.offset().top;  // 5
+
             if (this.$target.length) {  // 6
                 this.bottom = this.$target[0].getBoundingClientRect().height + this.$target.offset().top;
             }
@@ -947,10 +951,10 @@
                 'z-index': this.zIndex
             });
 
-            var next = this.next,
+            var next = this.nextinner,
                 nextOffsetTop = next.offset().top;
 
-            next.css({'marginTop': this.nextMarginTop + this.nextOffsetTop - nextOffsetTop + 'px'});
+            next.css({'marginTop': this.nextOffsetTop - nextOffsetTop + 'px'});
             this.hasFixed = true;
         };
         // 移除 fixed 属性
@@ -960,8 +964,8 @@
                 'top': 0,
                 'z-index': this.initialZIndex
             });
-            if (this.nextMarginTop) {
-                this.next.css({'marginTop': this.nextMarginTop + 'px'});
+            if (this.nextinner !== undefined) {
+                this.nextinner.css({'marginTop': 0});
             }
             this.hasFixed = false;
         };
