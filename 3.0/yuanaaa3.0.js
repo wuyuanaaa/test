@@ -49,19 +49,13 @@
         };
 
         // 右边进入动画
-        Carousel.prototype.toNext = function (num) {
-            this.$mainLists.eq(num).css('left', this.width + 'px');
-            this.$mainLists.eq(this.current).stop().animate({left: -this.width + 'px'}, this.opts.runTime, 'swing');
-            this.$mainLists.eq(num).stop().animate({left: '0px'}, this.opts.runTime, 'swing');
-            return this.moveEedFn && this.moveEedFn();
+        Carousel.prototype.toNext = function () {
+            throw new Error('子类需要重写此方法');
         };
 
         // 左边进入动画
-        Carousel.prototype.toPrev = function (num) {
-            this.$mainLists.eq(num).css('left', -this.width + 'px');
-            this.$mainLists.eq(this.current).stop().animate({left: this.width + 'px'}, this.opts.runTime, 'swing');
-            this.$mainLists.eq(num).stop().animate({left: '0px'}, this.opts.runTime, 'swing');
-            return this.moveEedFn && this.moveEedFn();
+        Carousel.prototype.toPrev = function () {
+            throw new Error('子类需要重写此方法');
         };
 
         // 动画实现1
