@@ -36,10 +36,10 @@
             this.$el = $(el);
             this.current = 0;           // 初始选中第0项
             this.opts = options;
-            this.$mainLists = this.$el.find(options.mainListEl) ? this.$el.find(options.mainListEl).children() : '';
-            this.$paginationLists = this.$el.find(options.paginationListEl) ? this.$el.find(options.paginationListEl).children() : '';
-            this.$controllers = this.$el.find(options.controller) ? this.$el.find(options.controller).children() : '';
-            this.width = this.$mainLists.eq(0).outerWidth();
+            this.$mainLists = this.$el.find(options.mainListEl).children();
+            this.$paginationLists = this.$el.find(options.paginationListEl).children();
+            this.$controllers = this.$el.find(options.controller).children();
+            this.width = this.$mainLists.eq(0).width();
             this.max = this.$mainLists.length - 1;
         };
 
