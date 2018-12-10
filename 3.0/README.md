@@ -60,6 +60,7 @@ $_y.carousel.init(el,{
 | mainListEl       | 轮播主区域类名  | 否      | string            | '.carousel-main'       |
 | paginationListEl | 轮播序号部分类名 | 否      | string            | '.carousel-pagination' |
 | controller       | 轮播切换部分类名 | 否      | string            | '.carousel-controller' |
+| paginationListEvent  | 轮播序号切换事件 | 否  | 'click'/'mouseenter'  | 'click' |
 | addTouchEvent    | 是否手指滑动事件 | 否      | true/false        | false                  |
 | autoplay         | 是否自动播放     | 否      | true/false        | true                   |
 | mouseenterStop   | 鼠标进入时轮播是否停止 | 否      | true/false        | false                  |
@@ -813,3 +814,4 @@ div.layui-layer {   //取消layer默认外阴影
 - 2018.11.26 __fixedTop 新增 z-Index 自定义属性，支持 z-Index 修改__
 - 2018.11.27 __fixedTop 优化 相邻元素 marginTop 的计算方式，减少导航元素自身及子元素对结果的影响（如：导航子元素的marginTop穿透父元素会导致结果不准确）__
 - 2018.12.06 __fixedTop 优化 导航元素 fixed 后占位方式由为相邻元素添加 marginTop 更改至 新增 clone 占位元素__
+- 2018.12.10 __carousel 新增 导航序号切换事件由默认 'click' 改为可以通过 'paginationListEvent' 参数配置，接受 'click'/'mouseenter'__

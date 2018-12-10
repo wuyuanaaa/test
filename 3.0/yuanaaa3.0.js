@@ -16,6 +16,7 @@
             mainListEl: '.carousel-main',
             paginationListEl: '.carousel-pagination',
             controller: '.carousel-controller',
+            paginationListEvent: 'click',
             addTouchEvent: false,
             autoplay: true,
             mouseenterStop: false,
@@ -41,6 +42,7 @@
             this.$controllers = this.$el.find(options.controller).children();
             this.width = this.$mainLists.eq(0).width();
             this.max = this.$mainLists.length - 1;
+            this.paginationListEvent = options.paginationListEvent;
         };
 
         // 初始化轮播dom
@@ -161,7 +163,7 @@
                 $(e.target).index() === 0 ? _self.changeFn(_self.current - 1) : _self.changeFn(_self.current + 1);
             });
             //  序号控制点击事件
-            this.$paginationLists.on('click', function () {
+            this.$paginationLists.on(this.paginationListEvent, function () {
                 _self.changeFn($(this).index());
             });
             // 移动端滑动支持
