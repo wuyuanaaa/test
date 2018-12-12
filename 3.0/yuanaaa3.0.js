@@ -1106,10 +1106,10 @@
     };
     /* 复制微信 */
     $_y.copyWeChat = function (arr, options) {
-        var wxNow = arr[+new Date() % arr.length];      // 18.11.15 更新随机方式
-        noLayer = options.noLayer ? options.noLayer : '.wxnumber',
-            openLayer = options.openLayer ? options.openLayer : '.wxCode',
-            $xnkf = options.el ? $(options.el) : ($('.ntkf').length > 0 ? $('.ntkf') : $('.xnkf')); // 确定页面小能类名
+        var wxNow = arr[+new Date() % arr.length],      // 18.11.15 更新随机方式
+            noLayer = options && options.noLayer ? options.noLayer : '.wxnumber',
+            openLayer = options && options.openLayer ? options.openLayer : '.wxCode',
+            $xnkf = options && options.el ? $(options.el) : ($('.ntkf').length > 0 ? $('.ntkf') : $('.xnkf')); // 确定页面小能类名
 
         $(noLayer).text(wxNow);
         $(openLayer).text(wxNow);

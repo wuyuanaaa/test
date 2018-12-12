@@ -815,3 +815,4 @@ div.layui-layer {   //取消layer默认外阴影
 - 2018.11.27 __fixedTop 优化 相邻元素 marginTop 的计算方式，减少导航元素自身及子元素对结果的影响（如：导航子元素的marginTop穿透父元素会导致结果不准确）__
 - 2018.12.06 __fixedTop 优化 导航元素 fixed 后占位方式由为相邻元素添加 marginTop 更改至 新增 clone 占位元素__
 - 2018.12.10 __carousel 新增 导航序号切换事件由默认 'click' 改为可以通过 'paginationListEvent' 参数配置，接受 'click'/'mouseenter'__
+- 2018.12.12 __changeWeChat 修复 默认参数配置语法错误__
