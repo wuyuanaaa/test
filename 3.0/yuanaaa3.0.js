@@ -378,7 +378,7 @@
                     layer.msg('手机号超出字符限制！')
                 }
             });
-            if (_self.popUp) {
+            if (_self.$popUpEl) {
                 _self.$popUpCloseEl.on('click', function () {
                     _self.$popUpEl.hide();
                 })
@@ -404,7 +404,6 @@
         _extend(NeedMsg, SaveActivitySmsInfo);
         // 发送验证码
         NeedMsg.prototype.sendSms = function () {
-            console.log(this);
             if (!this.testPhoneNumber(this.phoneNumber)) {
                 return;
             }
@@ -437,7 +436,6 @@
         NeedMsg.prototype.submit = function (object, code, callback) {
             object.accessUrl = window.location.href;
             object.code = code;
-            console.log(this.testCode(code));
             if (!this.testPhoneNumber(object.phone) || !this.testCode(code)) {
                 return;
             }
@@ -476,6 +474,10 @@
                 var infoMsg = '';
                 if (_self.getInfo && typeof _self.getInfo === 'function') {
                     infoMsg = _self.getInfo();
+                    if (infoMsg && typeof infoMsg === 'object' && infoMsg.err) {
+                        layer.msg(infoMsg.err);
+                        return;
+                    }
                 }
                 var obj = {
                     sceneCode: _self.sceneCode,
@@ -1286,6 +1288,18 @@
             "dName": "cylaikj",
             "name": "成都成昱莱科技有限公司",
             "num": "蜀ICP备18022312号-3",
+            "hasCertificate": false
+        }, {
+            "id": 23,
+            "dName": "wzhjtjy",
+            "name": "温州市鸿金途教育科技有限公司",
+            "num": "浙ICP备18044637号-1",
+            "hasCertificate": false
+        }, {
+            "id": 24,
+            "dName": "wzhongwei",
+            "name": "温州鸿威教育科技有限公司",
+            "num": " 浙ICP备18044673号-1",
             "hasCertificate": false
         }
     ];

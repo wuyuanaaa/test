@@ -200,6 +200,7 @@ $_y.saveActivitySmsInfo.init(el, {
         popUpEl: '.layer-warp',
         popUpCloseEl: '.layer-close'
     },
+    getInfo: fn,    // 返回字符串则传回服务器，返回{err: '错误信息'}则终止后续提交并提示错误
     callback: function () {
         if(_taq) {
           _taq.push({convert_id: "1606319178273799", event_type: "form"})
@@ -816,3 +817,5 @@ div.layui-layer {   //取消layer默认外阴影
 - 2018.12.06 __fixedTop 优化 导航元素 fixed 后占位方式由为相邻元素添加 marginTop 更改至 新增 clone 占位元素__
 - 2018.12.10 __carousel 新增 导航序号切换事件由默认 'click' 改为可以通过 'paginationListEvent' 参数配置，接受 'click'/'mouseenter'__
 - 2018.12.12 __changeWeChat 修复 默认参数配置语法错误__
+- 2018.12.17 __saveActivitySmsInfo 修复 弹窗配置错误__
+- 2018.12.17 __saveActivitySmsInfo 新增 获取信息参数 getInfo 新增错误校验__
