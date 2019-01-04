@@ -896,7 +896,7 @@
     /* 页面动画至指定元素 */
     $_y.scrollTo = function (el) {
         var h = $(el).offset().top - 200;
-        $('html,body').animate({'scrollTop': h + 'px'}, 500);
+        $('html,body').animate({'scrollTop': h}, 500);
     };
     /* 元素指定位置展示 */
     $_y.fixedTop = (function () {
