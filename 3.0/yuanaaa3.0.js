@@ -298,11 +298,11 @@
             this.$el = $(el);
             this.opts = options;
             this.countdown = options.countdown;
-            this.$cellPhone = $(options.els.cellPhone);
-            this.$codeValue = $(options.els.codeValue);
-            this.$sendCode = $(options.els.sendCode);
+            this.$cellPhone = $(el).find(options.els.cellPhone);
+            this.$codeValue = $(el).find(options.els.codeValue);
+            this.$sendCode = $(el).find(options.els.sendCode);
             this.sendCodeClass = options.els.sendCode;
-            this.$submitButton = $(options.els.submitButton);
+            this.$submitButton = $(el).find(options.els.submitButton);
             this.$popUpEl = $(options.popUp.popUpEl);
             this.$popUpCloseEl = $(options.popUp.popUpCloseEl);
             this.platform = 'yk';

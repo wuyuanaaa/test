@@ -820,3 +820,4 @@ div.layui-layer {   //取消layer默认外阴影
 - 2018.12.17 __saveActivitySmsInfo 修复 弹窗配置错误__
 - 2018.12.17 __saveActivitySmsInfo 新增 获取信息参数 getInfo 新增错误校验__
 - 2019.01.04 __scrollTo 修复 因为单位'px'出现的兼容问题__
+- 2019.01.08 __saveActivitySmsInfo 修复 dom元素选取错误__
