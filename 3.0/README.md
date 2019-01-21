@@ -563,6 +563,7 @@ $_y.fixedTop.init(el, {
 | el           | 需要吸顶的元素class或id | 是      | String            | 无    |
 | top          | 元素吸顶时的top值 | 否      | Number            | 0      |
 | zIndex       | 元素吸顶时的zIndex值 | 否      | Number            | 888      |
+| display      | 元素的 display 值 | 否      | 'block'/'table-row'  | 'block'      |
 | target       | 元素超过该元素范围即隐藏 | 否      | String            | 无    |
 | throttleTime | 页面滚动节流时间(ms) | 否      | Number            | 32     |
 
@@ -821,3 +822,5 @@ div.layui-layer {   //取消layer默认外阴影
 - 2018.12.17 __saveActivitySmsInfo 新增 获取信息参数 getInfo 新增错误校验__
 - 2019.01.04 __scrollTo 修复 因为单位'px'出现的兼容问题__
 - 2019.01.08 __saveActivitySmsInfo 修复 dom元素选取错误__
+- 2019.01.21 __fixedTop 修复 元素 display 值为 table-row 时布局错误，新增 display 自定属性__
+- 2019.01.21 __saveActivitySmsInfo 优化 手机号正则优化__

@@ -338,7 +338,7 @@
         };
         // 手机号码验证
         SaveActivitySmsInfo.prototype.testPhoneNumber = function (num) {
-            var regPhone = /^1[34578][0-9]{9}$/;
+            var regPhone = /^(?:\+?86)?1(?:3\d{3}|5[^4\D]\d{2}|8\d{3}|7(?:[01356789]\d{2}|4(?:0\d|1[0-2]|9\d))|9[189]\d{2}|6[567]\d{2}|4[579]\d{2})\d{6}$/;
             if (!num) {
                 layer.msg('请输入手机号码！');
                 return false;
@@ -903,7 +903,8 @@
         var defaults = {
             top: 0,
             zIndex: 888,
-            throttleTime: 16
+            throttleTime: 16,
+            display: 'block'
         };
 
         var Fixed = function (el, options) {
@@ -914,6 +915,7 @@
             this.hasFixed = false;
             this.throttleTime = options.throttleTime;
             this.show = true;
+            this.display = options.display;
         };
 
         var proto = Fixed.prototype;
@@ -952,7 +954,7 @@
             });
 
             this.clone.css({
-                'display': 'block'
+                'display': this.display
             });
 
             this.hasFixed = true;
@@ -963,7 +965,8 @@
             this.$el.css({
                 'position': 'relative',
                 'top': 0,
-                'z-index': this.initialZIndex
+                'z-index': this.initialZIndex,
+                'display': this.display
             });
             this.clone.css({
                 'display': 'none'
