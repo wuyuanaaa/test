@@ -343,7 +343,7 @@
         layer.msg('请输入手机号码！');
         return false;
       }
-      num = num.replace(/(^/s*)|(/s*$)/g, "");  // 清除前后空格
+      num = num.replace(/(^\s*)|(\s*$)/g, "");
       if (num.length > 11) {
         layer.msg('手机号超出字符限制！');
         return false;
@@ -352,7 +352,7 @@
         layer.msg('手机号码输入有误！');
         return false
       }
-      return true;
+      return num;
     };
     // ajax
     SaveActivitySmsInfo.prototype.ajax = function (url, data, callback) {
@@ -375,6 +375,7 @@
       var _self = this;
       _self.$cellPhone.keyup(function () {
         _self.phoneNumber = $(this).val();
+        _self.phoneNumber = _self.phoneNumber.replace(/(^\s*)|(\s*$)/g, "");
         if (_self.phoneNumber.length > 11) {
           layer.msg('手机号超出字符限制！')
         }
@@ -405,7 +406,8 @@
     _extend(NeedMsg, SaveActivitySmsInfo);
     // 发送验证码
     NeedMsg.prototype.sendSms = function () {
-      if (!this.testPhoneNumber(this.phoneNumber)) {
+      this.phoneNumber = this.testPhoneNumber(this.phoneNumber);
+      if (!this.phoneNumber) {
         return;
       }
       this.setTime(this.$sendCode);
@@ -427,20 +429,22 @@
         layer.msg('请输入验证码！');
         return false;
       }
-      code = code.replace(/(^/s*)|(/s*$)/g, "");  // 清除前后空格
+      code = code.replace(/(^\s*)|(\s*$)/g, "");
       if (!regCode.test(code)) {
         layer.msg('验证码格式错误，应该为6位数字！');
         return false;
       }
-      return true;
+      return code;
     };
     // 提交信息
     NeedMsg.prototype.submit = function (object, code, callback) {
       object.accessUrl = window.location.href;
-      object.code = code;
-      if (!this.testPhoneNumber(object.phone) || !this.testCode(code)) {
+      code = this.testCode(code);
+      object.phone = this.testPhoneNumber(object.phone);
+      if (!code || !object.phone) {
         return;
       }
+      object.code = code;
       var url = this.host + "/common/saveActivitySmsInfo.html";
       this.ajax(url, object, callback);
     };
