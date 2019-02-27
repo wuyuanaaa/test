@@ -396,7 +396,7 @@ $_y.saveActivitySmsInfo.changeSceneCode('#get-phone', 'YK_M_KUAIJI');
 
 ```
 // 默认调用
-$_y.scrollPage(el);
+$_y.scrollPage.init(el);
 // 全参调用
 $_y.scrollPage.init(el, {
     navEl: '.md',
@@ -824,3 +824,4 @@ div.layui-layer {   //取消layer默认外阴影
 - 2019.01.08 __saveActivitySmsInfo 修复 dom元素选取错误__
 - 2019.01.21 __fixedTop 修复 元素 display 值为 table-row 时布局错误，新增 display 自定属性__
 - 2019.01.21 __saveActivitySmsInfo 优化 手机号正则优化__
+- 2019.02.27 __saveActivitySmsInfo 优化 手机号及验证码清除前后空格__
