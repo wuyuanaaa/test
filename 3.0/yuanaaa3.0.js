@@ -454,7 +454,7 @@
         if (this.$popUpEl.length) {
           this.$popUpEl.show();
         }
-        $el.find('input').not(this.sendCodeClass).val("");
+        this.$el.find('input').not(this.sendCodeClass).val("");
         if (this.callback && typeof this.callback === 'function') {    // 执行回调函数
           this.callback();
         }
