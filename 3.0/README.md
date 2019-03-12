@@ -237,11 +237,11 @@ $_y.saveActivitySmsInfo.changeSceneCode('#get-phone', 'YK_M_KUAIJI');
 ```
 <div class="get-phone" id="get-phone">
     <div class="row">
-        <input class="phone-number" type="number" placeholder="请输入电话号码">
+        <input class="phone-number" type="tel" placeholder="请输入电话号码">
         <input class="send-code" type="button" value="获取验证码">
     </div>
     <div class="row">
-        <input class="code-value" type="number" placeholder="请输入验证码">
+        <input class="code-value" type="tel" placeholder="请输入验证码">
     </div>
     <div class="row">
         <button class="submit-button">提交</button>
