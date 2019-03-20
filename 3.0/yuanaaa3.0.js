@@ -4,7 +4,7 @@
     this ||
     {};
   var $_y = {};
-  root.$_y = $_y;
+
   $_y.VERSION = '3.0';
   /* 轮播 */
   $_y.carousel = (function () {
@@ -314,7 +314,7 @@
     // 确定主机号
     SaveActivitySmsInfo.prototype.getHost = function () {
       var protocol = window.location.protocol;
-      this.host = protocol === 'http:' ? 'http://tf.topksw.com' : 'https://m.ykclass.com';
+      this.host = protocol === 'http:' ? 'http://m.tf.topksw.com' : 'https://m.ykclass.com';
     };
     // 设置短信倒计时
     SaveActivitySmsInfo.prototype.setTime = function (el) {
@@ -439,9 +439,12 @@
     // 提交信息
     NeedMsg.prototype.submit = function (object, code, callback) {
       object.accessUrl = window.location.href;
-      code = this.testCode(code);
       object.phone = this.testPhoneNumber(object.phone);
-      if (!code || !object.phone) {
+      if (!object.phone) {
+        return;
+      }
+      code = this.testCode(code);
+      if (!code) {
         return;
       }
       object.code = code;
@@ -1089,7 +1092,7 @@
       $footer = $('.footer');
     for (var i = 0, len = this.corporationList.length; i < len; i++) {
       if (domainName.indexOf(this.corporationList[i].dName) > -1) {
-        $footer.html('<p>Copyright © 2018 ' + this.corporationList[i].name + ' All Rights Reserved <br>' + this.corporationList[i].num + '</p>')
+        $footer.html('<p>Copyright © 2019 ' + this.corporationList[i].name + ' All Rights Reserved <br>' + this.corporationList[i].num + '</p>')
       }
     }
   };
@@ -1129,8 +1132,14 @@
     clipboardFn(noLayer);
 
     function clipboardFn(classNameString, callback) {
-      var clipboard = new Clipboard(classNameString),
-        $obj = $(classNameString);
+      var clipboard;
+      try {
+        clipboard = new Clipboard(classNameString);
+      } catch (e) {
+        console.error('$_y.copyWeChat：需要 Clipboard 库依赖！');
+        return;
+      }
+      var $obj = $(classNameString);
       $obj.on('click', function () {
         $obj.attr('data-clipboard-text', wxNow);
       });
@@ -1146,6 +1155,10 @@
     }
 
     function openLayerFn() {
+      if(!$('.w_2').length) {
+        console.error('$_y.copyWeChat：弹窗元素不存在！');
+        return;
+      }
       layer.open({
         type: 1,
         title: false,
@@ -1181,7 +1194,7 @@
     }, {
       "id": 3,
       "dName": "topksw",
-      "name": "武汉乐教科技有限公司",
+      "name": "武汉正好教育科技有限公司",
       "num": "鄂ICP备13016533号",
       "hasCertificate": false
     }, {
@@ -1340,7 +1353,41 @@
       "name": "上海清可信息科技有限公司",
       "num": "沪ICP备18001330号-4",
       "hasCertificate": false
+    }, {
+      "id": 30,
+      "dName": "bpdzm",
+      "name": "上海清可信息科技有限公司",
+      "num": "沪ICP备18001330号-10",
+      "hasCertificate": false
+    }, {
+      "id": 31,
+      "dName": "wzshenghong",
+      "name": "温州盛鸿教育信息咨询有限公司",
+      "num": " 浙ICP备19007364号-1",
+      "hasCertificate": false
+    }, {
+      "id": 32,
+      "dName": "lubojiaoyu",
+      "name": "郑州路博教育科技有限公司",
+      "num": " 豫ICP备18006080号-1",
+      "hasCertificate": false
+    }, {
+      "id": 33,
+      "dName": "113158",
+      "name": "渭南高新区鸣人教育有限责任公司",
+      "num": " 陕ICP备19003498号-1",
+      "hasCertificate": false
     }
   ];
+
+  root.$_y = $_y;
+  if (typeof exports != 'undefined' && !exports.nodeType) {
+    if (typeof module != 'undefined' && !module.nodeType && module.exports) {
+      exports = module.exports = $_y;
+    }
+    exports.$_y = $_y;
+  } else {
+    root.$_y = $_y;
+  }
 })();
 
