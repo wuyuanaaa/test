@@ -281,7 +281,8 @@
         popUpEl: '.layer-warp',
         popUpCloseEl: '.layer-close'
       },
-      needMsg: true
+      needMsg: true,
+      wxMode: false
     };
 
     // 继承
@@ -309,6 +310,8 @@
       this.getInfo = options.getInfo;
       this.callback = options.callback;
       this.sceneCode = options.sceneCode;
+      this.wxMode = options.wxMode;
+      this.getWxCode = options.getWxCode;
     };
 
     // 确定主机号
@@ -353,6 +356,20 @@
         return false
       }
       return num;
+    };
+    // 微信号验证
+    SaveActivitySmsInfo.prototype.testWxCode = function (code) {
+      var regWxCode = /^[0-9a-z][0-9a-z-_]{5,19}/i;
+      if (!code) {
+        layer.msg('请输入微信号！');
+        return false;
+      }
+      code = code.replace(/(^\s*)|(\s*$)/g, "");
+      if (!regWxCode.test(code)) {
+        layer.msg('请输入正确的微信号！');
+        return false;
+      }
+      return code;
     };
     // ajax
     SaveActivitySmsInfo.prototype.ajax = function (url, data, callback) {
@@ -508,13 +525,13 @@
     // 继承父类
     _extend(NoMsg, SaveActivitySmsInfo);
     // 提交信息
-    NoMsg.prototype.submit = function (object) {
+    NoMsg.prototype.submit = function (object, callback) {
       object.accessUrl = window.location.href;
       if (!this.testPhoneNumber(object.phone)) {
         return;
       }
       var url = this.host + "/common/saveActivityInfo.html";
-      this.ajax(url, object);
+      this.ajax(url, object, callback);
     };
     // 事件绑定
     NoMsg.prototype.bindMore = function () {
@@ -524,14 +541,41 @@
         var infoMsg = '';
         if (_self.getInfo && typeof _self.getInfo === 'function') {
           infoMsg = _self.getInfo();
+          if (infoMsg && typeof infoMsg === 'object' && infoMsg.err) {
+            layer.msg(infoMsg.err);
+            return;
+          }
         }
+
+        var wxCode = '';
+
+        if (_self.getWxCode && typeof _self.getWxCode === 'function') {
+          wxCode = _self.getWxCode();
+          if (wxCode && typeof wxCode === 'object' && wxCode.err) {
+            layer.msg(wxCode.err);
+            return;
+          }
+        }
+
+        if (_self.wxMode) {
+          wxCode = _self.testWxCode(wxCode);
+          if(!wxCode) {
+            return;
+          }
+          wxCode = '微信号' + wxCode;
+          _self.phoneNumber = '18888888888';
+        }
+
         var obj = {
-          sendCode: _self.sendCode,
+          sceneCode: _self.sceneCode,
           phone: _self.phoneNumber,
-          content: infoMsg
+          content: infoMsg + wxCode
         };
 
-        _self.submit(obj);
+        _self.submit(obj, function () {
+          _self.$el.find('input').val("");
+          layer.msg('信息提交成功!');
+        });
       });
     };
 

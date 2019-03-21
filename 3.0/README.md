@@ -228,6 +228,8 @@ $_y.saveActivitySmsInfo.changeSceneCode('#get-phone', 'YK_M_KUAIJI');
 | popUp.popUpCloseEl | 关闭弹窗按钮类名 | 否      | string            | '.layer-close'  |
 | getInfo            | 返回传入数据的钩子函数 | 否      | function          | 无             |
 | callback           | 获客成功后的回调 | 否      | function          | 无             |
+| wxMod           | 是否是微信模式 | 否      | true/false          | false             |
+| getWxCode           | 返回传入微信的钩子函数 | 否      | function          | 无             |
 
 
 - __【html】__
@@ -826,3 +828,4 @@ div.layui-layer {   //取消layer默认外阴影
 - 2019.01.21 __saveActivitySmsInfo 优化 手机号正则优化__
 - 2019.02.27 __saveActivitySmsInfo 优化 手机号及验证码清除前后空格__
 - 2019.03.20 __新增 模块化支持；copyWeChat 优化 捕获缺少依赖库错误并提醒__
+- 2019.03.21 __saveActivitySmsInfo 新增 微信号模式__
