@@ -296,6 +296,7 @@
 
     // 父类
     var SaveActivitySmsInfo = function (el, options) {
+      this.el = el;
       this.$el = $(el);
       this.opts = options;
       this.countdown = options.countdown;
@@ -312,6 +313,7 @@
       this.sceneCode = options.sceneCode;
       this.wxMode = options.wxMode;
       this.getWxCode = options.getWxCode;
+      this.getWxCallback = options.getWxCallback;
     };
 
     // 确定主机号
@@ -533,11 +535,23 @@
       var url = this.host + "/common/saveActivityInfo.html";
       this.ajax(url, object, callback);
     };
+    // 检测重复提交
+    NoMsg.prototype.isRepeat = function () {
+      var lastTime = window.localStorage.getItem(this.el);
+
+      return lastTime && lastTime - (+ new Date()) < 1000 * 60 * 5;
+    };
+
     // 事件绑定
     NoMsg.prototype.bindMore = function () {
       var _self = this;
 
       this.$submitButton.on('click', function () {
+        if (_self.isRepeat()) {
+          layer.msg('请勿重复提交！');
+          return;
+        }
+
         var infoMsg = '';
         if (_self.getInfo && typeof _self.getInfo === 'function') {
           infoMsg = _self.getInfo();
@@ -559,7 +573,7 @@
 
         if (_self.wxMode) {
           wxCode = _self.testWxCode(wxCode);
-          if(!wxCode) {
+          if (!wxCode) {
             return;
           }
           wxCode = '微信号' + wxCode;
@@ -573,8 +587,11 @@
         };
 
         _self.submit(obj, function () {
-          _self.$el.find('input').val("");
-          layer.msg('信息提交成功!');
+          if (_self.getWxCallback && typeof _self.getWxCallback === 'function') {
+            _self.getWxCallback();
+
+            window.localStorage.setItem(_self.el, + new Date());
+          }
         });
       });
     };
@@ -1199,7 +1216,7 @@
     }
 
     function openLayerFn() {
-      if(!$('.w_2').length) {
+      if (!$('.w_2').length) {
         console.error('$_y.copyWeChat：弹窗元素不存在！');
         return;
       }
