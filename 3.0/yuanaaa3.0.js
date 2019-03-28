@@ -314,6 +314,7 @@
       this.wxMode = options.wxMode;
       this.getWxCode = options.getWxCode;
       this.getWxCallback = options.getWxCallback;
+      this.addInfo = options.addInfo;
     };
 
     // 确定主机号
@@ -512,6 +513,11 @@
           phone: _self.phoneNumber,
           content: infoMsg
         };
+
+        if (_self.addInfo) {
+          obj.content = obj.content + '(' + _self.addInfo + ')';
+        }
+
         var code = _self.$codeValue.val();
         _self.submit(obj, code, function (msg) {
           _self.msgCallback.call(_self, msg);
@@ -539,7 +545,7 @@
     NoMsg.prototype.isRepeat = function () {
       var lastTime = window.localStorage.getItem(this.el);
 
-      return lastTime && lastTime - (+ new Date()) < 1000 * 60 * 5;
+      return lastTime && (((+ new Date())) - lastTime < 1000 * 60 * 5);
     };
 
     // 事件绑定
@@ -585,6 +591,10 @@
           phone: _self.phoneNumber,
           content: infoMsg + wxCode
         };
+
+        if (_self.addInfo) {
+          obj.content = obj.content + '(' + _self.addInfo + ')';
+        }
 
         _self.submit(obj, function () {
           if (_self.getWxCallback && typeof _self.getWxCallback === 'function') {
@@ -771,6 +781,119 @@
     return {
       init: init,
       reset: reset
+    }
+  })();
+  /* 返回一个格式化的相对时间 */
+  $_y.relativeTime = (function () {
+    GetRelativeTime = function (format, options) {
+      this.fotmat = format;
+      this.targetDate = options.targetDate || new Date();
+      this.relative = options.relative || {};
+      this.relativeYear = this.relative.year || 0;
+      this.relativeMonth = this.relative.month || 0;
+      this.relativeDate = this.relative.date || 0;
+      this.relativeHours = this.relative.hours || 0;
+      this.relativeMinutes = this.relative.minutes || 0;
+      this.relativeSeconds = this.relative.seconds || 0;
+    };
+
+    var proto = GetRelativeTime.prototype;
+
+    proto.optionsToSafeNum = function () {
+      this.relativeYear = toSafeNum(this.relative.year);
+      this.relativeMonth = toSafeNum(this.relative.month);
+      this.relativeDate = toSafeNum(this.relative.date);
+      this.relativeHours = toSafeNum(this.relative.hours);
+      this.relativeMinutes = toSafeNum(this.relative.minutes);
+      this.relativeSeconds = toSafeNum(this.relative.seconds);
+
+      function toSafeNum(val) {
+        val = val * 1;
+        if (val !== val) {
+          return 0;
+        }
+        return parseInt(val);
+      }
+    };
+
+    proto.getRelativeDateObj = function () {
+      if (typeof this.targetDate !== 'object') {
+        this.targetDate = new Date(this.targetDate);
+      }
+      var targetTime = this.targetDate.getTime(),
+        seconds = 1000,
+        minutes = seconds * 60,
+        hours = minutes * 60,
+        date = hours * 24,
+        month, year;
+
+      targetTime = targetTime + this.relativeSeconds * seconds + this.relativeMinutes * minutes + this.relativeHours * hours + this.relativeDate * date;      // 调整 天、小时、分钟、秒数 后的毫秒数
+
+      var targetDate = new Date(targetTime);
+
+      month = targetDate.getMonth() + this.relativeMonth;// 相对的月份
+
+      var addYear = Math.floor(month / 11);   // 月份溢出的年数
+
+      month = month % 11 < 0 ? month % 11 + 11 : month % 11;    // 调整后的月份
+      year = targetDate.getFullYear() + addYear + this.relativeYear; // 调整后的年份
+
+      targetDate.setMonth(month);
+      targetDate.setFullYear(year);
+
+      this.relativeDateObj = targetDate;
+    };
+
+    proto.logDate = function () {
+      var log = '';
+      var dateObj = this.relativeDateObj;
+      if (/(Y+)/.test(this.fotmat)) {
+        if (RegExp.$1.length > 4) {
+          console.error("表示年份的 'Y' 不能超过4位！");
+          return '';
+        }
+        log = this.fotmat.replace(RegExp.$1, (dateObj.getFullYear() + '').substr(4 - RegExp.$1.length));
+      }
+
+      var o = {
+        'M+': dateObj.getMonth() + 1,
+        'D+': dateObj.getDate(),
+        'h+': dateObj.getHours(),
+        'm+': dateObj.getMinutes(),
+        's+': dateObj.getSeconds()
+      };
+
+      for (var k in o) {
+        if (new RegExp('('+k+')').test(log)) {
+          var str = o[k] + '';
+          log = log.replace(RegExp.$1, (RegExp.$1.length === 1) ? str : padLeftZero(str));
+        }
+      }
+
+      function padLeftZero (str) {
+        return ('00' + str).substr(str.length);
+      }
+
+      return log;
+    };
+
+    proto.init = function () {
+      this.optionsToSafeNum();
+      this.getRelativeDateObj();
+      return this.logDate();
+    };
+
+    var init =  function (format, options) {
+      if (!(format && typeof format === 'string')) {
+        console.error("需要第一个参数指定格式，例如：'YYYY-MM-DD hh-mm-ss'");
+        return '';
+      }
+      options = options || {};
+      return new GetRelativeTime(format, options).init();
+    };
+
+    return {
+      init: init
     }
   })();
   /* 入屏动画 */
@@ -1437,6 +1560,36 @@
       "dName": "113158",
       "name": "渭南高新区鸣人教育有限责任公司",
       "num": " 陕ICP备19003498号-1",
+      "hasCertificate": false
+    }, {
+      "id": 34,
+      "dName": "rfshidaiedu",
+      "name": "瑞峰时（北京）企业管理有限公司第一分公司",
+      "num": " 京ICP备17063136号-1",
+      "hasCertificate": false
+    }, {
+      "id": 35,
+      "dName": "njjy158",
+      "name": "长沙南兼教育咨询有限公司",
+      "num": " 湘ICP备19004869号-1",
+      "hasCertificate": false
+    }, {
+      "id": 36,
+      "dName": "guozhengonline",
+      "name": "深圳国政高博教育科技有限公司",
+      "num": "粤ICP备16020142号-1",
+      "hasCertificate": false
+    }, {
+      "id": 37,
+      "dName": "gaoboonline",
+      "name": "深圳国政高博教育科技有限公司",
+      "num": "粤ICP备16020142号-1",
+      "hasCertificate": false
+    }, {
+      "id": 38,
+      "dName": "njjy168",
+      "name": "长沙南兼教育咨询有限公司",
+      "num": "湘ICP备19004869号-1",
       "hasCertificate": false
     }
   ];

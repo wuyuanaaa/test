@@ -5,14 +5,15 @@
 - [1、__carousel__（轮播）](#carousel)
 - [2、__saveActivitySmsInfo__（手机验证）](#saveActivitySmsInfo)
 - [3、__scrollPage__（滚屏导航）](#scrollPage)
-- [4、__animationIn__（入屏动画）](#animationIn)
-- [5、__touchEvent__（移动端滑动事件）](#touchEvent)
-- [6、__scrollTo__（页面滚动到指定元素位置）](#scrollTo)
-- [7、__fixedTop__（滚屏吸顶）](#fixedTop)
-- [8、__preventMouseWheel__（禁止input[type='number']滚轮事件）](#preventMouseWheel)
-- [9、__registered__（自动更换公司及资质）【仅用于特定页面】](#registered)
-- [10、__changeWeChat__（单页微信修改）【仅用于特定页面】](#changeWeChat)
-- [11、__copyWeChat__（复制微信）【仅用于特定页面】](#copyWeChat)
+- [4、__relativeTime__（格式化相对时间）](#relativeTime)
+- [5、__animationIn__（入屏动画）](#animationIn)
+- [6、__touchEvent__（移动端滑动事件）](#touchEvent)
+- [7、__scrollTo__（页面滚动到指定元素位置）](#scrollTo)
+- [8、__fixedTop__（滚屏吸顶）](#fixedTop)
+- [9、__preventMouseWheel__（禁止input[type='number']滚轮事件）](#preventMouseWheel)
+- [10、__registered__（自动更换公司及资质）【仅用于特定页面】](#registered)
+- [11、__changeWeChat__（单页微信修改）【仅用于特定页面】](#changeWeChat)
+- [12、__copyWeChat__（复制微信）【仅用于特定页面】](#copyWeChat)
 
 ---
 
@@ -422,6 +423,55 @@ $_y.scrollPage.reset(el);
 
 
 ---
+
+##  relativeTime
+
+> 获取格式化的相对时间
+
+- __【js】__
+
+> 引用方法库
+
+```
+<script src="//m.ykclass.com/zt/zyjs/yuanaaa3.0.js"></script>
+```
+
+> 调用方法
+
+```
+// 默认调用
+$_y.relativeTime.init('YYYY-MM-DD hh:mm:ss');
+// 全参调用
+$_y.scrollPage.init('YYYY-MM-DD hh:mm:ss', {
+    targetDate: + new Date(),
+    relative: {
+      year: 0,
+      month: 0,
+      date: 0,
+      hours: 0,
+      minutes: 0,
+      second: 0
+    }
+});
+// ps: 格式化中字母 'Y' 对应年份 'YY' 即表示两位数年份 'M' 表示月份不补0，其他同理
+```
+
+- __主要参数表__
+
+| 属性          | 表示内容 | 是否必须 | 可选参数/参数类型 | 默认值 |
+| --------------- | ------------ | -------- | ----------------- | -------- |
+| format          | 格式化     | 是      | String            | 无      |
+| targetDate      | 相对时间    | 否      | String/Object     |  当前时间  |
+| year            | 年份增减值  | 否      | Number            | 0    |
+| month            | 月份增减值  | 否      | Number            | 0    |
+| date            | 天数增减值  | 否      | Number            | 0    |
+| hours            | 小时增减值  | 否      | Number            | 0    |
+| minutes            | 分钟增减值  | 否      | Number            | 0    |
+| second            | 秒钟增减值  | 否      | Number            | 0    |
+
+
+---
+
 
 ##  animationIn
 
